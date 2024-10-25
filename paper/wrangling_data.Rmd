@@ -18,7 +18,8 @@ author:
 - Frederick Solt
   # affiliation: University of Iowa
 anonymous: true  
-abstract: "'Janitor work'---getting data into a format appropriate for analysis---has grown increasingly important as political science research has come to depend on data drawn from hundreds of sources.  One tempting solution is to simply enter data by hand, but this approach raises serious risks of data-entry error, a difficult-to-catch problem with the potential to fatally undermine our conclusions. Underscoring these points, we identify data-entry errors in a prominent recent article, Claassen's 2020 study examining how changes in democracy influence public support for democracy, and show that when these errors are corrected, its models provide no support for its conclusions.  Researchers should refrain from hand-entering data as much as possible, and we offer additional suggestions for avoiding errors."
+abstract: "This article focuses on a preliminary step in any ex-post data harmonization project---wrangling the pre-harmonized data---and
+suggests best practices for helping scholars avoid errors in this often-tedious work. To provide illustrations of these best practices, the article uses the examples of harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple institutions (e.g., UN, Eurostat, OECD, Luxembourg Income Study) to create comparable estimates; and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data."
 keywords: ""
 tables: true # enable longtable and booktabs
 citation_package: natbib
