@@ -26,7 +26,7 @@ citation_package: natbib
 fontsize: 12pt
 indent: true
 linestretch: 1.5 # double spacing using linestretch 1.5
-bibliography: [dem_mood_text.bib, p_dcpo_dem_data.bib]
+bibliography: wrangling-data.bib
 # \dummy{`r file.path(getwd(), list.files(getwd(), ".bib$", recursive = TRUE))`}
 # csl: https://raw.githubusercontent.com/citation-style-language/styles/master/american-political-science-association.csl
 biblio-style: apsr
