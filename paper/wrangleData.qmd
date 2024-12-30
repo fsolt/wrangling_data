@@ -1,0 +1,625 @@
+---
+format:
+  pdf:
+    number-sections: true
+    papersize: a4
+    keep-tex: false
+    include-in-header: 
+      text: |
+        \usepackage{typearea}
+
+crossref:
+  sec-prefix: OSM
+  sec-labels: alpha A
+    
+author:
+  - name: Frederick Solt
+    affiliations:
+      - ref: ia
+    orcid: 0000-0002-3154-6132
+    email: frederick-solt@uiowa.edu
+    url: https://www.fsolt.org
+    equal-contributor: true
+  - name: Yue Hu
+    affiliations:
+      - ref: tsu
+    orcid: 0000-0002-2829-3971
+    email: yuehu@tsinghua.edu.cn
+    url: https://www.drhuyue.site
+    equal-contributor: true
+    corresponding: true
+affiliations:
+  - id: ia
+    name: Department of Political Science, University of Iowa, Iowa City, USA
+  - id: tsu
+    name: Department of Political Science, Tsinghua University, Beijing, China
+
+thanks: "Yue Hu appreciates the funding support from the National Natural Science Foundation of China (72374116) and Tsinghua University Initiative Scientific Research Program (2024THZWJC01)."
+
+citeproc: false # to make multibib and wordcount work
+filters:
+  - authors-block
+  - multibib # separate bib for main and appendix
+  - at: pre-render
+    path: "_extensions/andrewheiss/wordcount/wordcount.lua"
+validate-yaml: false # for multibib to work
+
+bibliography: 
+    main: "main_wrangling.bib"
+    appendix: "app_wrangling.bib"
+citation_package: natbib
+csl: "american-political-science-review.csl"
+
+tables: true # enable longtable and booktabs
+fontsize: 12pt
+indent: true
+geometry: margin=1in
+linestretch: 1.5 # double spacing using linestretch 1.5
+colorlinks: true
+link-citations: true
+
+execute:
+  echo: false
+  message: false
+  warning: false
+  dpi: 300
+editor_options: 
+  chunk_output_type: console
+editor:
+  render-on-save: true
+
+title: "Wrangling Pre-harmonized Data: Best Practices Based on Harmonizing Income Inequality and Aggregate Public Opinion Measures"
+
+subtitle: "Preliminary version. No cycling without permission."
+
+abstract: "This article focuses on a preliminary step in any ex-post data harmonization project---wrangling the pre-harmonized data---and
+suggests best practices for helping scholars avoid errors in this often-tedious work. To provide illustrations of these best practices, the article uses the examples of harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple institutions (e.g., UN, Eurostat, OECD, Luxembourg Income Study) to create comparable estimates; and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data."
+
+keywords: [Data generation process, machine assistance, manual coding, data cleaning, data management]
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+ if (!require(cmdstanr)) {
+  install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/",
+                                         getOption("repos")))
+  library(cmdstanr)
+  install_cmdstan() # C++ toolchain required; see https://mc-stan.org/cmdstanr/articles/cmdstanr.html
+}
+
+if (!require(pacman))
+    install.packages("pacman")
+library(pacman)
+  
+p_install(janitor, force = FALSE)
+p_install_gh(c("fsolt/DCPOtools"), force = FALSE)
+
+# load all the packages you will use below
+p_load(
+    # analysis
+    cmdstanr,
+    plm,
+    osfr,
+    
+    # presentation
+    gridExtra,
+    modelsummary,
+    dotwhisker,
+    latex2exp,
+    
+    # data wrangling
+    DCPOtools,
+    janitor,
+    countrycode,
+    here,
+    broom,
+    tidyverse,
+    glue)
+ 
+# Functions preload
+theme_set(theme_minimal())
+set.seed(313)
+ 
+conflicted::conflict_prefer("select", "dplyr")
+conflicted::conflict_prefer("filter", "dplyr")
+ 
+# Function preload ------------------------------------------------------------------
+
+## Beck-Katz panel-corrected standard errors
+vcovHC_se <-  function(x) {
+    plm::vcovHC(x, method="arellano", cluster="group") %>%  #default setting
+        diag() %>% 
+        sqrt()
+}
+
+## Tabulation -----------------------------------------------------------------------
+na_types_dict <- list("r" = NA_real_,
+                      "i" = rlang::na_int,
+                      "c" = NA_character_,
+                      "l" = rlang::na_lgl)
+
+### A function that converts a string to a vector of NA types.
+### e.g. "rri" -> c(NA_real_, NA_real_, rlang::na_int)
+parse_na_types <- function(s) {
+    
+    positions <- purrr::map(
+        stringr::str_split(s, pattern = ""), 
+        match,
+        table = names(na_types_dict)
+    ) %>%
+        unlist()
+    
+    na_types_dict[positions] %>%
+        unlist() %>%
+        unname()
+}
+
+### A function that, given named arguments, will make a one-row tibble, switching out NULLs for the appropriate NA type.
+as_glance_tibble <- function(..., na_types) {
+    
+    cols <- list(...)
+    
+    if (length(cols) != stringr::str_length(na_types)) {
+        stop(
+            "The number of columns provided does not match the number of ",
+            "column types provided."
+        )
+    }
+    
+    na_types_long <- parse_na_types(na_types)
+    
+    entries <- purrr::map2(cols, 
+                           na_types_long, 
+                           function(.x, .y) {if (length(.x) == 0) .y else .x})
+    
+    tibble::as_tibble_row(entries)
+    
+}
+
+tidy.pgmm <- function(x,
+                      conf.int = FALSE,
+                      conf.level = 0.95,
+                      ...) {
+    result <- summary(x)$coefficients %>%
+        tibble::as_tibble(rownames = "term") %>%
+        dplyr::rename(
+            estimate = Estimate,
+            std.error = `Std. Error`,
+            statistic = `z-value`,
+            p.value = `Pr(>|z|)`
+        )
+    
+    if (conf.int) {
+        ci <- confint(x, level = conf.level) %>% 
+            as.data.frame() %>% 
+            rownames_to_column(var = "term") %>% 
+            dplyr::rename(
+                conf.low = `2.5 %`,
+                conf.high = `97.5 %`
+            )
+        result <- dplyr::left_join(result, ci, by = "term")
+    }
+    
+    result
+}
+
+glance.plm <- function(x, ...) {
+    s <- summary(x)
+    as_glance_tibble(
+        nobs = stats::nobs(x),
+        n.country = pdim(x)$nT$n,
+        na_types = "ii"
+    )
+}
+
+glance.pgmm <- function(x, ...) {
+    s <- summary(x)
+    as_glance_tibble(nobs = stats::nobs(x),
+        n.country = pdim(x)$nT$n,
+        n.inst = dim(x$W[[1]])[2],
+        na_types = "iii"
+    )
+}
+
+## dotwhisker::small_multiple() hacks
+
+body(small_multiple)[[19]] <- substitute(
+    p <-
+        ggplot(
+            df,
+            aes(
+                y = estimate,
+                ymin = conf.low,
+                ymax = conf.high,
+                x = as.factor(model),
+                colour = submodel
+            )
+        ) +
+        do.call(geom_pointrange, point_args) +
+        ylab("") + xlab("") +
+        facet_grid(
+            term ~ .,
+            scales = "free",
+            labeller = label_parsed,
+            # enable LaTeX facet labels
+            switch = "y"
+        ) +             # put facet labels on left
+        scale_y_continuous(position = "right") # put axis label on right
+)
+
+```
+
+
+A growing quantity of political science research can be characterized as data science: it employs large quantities of data, often drawn from a large number of different sources.
+For such projects, data wrangling, the task of getting these data into the format required to perform analyses, is notoriously the bulk of the work [see, e.g., @Lohr2014].
+Such data 'janitor work' is often viewed as tiresome, as something to be delegated to research assistants, to someone---indeed anyone---else [see @Torres2017].
+Data wrangling is, however, critically important to scientific inquiry, and errors in the process can undermine our conclusions.
+
+We focus here on one particularly insidious problem that can affect the 'janitor work' of any researcher: data-entry errors.
+Faced with the task of getting data into the correct format, even some very sophisticated researchers will conclude that the most straightforward means to that end is to simply copy the needed data into a spreadsheet manually.
+This technique may be straightforward, but it is very much prone to error.
+@Barchard2011 found that 'research assistants' assigned in an experiment to carefully enter data manually, even those instructed to double-check their entries against the original, had error rates approaching 1% in just a single roughly half-hour session.
+Rates likely go up as the tedious task goes on.
+
+Like 'janitor work' itself, data-entry errors have thus far gained little attention in political science.
+In this piece, we illustrate the pernicious threat this problem poses by carefully scrutinizing a prominent recent work that examines how changes in democracy affect democratic support among the public [@Claassen2020b].^[
+In this study, we leverage the case of thermostatic support for democracy to emphasize the impact of data preprocessing---a largely underexplored but critical phase in research methodology---on empirical outcomes.
+As @Weidmann2023 points out, although data collection, processing, and analyses can all influence conclusions, they follow distinct principles and require different types of action. 
+Each of them merits specific attention, especially the data processing stage, our focus here [@Weidmann2023, 4-9].
+On the impact of data analysis, see @TaiEtAl2022a, which provides an in-depth discussion on that issue in the context of a similar substantive topic.]
+We document the data-entry errors that slipped past both the author and the journal's strict replication policy and how these errors affect the paper's results and conclusions.
+@Claassen2020b [, 51] concludes that when "elected leaders start dismantling democratic institutions and rights, public mood is likely to swing rapidly toward democracy again, providing something of an obstacle to democratic backsliding."
+We show that, after data-entry errors are corrected, there is no empirical evidence that public support responds thermostatically to changes in democracy in this way.
+
+Before elaborating, we note that it is impossible to tell with complete certainty the exact reason for the issues we identify; it is possible that coding mistakes or even intentional decisions are at fault rather than data-entry errors strictly speaking. 
+Further, our point here is not to criticize a particular result, but to highlight a case that "reflects on typical robustness challenges" [@JanzFreese2021, 306] and so to illuminate how idiosyncratic manual data entry processes can cause problems for empirical research.
+On this basis, we conclude with four practical suggestions to help political scientists reduce data-entry errors and their impact.
+Rather than merely a single replication of a difficult-to-detect phenomenon, we hope readers will also consider this work as a contribution to the growing "open science" movement to build more reliable and transparent research both in and beyond social science [@ChristensenEtAl2019; @EngzellRohrer2021].
+
+
+## Data-Entry Errors and Democratic Support
+
+With democracy under increasing threat in countries around the world, how the public reacts is a crucial question.
+According to a classic and still vibrant literature, growing experience with democratic governance helps generate robust public support for democracy [see, e.g., @Lipset1959a; @Welzel2013; @Wuttke2022].
+@Claassen2020b argues instead that democratic support behaves thermostatically: that increases in democracy yield an authoritarian backlash in the public, while democratic backsliding prompts the public to rally to democracy's cause.
+
+The evidence it offers in support of this latter argument takes advantage of recent advances in modeling public opinion as a latent variable to measure democratic support.
+This approach provides estimates of the paper's dependent variable for over one hundred countries for up to nearly three decades, constituting a much larger evidentiary base than any previous study.
+These latent-variable estimates, in turn, were based on thousands of nationally aggregated responses to dozens of different questions from cross-national survey projects [@Claassen2020b, 40].
+Two pieces of data were collected for each distinct survey item in each country and year it was asked: the number of respondents to give a democracy-supporting response---defined, for ordinal responses, as those above the median value of the scale [@Claassen2020b, Appendix 1.3]---and the total number of respondents to whom the question was posed.
+Each of these 7,538 pieces of source data is recorded in a spreadsheet.^[
+The article's replication materials include only the latent variable estimates without the original survey aggregates that serve as their source data [see @Claassen2020c]. 
+Fortunately, however, the spreadsheet recording these original source data is included in the replication materials for a companion piece that employed the identical estimates [see @Claassen2020d].
+]
+
+We re-collected all of the source data for the publication from the original surveys.
+We identified the variables of the survey items used by the article within each survey dataset, and then we used an automated process to collect the needed data from the survey datasets while avoiding data-entry errors [see @Solt2018].
+In Figure \@ref(fig:comparison), we compare the percentage of respondents to give a democracy-supporting response in the publication spreadsheet with the percentage we found using our automated process of wrangling these same data.
+<!-- When points fall along the plot's dotted line, it indicates that the publication's source data and our own automated workflow reported the same percentages. -->
+<!-- Points above this diagonal represent observations for which the publication data overestimated the actual percentage of respondents who offered a democracy-supporting response, while points below this line are observations where the publication data underestimated this percentage. -->
+
+
+```{r data_comparison, include=FALSE}
+if (!file.exists(here::here("data", "supdem raw survey marginals.csv"))) {
+  tempfile <- dataverse::get_file_by_doi("doi:10.7910/DVN/HWLW0J/RA8IJC") # AJPS replication file, not included in APSR replication
+
+  writeBin(tempfile, here::here("data", "supdem raw survey marginals.csv"))
+  rm(tempfile)
+}
+
+# publication data
+sd <- read_csv(here::here("data", "supdem raw survey marginals.csv"), col_types = "cdcddcdc") %>% 
+  mutate(item_fam = str_extract(tolower(Item), "^[a-z]+"),
+         country = countrycode::countrycode(Country, "country.name", "country.name"),
+         dataset = "supdem") %>% 
+  rename(year = Year, project = Project) %>% 
+  with_min_yrs(2) # Selecting data w. at least two years
+
+# corrected data
+if (!file.exists(here::here("data", "claassen_input_raw.csv"))) {
+  claassen_input_raw <- DCPOtools:::claassen_setup(
+    vars = read_csv(here::here("data", "mood_dem.csv"),
+                    col_types = "cccccc")) %>% 
+    pluck("lower")
+  
+  write_csv(claassen_input_raw, 
+            file = here::here("data",
+                              "claassen_input_raw.csv"))
+}
+
+claassen_input_raw <- read_csv(here::here("data",
+                                          "claassen_input_raw.csv"),
+                               col_types = "cdcddcd")
+
+claassen_input_raw1 <- claassen_input_raw %>%
+  filter(!((
+    str_detect(item, "army_wvs") &
+      # WVS obs identified as problematic by Claassen
+      ((country == "Albania" & year == 1998) |
+         (country == "Indonesia" &
+            (year == 2001 | year == 2006)) |
+         (country == "Iran" & year == 2000) |
+         (country == "Pakistan" &
+            (year == 1997 | year == 2001)) | # 1996 in Claassen
+         (country == "Vietnam" & year == 2001)
+      )
+  ) |
+    (
+      str_detect(item, "strong_wvs") &
+        ((country == "Egypt" & year == 2012) |
+           (country == "Iran" &
+              (year == 2000 | year == 2007)) | # 2005 in Claassen
+           (country == "India") |
+           (country == "Pakistan" &
+              (year == 1997 | year == 2001)) | # 1996 in Claassen
+           (country == "Kyrgyzstan" &
+              (year == 2003 | year == 2011)) |
+           (country == "Romania" &
+              (year == 1998 | year == 2005 | year == 2012)) |
+           (country == "Vietnam" & year == 2001)
+        )
+    ) |
+    (
+      country %in% c(
+        "Puerto Rico",
+        "Northern Ireland",
+        "SrpSka Republic",
+        "Hong Kong SAR China"
+      )
+    ))) %>%
+  with_min_yrs(2)
+
+claassen_input0 <- DCPOtools::format_claassen(claassen_input_raw1)
+
+cri <- claassen_input0$data %>% 
+  mutate(p_dcpo = str_extract(survey, "^[a-z]+"), 
+         project = case_when(p_dcpo == "afrob" ~ "afb",
+                             p_dcpo == "amb" ~ "lapop",
+                             p_dcpo == "arabb" ~ "arb",
+                             p_dcpo == "asiab" ~ "asb",
+                             p_dcpo == "asianb" ~ "asnb",
+                             p_dcpo == "neb" ~ "ndb",
+                             p_dcpo == "sasianb" ~ "sab",
+                             TRUE ~ p_dcpo),
+         item_fam = str_extract(item, "^[a-z]+"),
+         item_fam = if_else(item_fam == "election", "elec", item_fam),
+         dataset = "cri")
+
+supdem_cri <- full_join(sd, cri, by = c("country", "year", "item_fam", "project"))
+
+# While DCPO assigns actual year of survey, Claassen (2020) often uses nominal year
+# of wave, so some corrections are required to match observations (~8% of obs);
+# we could write about this as a data-entry error, too, but no space to spare,
+# so we'll adopt those years instead to facilitate straight-up comparison
+no_problems <- inner_join(sd %>% select(-dataset), 
+                          cri %>% select(-dataset),
+                          by = c("country", "year", "item_fam", "project")) # 3403 obs
+
+needed <- anti_join(sd %>% select(-dataset),
+                    cri %>% select(-dataset))                   # 313 obs
+
+available <- anti_join(cri %>% select(-dataset),
+                       sd %>% select(-dataset))                # 1310 obs
+
+year_fixes <- left_join(needed,    # 304 obs
+                        available,
+                        by = c("country", "project", "item_fam")) %>% 
+  mutate(diff = year.x - year.y) %>% 
+  group_by(country, project, item_fam, year.x) %>% 
+  mutate(closest_to_claassen = min(abs(diff))) %>% 
+  ungroup() %>% 
+  group_by(country, project, item_fam, year.y) %>% 
+  mutate(closest_to_dcpo = min(abs(diff))) %>% 
+  ungroup() %>% 
+  filter(closest_to_claassen == abs(diff) & closest_to_dcpo == abs(diff) & abs(diff) <= 3) %>% 
+  filter(!(country == "Egypt" & year.x == 2014 & survey == "afrob5")) %>%  # double matches (it's really afrob6)
+  mutate(year = year.y)
+
+cys_crosswalk <- year_fixes %>% 
+  select(country, y_dcpo = year.y, y_claassen = year.x, survey) %>% 
+  distinct()
+
+claassen_input_raw2 <- claassen_input_raw1 %>%
+  # left_join(cys_crosswalk, by = c("country", "year" = "y_dcpo", "survey")) %>% 
+  # mutate(year = if_else(is.na(y_claassen), year, y_claassen),
+  #        p_dcpo = str_extract(survey, "^[a-z]+"), 
+  #        project = case_when(p_dcpo == "afrob" ~ "afb",
+  #                            p_dcpo == "amb" ~ "lapop",
+  #                            p_dcpo == "arabb" ~ "arb",
+  #                            p_dcpo == "asiab" ~ "asb",
+  #                            p_dcpo == "asianb" ~ "asnb",
+  #                            p_dcpo == "neb" ~ "ndb",
+  #                            p_dcpo == "sasianb" ~ "sab",
+  #                            TRUE ~ p_dcpo)) %>% 
+  # right_join(sd %>% 
+  #             distinct(country, year, project),
+  #           by = c("country", "year", "project")) %>% 
+  right_join(sd %>% distinct(country), by = "country")
+
+claassen_input <- DCPOtools:::format_claassen(claassen_input_raw2)
+
+cri2 <- claassen_input$data %>% 
+  mutate(p_dcpo = str_extract(survey, "^[a-z]+"), 
+         project = case_when(p_dcpo == "afrob" ~ "afb",
+                             p_dcpo == "amb" ~ "lapop",
+                             p_dcpo == "arabb" ~ "arb",
+                             p_dcpo == "asiab" ~ "asb",
+                             p_dcpo == "asianb" ~ "asnb",
+                             p_dcpo == "neb" ~ "ndb",
+                             p_dcpo == "sasianb" ~ "sab",
+                             TRUE ~ p_dcpo),
+         item_fam = str_extract(item, "^[a-z]+"),
+         item_fam = if_else(item_fam == "election", "elec", item_fam),
+         dataset = "cri2")
+
+supdem_cri2 <- full_join(sd, 
+                         cri2, 
+                         by = c("country", "year", "item_fam", "project"))
+
+no_problems2 <- inner_join(sd %>% select(-dataset), 
+                          cri2 %>% select(-dataset),
+                          by = c("country", "year", "item_fam", "project")) # 3706 obs
+
+needed2 <- anti_join(sd %>% select(-dataset),
+                    cri2 %>% select(-dataset))                   # 10 obs; these are not in the surveys
+
+data_comparison <- bind_rows(no_problems, year_fixes) %>% 
+  mutate(perc_cls = Response/Sample*100,
+         perc_ours = x/samp*100,
+         diff_perc = perc_cls - perc_ours,
+         diff_perc_abs = abs(diff_perc),
+         diff_x = round(Response - x),
+         diff_samp = round(Sample - samp)) %>% 
+  select(-CAbb, -COWCode)
+```
+
+
+
+```{r comparison, fig.cap="Comparing Democracy-Supporting Responses in the Publication Data and the Corrected Data", fig.align='center', fig.width=7, fig.height=5.5}
+bad_items <- c("Asia Barometer:\nEvaluation of Democracy",
+               "Asian Barometer II:\nSuitability of Democracy",
+               "Pew Global Attitudes:\nImportance of Democracy",
+               "Other Items")
+
+plot_support <- data_comparison %>% 
+  mutate(p_dcpo3 = case_when(Item == "EvDemoc_asb" ~ "Asia Barometer:\nEvaluation of Democracy",
+                             Item == "DemocSuit_asnb" & dplyr::between(year, 2005, 2008) ~ "Asian Barometer II:\nSuitability of Democracy",
+                             Item == "ImpDemoc_pew" ~ "Pew Global Attitudes:\nImportance of Democracy",
+                             TRUE ~ "Other Items") %>% 
+           factor(levels = bad_items)) %>% 
+  ggplot(aes(x = perc_ours, y = perc_cls)) +
+    geom_point(aes(color = p_dcpo3, shape = p_dcpo3), size = 1.5) +
+    labs(y = "Publication Data",
+         x = "Corrected Data") + 
+  geom_abline(intercept = 0, slope = 1, linetype = "dotted") +
+  theme_bw() +
+  theme(legend.justification=c(1,0), 
+        legend.position=c(.99,.01),
+        legend.text = element_text(size = 6),
+        legend.background = element_rect(size=.1,
+                                         linetype="solid",
+                                         color = "black"),
+        legend.key.size = unit(1.1, 'lines')) +
+  scale_colour_manual(name = element_blank(),
+                        values = alpha(c("blue", "green", "red", "gray50"),
+                                       c(1, 1, 1, .3)),
+                        breaks = bad_items) +
+  scale_shape_discrete(name = element_blank(),
+                       breaks = bad_items)
+
+ggsave(here("paper", "images", "data_comparison1.png")) # Stand-alone plot without notes for presentation
+
+tx_note <- str_wrap(
+    c(
+      "Notes: Each point represents the percentage of respondents in a country-year to give a democracy-supporting response to a particular survey item.  Publication data is as reported in Claassen (2020b); the corrected data was collected directly from the original surveys.  The Asia Barometer's item on the evaluation of democracy accounts for most overreports, and the Pew Global Attitudes item on the importance of democracy accounts for most substantial underreports.  In both cases, as well as the overreports of the suitability of democracy item in the second wave of the Asian Barometer, the issues can be easily explained by errors in transcribing the data.  Deviations in other items result from inconsistent treatment of missing data and/or survey weights, reflecting in part differences in codebook reporting practices across surveys."
+    ),
+    width = 121
+  )
+
+plot_support + 
+    patchwork::plot_annotation(caption = tx_note) &
+    theme(plot.caption = element_text(hjust = 0))
+
+```
+
+For `r {mean(data_comparison$diff_perc_abs < .5)*100} %>% round()`% of the country-year-item observations, the difference between these percentages was negligible---less than half a percent---yielding points approximately along the plot's dotted line.
+But for the remaining observations, the difference was often substantial due to data-entry errors in the publication data.
+For example, the Asia Barometer asked respondents in 35 country-years to indicate whether they thought "a democratic political system" would be very good, fairly good, or bad for their country.
+According to the study's coding rules [see @Claassen2020b, Appendix 1.3], only answers above the median of the response categories should be considered as democracy supporting, yet in this case the lukewarm intermediate category was coded as supporting democracy as well.^[
+Although this may be interpreted as an exercise of researcher judgment as to what constitutes a democracy-supporting response rather than a data-entry error, examination of similar answers to similar questions shows that similarly lukewarm responses at and below the median response category  (e.g., in the Arab Barometer, that democracy was "somewhat appropriate" for the country) were coded as not supportive.
+]
+This led to overestimations of the percentage of democracy-supporting responses ranging from `r data_comparison %>% filter(item=="evdemoc_asiab") %>% pull(diff_perc) %>% min() %>% round()` to `r data_comparison %>% filter(item=="evdemoc_asiab") %>% pull(diff_perc) %>% max() %>% round()` percentage points and averaging `r data_comparison %>% filter(item=="evdemoc_asiab") %>% pull(diff_perc) %>% mean() %>% round()` points.
+
+Similarly, the four waves of the Asian Barometer included the following item: "Here is a similar scale of 1 to 10 measuring the extent to which people think democracy is suitable for our country. If 1 means that democracy is completely unsuitable for [name of country] today and 10 means that it is completely suitable, where would you place our country today?"
+In accordance with the coding rules of the study, responses of 6 through 10 are considered democracy supporting, and that is how the first, third, and fourth waves of the survey are coded.
+For the second wave, however, 5 was erroneously also included among the democracy-supporting responses.
+This data-entry error resulted in overestimates of as much as `r data_comparison %>% filter(item=="democsuit_asianb" & (year==2005|year==2006|year==2008)) %>% pull(diff_perc) %>% max() %>% round()` percentage points in 9 country-years. 
+
+A third example comes from the Pew Global Attitudes surveys' four-point item asking about the importance of living in a country with regular and fair contested elections:
+the question wording is "How important is it to you to live in a country where honest elections are held regularly with a choice of at least two political parties? Is it very important, somewhat important, not too important or not important at all?"
+In this case, rather than including respondents who gave both responses above the median---"very important" and "somewhat important"---only those respondents who answered "very important" were entered as supporting democracy.
+This error caused substantial underreporting of the extent of democratic support in 91 country-years.
+
+While these issues involve mistakes in recording the numerator of the percentage, the number of respondents who provided a democracy-supporting answer, entering the denominator, the total number of respondents asked a question, was also problematic on occasion.
+For example, when the Americas Barometer surveyed Canada in 2010, asked half its sample, when "democracy doesn't work," Canadians "need a strong leader who doesn’t have to be elected through voting."
+Those who were not asked the question were included in the total number of respondents.
+According to the study's coding rules, refusing to answer is equivalent to answering in a fashion not supporting democracy [see @Claassen2020b, Appendix 1.3].
+This rule may or may not be a reasonable coding choice, but including in this category those who were never asked the question at all is clearly a data-entry error.
+
+Another source of data-entry errors here involves survey weights.
+Weighting raw survey results to maximize the extent to which they are representative of the target population is important.
+Relying on toplines reported in codebooks rather than the survey data itself evidently caused some mistakes in correctly entering the needed information here, as codebooks do not always take survey weights into account.
+These errors shifted the percentage of democracy-supporting responses in both directions, typically by relatively small amounts.
+
+Finally, although not depicted on this plot, data-entry errors were also evident in the variable recording the year in which a survey was conducted: these typically reflected differences between the nominal year of a survey wave and when the survey was actually in the field in a particular country.
+This was an issue for some `r {nrow(needed)/nrow(sd) * 100} %>% round()`% of the country-year observations.
+
+
+## Discussion
+
+The analysis above reveals that data-entry errors are an especially pernicious threat to the credibility of our results.
+The threat is a subtle one that is not easily detected.
+To discern it requires close scrutiny of every manual entry; merely examining the data and their distribution will uncover few errors [@Barchard2011, 1837-1838].
+Although failure to find support for a research hypothesis may prompt us to undertake a such a close review, an analysis that yields statistical significance is unlikely to trigger what will likely be, as in the above example, a time-consuming and difficult effort [see @Gelman2014, 464].
+<!-- These different courses put us in 'the garden of forking paths,' rendering our findings suspect even when we only ever perform a single analysis [@Gelman2014, 464]. -->
+
+This leads us to recommend the following steps to reduce possible data-entry errors.
+First, __automate data entry__: we suggest researchers to consider reducing reliance on manual data entry and increase the extent to which data wrangling is performed computationally.
+Readers should be aware that our suggestion does *not* imply that computers are always superior to people for this purpose. 
+Instead, automated coding should always involve sensitive human design and systematic supervision [see @Breznau2021; @Grimmer2015].
+Still, given the convenience of automatic data entry in documentation and reproduction, we encourage researchers to use it as much as possible instead of entering data manually to increase the efficacy and transparency of their data processing operations.^[For a systematic discussion of the function of automated data processes in social science, see @Weidmann2023.]
+
+In making this recommendation, we are aware that being open and transparent in this way takes effort [@EngzellRohrer2021].
+But as researchers automate more of their data entry, the chances that they can reuse their code in subsequent projects improve.
+In fact, many common janitor-work chores already have been packaged as open-source software that to make researchers' task more straightforward and easier.^[
+For example, see `readtext` [@Benoit2021] for formatting text files and `DCPOtools` [@Solt2018] for aggregating cross-sectional time-series public-opinion surveys.]
+<!-- "Write code instead of working by hand," as @Christensen2019 [, 197] admonish, "don't use Microsoft Excel if it can be avoided." -->
+
+Second, __use the double-entry method__: when manual data entry cannot be avoided, each entry should be made twice.
+Double entry is labor intensive, but experiments have shown that it reduces error rates by thirty-fold even when done immediately after the initial collection and by the same person [@Barchard2011, 1837].
+Given that data-entry errors can completely undermine the validity of our conclusions, as in the example above, double entry is worth the extra effort.
+
+Third, __embrace teamwork__: for any project involving entering data by hand, splitting the task up among team members will reduce the risk of errors going undetected.
+When double entries are performed by different people, discrepancies will be noted, discussed, and resolved correctly; having two sets of eyes on complex materials like survey codebooks also increases the chances that nuances of the presentation like survey weights will be uncovered.
+Further, by dividing the load, teamwork also lessens the probability of errors due to fatigue arising in the first place.
+
+Fourth, __be aware of the threat of data-entry error__: this final recommendation is especially for manuscript reviewers.
+If data-entry errors are invisible to the authors themselves, they are doubly so to reviewers (though if editors provided reviewers with replication materials at the time of the review it may help them to better assess the work's credibility).
+But the case described above nevertheless suggests a valuable heuristic: when a work's conclusions suggest that a difficult problem will be easily solved---that democratic erosion will reflexively trigger a backlash and a renewed public support for democracy, in the present instance---it warrants especially careful scrutiny.
+
+Data-entry errors are inevitable, and even following these recommendations is unlikely to eliminate them entirely.
+Further, the above suggestions follow closely from a specific case and, although they successfully help us identify and fix its data-entry issues, they do not constitute a panacea to cure all data-processing problems in all types of research. 
+
+Nonetheless, we also hope the readers to see the shared logic of these suggestions and the growing literature to guide political scientists to conduct more reliable and credible research.
+For instance, in the same vein as our first suggestion, @Weidmann2023 provides a book-length set of illustrations on how to reduce "manual point and click" tasks found in a variety of studies with the `tidy`-data framework in the R language.
+@KapiszewskiKarcher2021 [, 288] even suggests that qualitative researchers should consider using "open-exchange format" of qualitative data analysis software to be more "transparent about the generation and analysis of data."
+Furthermore, we regard our efforts and recommendations as a contribution to the open science movement to produce more robust and credible research in the social sciences [see, e.g., @ChristensenEtAl2019] and beyond [see, e.g., @BarchardPace2011; @Lohr2014].
+With careful attention, not only can the threat of data-entry errors to our 'janitor work', our research, and our understanding of the world be minimized, but the transparency, openness, and credibility of our research can continuously grow.
+
+# Reference {.unnumbered}
+
+::: {#refs-main}
+:::
+
+\pagebreak
+
+\hypertarget{appendix-appendix}{%
+\appendix}
+
+# Online Supplementary Materials {.unnumbered}
+
+\setcounter{page}{1}
+\renewcommand{\thepage}{A\arabic{page}}
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{A.\arabic{figure}}
+\setcounter{table}{0}
+\renewcommand{\thetable}{A.\arabic{table}}
+
+# Descriptive Statistics
+
+# Reference {.unnumbered}
+
+::: {#refs-appendix}
+:::
