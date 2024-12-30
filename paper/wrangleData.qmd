@@ -270,7 +270,7 @@ As @Weidmann2023 points out, although data collection, processing, and analyses 
 Each of them merits specific attention, especially the data processing stage, our focus here [@Weidmann2023, 4-9].
 On the impact of data analysis, see @TaiEtAl2022a, which provides an in-depth discussion on that issue in the context of a similar substantive topic.]
 We document the data-entry errors that slipped past both the author and the journal's strict replication policy and how these errors affect the paper's results and conclusions.
-@Claassen2020b [, 51] concludes that when "elected leaders start dismantling democratic institutions and rights, public mood is likely to swing rapidly toward democracy again, providing something of an obstacle to democratic backsliding."
+@Claassen2020b [p. 51] concludes that when "elected leaders start dismantling democratic institutions and rights, public mood is likely to swing rapidly toward democracy again, providing something of an obstacle to democratic backsliding."
 We show that, after data-entry errors are corrected, there is no empirical evidence that public support responds thermostatically to changes in democracy in this way.
 
 Before elaborating, we note that it is impossible to tell with complete certainty the exact reason for the issues we identify; it is possible that coding mistakes or even intentional decisions are at fault rather than data-entry errors strictly speaking. 
@@ -296,12 +296,16 @@ Fortunately, however, the spreadsheet recording these original source data is in
 
 We re-collected all of the source data for the publication from the original surveys.
 We identified the variables of the survey items used by the article within each survey dataset, and then we used an automated process to collect the needed data from the survey datasets while avoiding data-entry errors [see @Solt2018].
-In Figure \@ref(fig:comparison), we compare the percentage of respondents to give a democracy-supporting response in the publication spreadsheet with the percentage we found using our automated process of wrangling these same data.
+In @fig-comparison, we compare the percentage of respondents to give a democracy-supporting response in the publication spreadsheet with the percentage we found using our automated process of wrangling these same data.
 <!-- When points fall along the plot's dotted line, it indicates that the publication's source data and our own automated workflow reported the same percentages. -->
 <!-- Points above this diagonal represent observations for which the publication data overestimated the actual percentage of respondents who offered a democracy-supporting response, while points below this line are observations where the publication data underestimated this percentage. -->
 
 
-```{r data_comparison, include=FALSE}
+```{r}
+#| label: data_comparison
+#| include: false
+
+
 if (!file.exists(here::here("data", "supdem raw survey marginals.csv"))) {
   tempfile <- dataverse::get_file_by_doi("doi:10.7910/DVN/HWLW0J/RA8IJC") # AJPS replication file, not included in APSR replication
 
@@ -477,13 +481,18 @@ data_comparison <- bind_rows(no_problems, year_fixes) %>%
 
 
 
-```{r comparison, fig.cap="Comparing Democracy-Supporting Responses in the Publication Data and the Corrected Data", fig.align='center', fig.width=7, fig.height=5.5}
+```{r}
+#| label: fig-comparison
+#| fig-cap: "Comparing Democracy-Supporting Responses in the Publication Data and the Corrected Data.The x-axis represents the corrected data, and the y-axis represents the publication data. The points are colored by the item family and shaped by the project. The dotted line represents the line of equality. The plot shows a strong positive correlation between the two variables, with most points falling above the line of equality."
+#| fig-align: "center"
+
+
 bad_items <- c("Asia Barometer:\nEvaluation of Democracy",
                "Asian Barometer II:\nSuitability of Democracy",
                "Pew Global Attitudes:\nImportance of Democracy",
                "Other Items")
 
-plot_support <- data_comparison %>% 
+data_comparison %>% 
   mutate(p_dcpo3 = case_when(Item == "EvDemoc_asb" ~ "Asia Barometer:\nEvaluation of Democracy",
                              Item == "DemocSuit_asnb" & dplyr::between(year, 2005, 2008) ~ "Asian Barometer II:\nSuitability of Democracy",
                              Item == "ImpDemoc_pew" ~ "Pew Global Attitudes:\nImportance of Democracy",
@@ -498,9 +507,7 @@ plot_support <- data_comparison %>%
   theme(legend.justification=c(1,0), 
         legend.position=c(.99,.01),
         legend.text = element_text(size = 6),
-        legend.background = element_rect(size=.1,
-                                         linetype="solid",
-                                         color = "black"),
+        legend.background = element_rect(fill = "transparent"),
         legend.key.size = unit(1.1, 'lines')) +
   scale_colour_manual(name = element_blank(),
                         values = alpha(c("blue", "green", "red", "gray50"),
@@ -509,18 +516,6 @@ plot_support <- data_comparison %>%
   scale_shape_discrete(name = element_blank(),
                        breaks = bad_items)
 
-ggsave(here("paper", "images", "data_comparison1.png")) # Stand-alone plot without notes for presentation
-
-tx_note <- str_wrap(
-    c(
-      "Notes: Each point represents the percentage of respondents in a country-year to give a democracy-supporting response to a particular survey item.  Publication data is as reported in Claassen (2020b); the corrected data was collected directly from the original surveys.  The Asia Barometer's item on the evaluation of democracy accounts for most overreports, and the Pew Global Attitudes item on the importance of democracy accounts for most substantial underreports.  In both cases, as well as the overreports of the suitability of democracy item in the second wave of the Asian Barometer, the issues can be easily explained by errors in transcribing the data.  Deviations in other items result from inconsistent treatment of missing data and/or survey weights, reflecting in part differences in codebook reporting practices across surveys."
-    ),
-    width = 121
-  )
-
-plot_support + 
-    patchwork::plot_annotation(caption = tx_note) &
-    theme(plot.caption = element_text(hjust = 0))
 
 ```
 
