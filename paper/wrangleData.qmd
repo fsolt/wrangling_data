@@ -555,6 +555,7 @@ This was an issue for some `r {nrow(needed)/nrow(sd) * 100} %>% round()`% of the
 
 ```{r}
 #| label: workflow
+#| cache: TRUE
 
 df_toy <- surveys_data |> 
   filter(archive %in% c("icpsr", "pew")) |> 
