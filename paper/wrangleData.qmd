@@ -551,6 +551,20 @@ These errors shifted the percentage of democracy-supporting responses in both di
 Finally, although not depicted on this plot, data-entry errors were also evident in the variable recording the year in which a survey was conducted: these typically reflected differences between the nominal year of a survey wave and when the survey was actually in the field in a particular country.
 This was an issue for some `r {nrow(needed)/nrow(sd) * 100} %>% round()`% of the country-year observations.
 
+## Workflow with a Higher Reliability
+
+```{r}
+#| label: workflow
+
+df_toy <- surveys_data |> 
+  filter(archive %in% c("icpsr", "pew")) |> 
+  group_by(archive) |> 
+  slice_head(n = 1) |> 
+  ungroup() |> 
+  select(survey, file_id)
+
+df_raw <- get_surveys(surveys_data)
+```
 
 ## Discussion
 
