@@ -13,28 +13,32 @@ crossref:
   sec-labels: alpha A
     
 author:
-  - name: Frederick Solt
-    affiliations:
-      - ref: ia
-    orcid: 0000-0002-3154-6132
-    email: frederick-solt@uiowa.edu
-    url: https://www.fsolt.org
-    equal-contributor: true
   - name: Yue Hu
     affiliations:
       - ref: tsu
     orcid: 0000-0002-2829-3971
     email: yuehu@tsinghua.edu.cn
     url: https://www.drhuyue.site
-    equal-contributor: true
-    corresponding: true
+  - name: Yuehong Cassandra Tai
+    affiliations:
+      - ref: psu
+    orcid: https://orcid.org/0000-0001-7303-7443
+    email: yuehong-tai@uiowa.edu
+  - name: Frederick Solt
+    affiliations:
+      - ref: ia
+    orcid: 0000-0002-3154-6132
+    email: frederick-solt@uiowa.edu
+    url: https://www.fsolt.org
 affiliations:
-  - id: ia
-    name: Department of Political Science, University of Iowa, Iowa City, USA
   - id: tsu
     name: Department of Political Science, Tsinghua University, Beijing, China
+  - id: psu
+    name: Center for Social Data Analytics, Pennsylvania State University, University Park, USA
+  - id: ia
+    name: Department of Political Science, University of Iowa, Iowa City, USA
 
-thanks: "Yue Hu appreciates the funding support from the National Natural Science Foundation of China (72374116) and Tsinghua University Initiative Scientific Research Program (2024THZWJC01)."
+thanks: "Corresponding author: [yuehong-tai@uiowa.edu](mailto:yuehong-tai@uiowa.edu). Current version: `r format(Sys.time(), '%B %d, %Y')`.  Replication materials and complete revision history may be found at [https://github.com/fsolt/dem_mood](https://github.com/fsolt/wrangling_data). The authors contributed equally to this work.  Yue Hu appreciates the funding support from the National Natural Science Foundation of China (72374116) and Tsinghua University Initiative Scientific Research Program (2024THZWJC01)."
 
 citeproc: false # to make multibib and wordcount work
 filters:
@@ -55,7 +59,7 @@ fontsize: 12pt
 indent: true
 geometry: margin=1in
 linestretch: 1.5 # double spacing using linestretch 1.5
-colorlinks: true
+colorlinks: false
 link-citations: true
 
 execute:
@@ -68,12 +72,15 @@ editor_options:
 editor:
   render-on-save: true
 
-title: "Wrangling Pre-harmonized Data: Best Practices Based on Harmonizing Income Inequality and Aggregate Public Opinion Measures"
+title: |
+  | On 'Janitor Work' in Political Science:
+  | Best Practices for Wrangling Data
+  | Before Harmonization
 
-subtitle: "Preliminary version. No cycling without permission."
+subtitle: "Preliminary version. Do not circulate without permission."
 
 abstract: "This article focuses on a preliminary step in any ex-post data harmonization project---wrangling the pre-harmonized data---and
-suggests best practices for helping scholars avoid errors in this often-tedious work. To provide illustrations of these best practices, the article uses the examples of harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple institutions (e.g., UN, Eurostat, OECD, Luxembourg Income Study) to create comparable estimates; and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data."
+suggests best practices for helping scholars avoid errors in this often-tedious work. To provide illustrations of these best practices, the article uses the examples of pre-harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple sources to create comparable estimates, and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data."
 
 keywords: [Data generation process, machine assistance, manual coding, data cleaning, data management]
 ---
@@ -251,13 +258,13 @@ body(small_multiple)[[19]] <- substitute(
 
 ```
 
-
-A growing quantity of political science research can be characterized as data science: it employs large quantities of data, often drawn from a large number of different sources.
-For such projects, data wrangling, the task of getting these data into the format required to perform analyses, is notoriously the bulk of the work [see, e.g., @Lohr2014].
+\pagebreak
+Data harmonization projects, and indeed a growing volume of other political science research, can be characterized as data science: they employ large quantities of data, often drawn from a large number of different sources.
+For such projects, data wrangling, the task of getting these data into the format required to perform harmonization or analysis, is notoriously the bulk of the work [see, e.g., @Lohr2014].
 Such data 'janitor work' is often viewed as tiresome, as something to be delegated to research assistants, to someone---indeed anyone---else [see @Torres2017].
 Data wrangling is, however, critically important to scientific inquiry, and errors in the process can undermine our conclusions.
 
-We focus here on one particularly insidious problem that can affect the 'janitor work' of any researcher: data-entry errors.
+We focus here on one particularly insidious problem that can afflict the data wrangling of any researcher: data-entry errors.
 Faced with the task of getting data into the correct format, even some very sophisticated researchers will conclude that the most straightforward means to that end is to simply copy the needed data into a spreadsheet manually.
 This technique may be straightforward, but it is very much prone to error.
 @Barchard2011 found that 'research assistants' assigned in an experiment to carefully enter data manually, even those instructed to double-check their entries against the original, had error rates approaching 1% in just a single roughly half-hour session.
@@ -278,8 +285,80 @@ Further, our point here is not to criticize a particular result, but to highligh
 On this basis, we conclude with four practical suggestions to help political scientists reduce data-entry errors and their impact.
 Rather than merely a single replication of a difficult-to-detect phenomenon, we hope readers will also consider this work as a contribution to the growing "open science" movement to build more reliable and transparent research both in and beyond social science [@ChristensenEtAl2019; @EngzellRohrer2021].
 
+## Wrangling Income Inequality Data
 
-## Data-Entry Errors and Democratic Support
+```{r data-setup, include=FALSE}
+api <- c("LISSY", "CEPALStat", "OECD", "Eurostat", "Beegle et al. 2016", "Statistics Canada", "Statistics Denmark", "Statistics Finland", "CSO Ireland", "Statistics Norway", "Statistics Sweden", "World Bank Poverty & Inequality Platform", "Statbank Greenland")
+sheet <- c("SEDLAC", "Transmonee 2012", "Personal communication, K. Beegle, 2016-08-01", "World Bank Povcalnet", "Australian Bureau of Statistics", "Instituto Naciónal de Estadística de Bolivia", "Instituto de Pesquisa Económica Aplicada", "Departamento Administrativo Nacional de Estadística Colombia", "Instituto Naciónal de Estadística y Censos Costa Rica", "Central Agency for Public Mobilization and Statistics Egypt", "Statistics Estonia", "Statistics Georgia", "Statistics Hong Kong 2017", "Statistics Indonesia", "Istat", "Statistical Institute of Jamaica", "Kazakhstan Committee on Statistics", "Statistics Korea", "National Statistical Committee of Kyrgyzstan", "National Bureau of Statistics of Moldova", "Statistical Office of Montenegro", "Statistics New Zealand 1999", "Philippines Statistical Agency", "Russian Federal State Statistics Service", "Singapore Department of Statistics", "Slovenia Statistics Office", "Slovenia Statistics Office 2005", "Instituto Nacional de Estadística Spain", "Switzerland Federal Statistics Office", "Taiwan Directorate General of Budget, Accounting, and Statistics", "Turkish Statistical Institute", "UK Office for National Statistics", "Institute for Fiscal Studies", "U.S. Congressional Budget Office", "U.S. Census Bureau", "Instituto Nacional de Estadística Venezuela", "Milanovic 2016", "Milanovic 2016; Brandolini 1998", "Ackah, Bussolo, De Hoyos, and Medvedev 2008", "NESDC Thailand", "U.S. Census Bureau 1998", "Dirección General de Estadística, Encuestas y Censos")
+scrape <- c("National Statistical Service of Armenia", "Belarus National Committee of Statistics", "Statistics Hong Kong 2012", "Statistics Hong Kong 2007", "Dirección General de Estadística, Encuestas y Censos 2016", "Economy Planning Unit of Malaysia", "Perry 2018", "Dirección General de Estadística, Encuestas y Censos 2017", "Statistics Sri Lanka 2015", "NESDB Thailand", "Instituto Nacional de Estadística Uruguay", "General Statistics Office of Vietnam 2013", "General Statistics Office of Vietnam", # <- scrape from pdf
+            # webscrape ->
+            "Institut National de la Statistique et des Études Économiques France", "Statistical Center of Iran", "National Statistical Office of Thailand")
+
+length(api) <- length(sheet)
+length(scrape) <- length(sheet)
+
+mode <- tibble(api, sheet, scrape) %>% 
+    gather(key = mode, value = source1) %>% 
+    filter(!is.na(source1))
+
+swiid_source <- read_csv("https://raw.githubusercontent.com/fsolt/swiid/master/data/swiid_source.csv", 
+                         col_types = "cdddcclcccc") %>% 
+    left_join(mode, by = "source1") %>% 
+    mutate(mode = if_else(is.na(mode), "hand", mode))
+
+wordify_numeral <- function(x) setNames(c("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", " seventeen", "eighteen", "nineteen"), 1:19)[x]
+
+api_percent <- swiid_source %>% count(mode == "api") %>% mutate(p = round(n/nrow(swiid_source) * 100)) %>% filter(`mode == "api"` == TRUE) %>% pull(p)
+
+automated_percent <- swiid_source %>% count(mode == "hand") %>% mutate(p = round(n/nrow(swiid_source) * 100)) %>% filter(`mode == "hand"` == FALSE) %>% pull(p)
+
+```
+
+The Standardized World Income Inequality Database (SWIID) is a long-running project that seeks to harmonize as much as possible income inequality statistics  for the broadest possible coverage of countries and years [@Solt2009; @Solt2016; @Solt2020].
+As of its most recent update at the time of this writing, its source data consists of some 27,000 observations of the Gini coefficient in various countries and years, collected from international organizations, national statistics bureaus, and academic studies.^[
+These source data can be accessed and explored graphically on the web at <https://fsolt.org/swiid/swiid_source.html>.]
+
+```{r data_by_method, echo=FALSE, fig.cap = "\\label{fig:data_by_method}Income Inequality Observations by Method of Collection"}
+
+swiid_source %>% 
+  count(mode) %>% 
+  mutate(method = fct_recode(factor(mode), 
+                             API = "api",
+                             Spreadsheet = "sheet",
+                             Scrape = "scrape",
+                             Manual = "hand") %>% 
+           fct_relevel("API", "Spreadsheet", "Scrape", "Manual")) %>% 
+  ggplot(aes(method, n)) +
+geom_bar(stat="identity") +
+    theme_bw() +
+    theme(axis.title.x = element_blank()) +
+    ylab("Observations")
+```
+
+To the extent practicable, the process of collecting these source data is automated.^[
+The R code for the automated data collection can be viewed here: <https://github.com/fsolt/swiid/blob/master/R/data_setup.R>.]
+Most international organizations and a few national statistical bureaus use application programming interfaces (APIs) that facilitate downloading their data, and often the R community has built packages using these APIs to make the task even easier [see @Magnusson2014; @Lahti2017; @Lugo2017; @Blondel2018; @Wickham2018].
+The SWIID takes as much advantage of these resources as possible, as shown in Figure&nbsp;\ref{fig:data_by_method}.
+Although the sources with APIs are relatively few, they contain by far the most data: `r api_percent`% of the observations are collected this way.
+When no API is available, the automation script downloads and reads any available spreadsheets [see @Wickham2016a].
+In the absence of a spreadsheet, the process of scraping the data either directly from the web or, preferably, from a pdf file [see @Sepulveda2024] is automated.
+Together the collection of `r automated_percent`% of the source data is scripted.
+This means not only that the possibility of errors introduced by hand entry for a vast majority of observations is eliminated but also that the updates and revisions that are frequent in these data are automatically incorporated as they become available.
+
+However, this also means that some `r 100 - automated_percent`% of the observations are entered manually in a separate spreadsheet.^[
+See <https://github.com/fsolt/swiid/blob/master/data-raw/fs_added_data.csv>.]
+There are a variety of reasons that for one of several reasons.
+First, many sources contain just a handful or fewer observations, making the payoff to the often laborious process of data cleaning too small to justify the effort.
+Second, some sources---including most academic articles---are behind paywalls, making reproducibility particularly challenging.^[
+When these sources contain more than a handful of observations, these are still collected using Sepulveda's -@Sepulveda2024 `tabulapdf` to avoid manual data-entry errors.]
+Third, other sources, such as many books, cannot be read directly into R.
+And finally, one source contains crucial information encoded in the typeface of its tables [see @Mitra2006, 6]; this information would be lost if the tables were read directly into R.
+All of the entries in this spreadsheet have been checked repeatedly for duplicates and errors.^[
+Which, of course, is not to say that these entries are error-free.
+If you spot any problems or know of sources that might have been missed, _please_ report them at <https://github.com/fsolt/swiid/issues/6>.]
+
+
+## Wrangling Survey Data: Data-Entry Errors and Democratic Support
 
 With democracy under increasing threat in countries around the world, how the public reacts is a crucial question.
 According to a classic and still vibrant literature, growing experience with democratic governance helps generate robust public support for democracy [see, e.g., @Lipset1959a; @Welzel2013; @Wuttke2022].
@@ -296,7 +375,7 @@ Fortunately, however, the spreadsheet recording these original source data is in
 
 We re-collected all of the source data for the publication from the original surveys.
 We identified the variables of the survey items used by the article within each survey dataset, and then we used an automated process to collect the needed data from the survey datasets while avoiding data-entry errors [see @Solt2018].
-In @fig-comparison, we compare the percentage of respondents to give a democracy-supporting response in the publication spreadsheet with the percentage we found using our automated process of wrangling these same data.
+In @fig-comparison, we compare the percentage of respondents to give a democracy-supporting response in the hand-entered publication spreadsheet with the percentage we found using our automated process of wrangling these same data.
 <!-- When points fall along the plot's dotted line, it indicates that the publication's source data and our own automated workflow reported the same percentages. -->
 <!-- Points above this diagonal represent observations for which the publication data overestimated the actual percentage of respondents who offered a democracy-supporting response, while points below this line are observations where the publication data underestimated this percentage. -->
 
@@ -307,7 +386,8 @@ In @fig-comparison, we compare the percentage of respondents to give a democracy
 
 
 if (!file.exists(here::here("data", "supdem raw survey marginals.csv"))) {
-  tempfile <- dataverse::get_file_by_doi("doi:10.7910/DVN/HWLW0J/RA8IJC") # AJPS replication file, not included in APSR replication
+  tempfile <- dataverse::get_file_by_doi("10.7910/DVN/HWLW0J/RA8IJC",
+                                         server = "dataverse.harvard.edu") # AJPS replication file, not included in APSR replication
 
   writeBin(tempfile, here::here("data", "supdem raw survey marginals.csv"))
   rm(tempfile)
@@ -483,7 +563,7 @@ data_comparison <- bind_rows(no_problems, year_fixes) %>%
 
 ```{r}
 #| label: fig-comparison
-#| fig-cap: "Comparing Democracy-Supporting Responses in the Publication Data and the Corrected Data.The x-axis represents the corrected data, and the y-axis represents the publication data. The points are colored by the item family and shaped by the project. The dotted line represents the line of equality. The plot shows a strong positive correlation between the two variables, with most points falling above the line of equality."
+#| fig-cap: "Comparing Democracy-Supporting Responses in Hand-Entered and Machine-Collected Data"
 #| fig-align: "center"
 
 
@@ -492,7 +572,7 @@ bad_items <- c("Asia Barometer:\nEvaluation of Democracy",
                "Pew Global Attitudes:\nImportance of Democracy",
                "Other Items")
 
-data_comparison %>% 
+plot_support <- data_comparison %>% 
   mutate(p_dcpo3 = case_when(Item == "EvDemoc_asb" ~ "Asia Barometer:\nEvaluation of Democracy",
                              Item == "DemocSuit_asnb" & dplyr::between(year, 2005, 2008) ~ "Asian Barometer II:\nSuitability of Democracy",
                              Item == "ImpDemoc_pew" ~ "Pew Global Attitudes:\nImportance of Democracy",
@@ -516,6 +596,16 @@ data_comparison %>%
   scale_shape_discrete(name = element_blank(),
                        breaks = bad_items)
 
+tx_note <- str_wrap(
+    c(
+      "Notes: Each point represents the percentage of respondents in a country-year to give a democracy-supporting response to a particular survey item.  Hand-entered data is as reported in Claassen (2020b); the machine-collected data was collected directly from the original surveys.  The Asia Barometer's item on the evaluation of democracy accounts for most overreports, and the Pew Global Attitudes item on the importance of democracy accounts for most substantial underreports.  In both cases, as well as the overreports of the suitability of democracy item in the second wave of the Asian Barometer, the issues can be easily explained by errors in transcribing the data and/or deviations from the reported coding rule.  Deviations in other items result from inconsistent treatment of missing data and/or survey weights, reflecting in part differences in codebook reporting practices across surveys."
+    ),
+    width = 121
+  )
+
+plot_support + 
+    patchwork::plot_annotation(caption = tx_note) &
+    theme(plot.caption = element_text(hjust = 0))
 
 ```
 
@@ -551,21 +641,6 @@ These errors shifted the percentage of democracy-supporting responses in both di
 Finally, although not depicted on this plot, data-entry errors were also evident in the variable recording the year in which a survey was conducted: these typically reflected differences between the nominal year of a survey wave and when the survey was actually in the field in a particular country.
 This was an issue for some `r {nrow(needed)/nrow(sd) * 100} %>% round()`% of the country-year observations.
 
-## Workflow with a Higher Reliability
-
-```{r}
-#| label: workflow
-#| cache: TRUE
-
-df_toy <- surveys_data |> 
-  filter(archive %in% c("icpsr", "pew")) |> 
-  group_by(archive) |> 
-  slice_head(n = 1) |> 
-  ungroup() |> 
-  select(survey, file_id)
-
-df_raw <- get_surveys(surveys_data)
-```
 
 ## Discussion
 
@@ -573,7 +648,7 @@ The analysis above reveals that data-entry errors are an especially pernicious t
 The threat is a subtle one that is not easily detected.
 To discern it requires close scrutiny of every manual entry; merely examining the data and their distribution will uncover few errors [@Barchard2011, 1837-1838].
 Although failure to find support for a research hypothesis may prompt us to undertake a such a close review, an analysis that yields statistical significance is unlikely to trigger what will likely be, as in the above example, a time-consuming and difficult effort [see @Gelman2014, 464].
-<!-- These different courses put us in 'the garden of forking paths,' rendering our findings suspect even when we only ever perform a single analysis [@Gelman2014, 464]. -->
+These different courses put us in 'the garden of forking paths,' rendering our findings suspect even when we only ever perform a single analysis [@Gelman2014, 464].
 
 This leads us to recommend the following steps to reduce possible data-entry errors.
 First, __automate data entry__: we suggest researchers to consider reducing reliance on manual data entry and increase the extent to which data wrangling is performed computationally.
