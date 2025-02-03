@@ -259,7 +259,7 @@ body(small_multiple)[[19]] <- substitute(
 ```
 
 \pagebreak
-Data harmonization projects, and indeed a growing volume of other political science research, can be characterized as data science: they employ large quantities of data, often drawn from a large number of different sources.
+Data harmonization projects---and a growing volume of other political science research---can be characterized as data science: they employ large quantities of data, often drawn from a large number of different sources.
 For such projects, data wrangling, the task of getting these data into the format required to perform harmonization or analysis, is notoriously the bulk of the work [see, e.g., @Lohr2014].
 Such data 'janitor work' is often viewed as tiresome, as something to be delegated to research assistants, to someone---indeed anyone---else [see @Torres2017].
 Data wrangling is, however, critically important to scientific inquiry, and errors in the process can undermine our conclusions.
