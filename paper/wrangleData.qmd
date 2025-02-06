@@ -7,7 +7,6 @@ format:
     include-in-header: 
       text: |
         \usepackage{typearea}
-
 crossref:
   sec-prefix: OSM
   sec-labels: alpha A
@@ -37,9 +36,7 @@ affiliations:
     name: Center for Social Data Analytics, Pennsylvania State University, University Park, USA
   - id: ia
     name: Department of Political Science, University of Iowa, Iowa City, USA
-
 thanks: "Corresponding author: [yuehong-tai@uiowa.edu](mailto:yuehong-tai@uiowa.edu). Current version: `r format(Sys.time(), '%B %d, %Y')`.  Replication materials and complete revision history may be found at [https://github.com/fsolt/wrangling_data](https://github.com/fsolt/wrangling_data). The authors contributed equally to this work.  Yue Hu appreciates the funding support from the National Natural Science Foundation of China (72374116) and Tsinghua University Initiative Scientific Research Program (2024THZWJC01)."
-
 citeproc: false # to make multibib and wordcount work
 filters:
   - authors-block
@@ -47,13 +44,11 @@ filters:
   - at: pre-render
     path: "_extensions/andrewheiss/wordcount/wordcount.lua"
 validate-yaml: false # for multibib to work
-
 bibliography: 
     main: "main_wrangling.bib"
     appendix: "app_wrangling.bib"
 citation_package: natbib
 csl: "american-political-science-review.csl"
-
 tables: true # enable longtable and booktabs
 fontsize: 12pt
 indent: true
@@ -61,7 +56,6 @@ geometry: margin=1in
 linestretch: 1.5 # double spacing using linestretch 1.5
 colorlinks: false
 link-citations: true
-
 execute:
   echo: false
   message: false
@@ -71,23 +65,29 @@ editor_options:
   chunk_output_type: console
 editor:
   render-on-save: true
-
 title: |
-  | On 'Janitor Work' in Political Science:
   | Best Practices for Wrangling Data
   | Before Harmonization
-
+  | On 'Janitor Work' in Political Science:
 # subtitle: "Preliminary version. Do not circulate without permission."
+abstract: > 
+  This article focuses on a preliminary step in any ex-post data harmonization project—
+  wrangling the pre-harmonized data—and discusses key considerations.
 
-abstract: "This article focuses on a preliminary step in any ex-post data harmonization project---wrangling the pre-harmonized data---and
-suggests best practices for helping scholars avoid errors in this often-tedious work. To provide illustrations of these best practices, the article uses the examples of pre-harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple sources to create comparable estimates, and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data."
+keywords: 
+  - Data generation process
+  - Machine assistance
+  - Manual coding
+  - Data cleaning
+  - Data management
 
-keywords: [Data generation process, machine assistance, manual coding, data cleaning, data management]
 ---
 
 ```{r}
 #| label: setup
 #| include: false
+
+options(repos = c(CRAN = "https://cloud.r-project.org"))
 
  if (!require(cmdstanr)) {
   install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/",
@@ -339,7 +339,7 @@ geom_bar(stat="identity") +
 
 To avoid potential data-entry errors, as well as to ensure that the updates and revisions that are frequent in many of these sources are automatically incorporated as they become available, the process of collecting these source data is automated to the greatest extent practicable [@Solt2020, 1184-1185].^[
 The R code for this automated data collection can be viewed here: <https://github.com/fsolt/swiid/blob/master/R/data_setup.R>.]
-Most international organizations and a few national statistical bureaus use application programming interfaces (APIs) that facilitate downloading their data; the R community has often built packages using these APIs to make the task even easier [see @Magnusson2014; @Lahti2017; @Lugo2017; @Blondel2018; @Wickham2018].
+Most international organizations and a few national statistical bureaus use application programming interfaces (APIs) that facilitate downloading their data; the R community has often built packages using these APIs to make the task even easier [see @Lahti2017;  @Wickham2017].
 The SWIID takes as much advantage of these resources as possible, as shown in Figure&nbsp;\ref{fig:data_by_method}.
 Although the sources with APIs are relatively few, they contain by far the most data: `r api_percent`% of the observations are collected in this way.
 When no API is available, the automation script downloads and reads any available spreadsheets [see @Wickham2016a].
