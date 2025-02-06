@@ -337,11 +337,11 @@ geom_bar(stat="identity") +
     ylab("Observations")
 ```
 
-To avoid potential data-entry errors (as well as to ensure that the updates and revisions that are frequent in many of these sources are automatically incorporated as they become available), the process of collecting these source data is automated to the greatest extent practicable.^[
-The R code for the automated data collection can be viewed here: <https://github.com/fsolt/swiid/blob/master/R/data_setup.R>.]
-Most international organizations and a few national statistical bureaus use application programming interfaces (APIs) that facilitate downloading their data, and often the R community has built packages using these APIs to make the task even easier [see @Magnusson2014; @Lahti2017; @Lugo2017; @Blondel2018; @Wickham2018].
+To avoid potential data-entry errors, as well as to ensure that the updates and revisions that are frequent in many of these sources are automatically incorporated as they become available, the process of collecting these source data is automated to the greatest extent practicable [@Solt2020, 1184-1185].^[
+The R code for this automated data collection can be viewed here: <https://github.com/fsolt/swiid/blob/master/R/data_setup.R>.]
+Most international organizations and a few national statistical bureaus use application programming interfaces (APIs) that facilitate downloading their data; the R community has often built packages using these APIs to make the task even easier [see @Magnusson2014; @Lahti2017; @Lugo2017; @Blondel2018; @Wickham2018].
 The SWIID takes as much advantage of these resources as possible, as shown in Figure&nbsp;\ref{fig:data_by_method}.
-Although the sources with APIs are relatively few, they contain by far the most data: `r api_percent`% of the observations are collected this way.
+Although the sources with APIs are relatively few, they contain by far the most data: `r api_percent`% of the observations are collected in this way.
 When no API is available, the automation script downloads and reads any available spreadsheets [see @Wickham2016a].
 In the absence of a spreadsheet, the process of scraping the data either directly from the web or, preferably, from a pdf file [see @Sepulveda2024] is automated.
 Together the collection of `r automated_percent`% of the source data is scripted.
@@ -354,7 +354,8 @@ Some sources---including most academic articles---are behind paywalls, making re
 When these sources contain more than a handful of observations, these are still collected using Sepulveda's -@Sepulveda2024 `tabulapdf` to avoid manual data-entry errors.]
 Other sources, such as many books, cannot be read directly into R.
 And finally, one source contains crucial information encoded in the typeface of its tables [see @Mitra2006, 6]; this information would be lost if the tables were read directly into R.
-All of the entries in this spreadsheet have been checked repeatedly for duplicates and errors.
+All of the entries in this spreadsheet are entered twice into two separate spreadsheets, most often by two separate researchers.
+This practice allows for automated cross-checks that increase the chance that errors are identified and corrected [see @BarchardPace2011].
 
 
 ## Wrangling Survey Data: Data-Entry Errors and Democratic Support
