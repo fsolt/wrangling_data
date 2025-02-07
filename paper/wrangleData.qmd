@@ -61,15 +61,15 @@ execute:
   echo: false
   message: false
   warning: false
-  dpi: 300
+  dpi: 600
 editor_options: 
   chunk_output_type: console
 editor:
   render-on-save: true
 title: |
+  | On 'Janitor Work' in Political Science:
   | Best Practices for Wrangling Data
   | Before Harmonization
-  | On 'Janitor Work' in Political Science:
 # subtitle: "Preliminary version. Do not circulate without permission."
 abstract: "This article focuses on a preliminary step in any ex-post data harmonization project---wrangling the pre-harmonized data---and suggests best practices for helping scholars avoid errors in this often-tedious work. To provide illustrations of these best practices, the article uses the examples of pre-harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple sources to create comparable estimates, and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data."
 
@@ -262,10 +262,10 @@ body(small_multiple)[[19]] <- substitute(
 Most data harmonization projects---and a growing volume of other political science research---can be characterized as data science: they employ large quantities of data, often drawn from a large number of different sources.
 For such projects, data wrangling, the task of getting these data into the format required to perform harmonization or analysis, is notoriously the bulk of the work [see, e.g., @Lohr2014].
 Such data 'janitor work' is often viewed as tiresome, as something to be delegated to research assistants, to someone---indeed anyone---else [see @Torres2017].
-Data wrangling is, however, critically important to scientific inquiry, and errors that arise during this process can undermine our conclusions.
+Data wrangling is, however, critically important to scientific inquiry, and errors that arise during this process can undermine our data-harmonization goals.
 
 One kind of data-wrangling error presents a particularly insidious problem: errors that occur during manual data entry.
-Faced with the task of getting data into the correct format, even some very sophisticated researchers will conclude that the most straightforward means to that end is to simply copy the needed data into a spreadsheet manually.
+Faced with the task of getting data into the correct format before harmonizing, even some very sophisticated researchers will conclude that the most straightforward means to that end is to simply copy the needed data into a spreadsheet manually.
 This technique may be straightforward, but it is very much prone to error.
 @Barchard2011 found that 'research assistants' assigned in an experiment to carefully enter data manually, even those instructed to double-check their entries against the original, had error rates approaching 1% in just a single roughly half-hour session.
 Rates likely go up as the tedious task goes on.
@@ -320,6 +320,7 @@ These source data can be accessed and explored graphically on the web at <https:
 #| echo: false
 #| fig-cap: "\\label{fig:data_by_method}Income Inequality Observations by Method of Collection"
 #| fig-height: 2
+#| fig-width: 4
 
 
 swiid_source %>% 
