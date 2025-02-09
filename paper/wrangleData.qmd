@@ -374,21 +374,22 @@ The upshot of this process is that the SWIID's harmonized estimates of income in
 
 # Wrangling Public Opinion Data for Harmonization
 
-Scholarship on comparative public opinion only rarely benefits from relevant items asked annually by the same survey in many countries (examples of such fortunate works include @Norris2011 [, 70-77] on trust in government and @Hagemann2017 on attitudes toward European integration).
+Scholarship on comparative public opinion only rarely benefits from relevant items asked annually by the same survey in many countries.^[
+Examples of such fortunate works include @Norris2011 [, 70-77] on trust in government and @Hagemann2017 on attitudes toward European integration; it is telling perhaps that both are based on Eurobarometer surveys and hence limited to European countries.]
 To address the lack of cross-national and longitudinal data on many topics, a number of works have presented latent variable models that harmonize available but incomparable survey items [see @Claassen2019; @Caughey2019; @McGann2019; @Solt2020c; @Kolczynska2024].
 This approach has been used to generate cross-national time-series measures of public opinion on a range of topics, from economic, social, and immigration conservatism [@Caughey2019] to trust in government [@Kolczynska2024].
-The Dynamic Comparative Public Opinion (DCPO) model presented in @Solt2020c in particular has been employed to measure gender egalitarianism [@Woo2023], political interest [@Hu2024], and support for gay rights [@Woo2025], among other aspects of public opinion (see https://dcpo.org/).
+The Dynamic Comparative Public Opinion (DCPO) model presented in @Solt2020c in particular has been employed to measure gender egalitarianism [@Woo2023], political interest [@Hu2024], and support for gay rights [@Woo2025], among other aspects of public opinion (see <https://dcpo.org/>).
 
-This work is by nature extremely data intensive, drawing on information extracted from dozens if not hundreds of survey datasets.
-In DCPO projects, the collection of the source data proceeds in two steps: first, gathering the relevant survey items, and second, accumulating the survey responses.
+This sort of work is by nature extremely data intensive, drawing on information extracted from dozens if not hundreds of survey datasets.
+In DCPO projects, the collection of the source data proceeds in two steps: first, identifying the relevant survey items, and second, accumulating the survey responses.
 
-The first step, gathering the relevant survey items, involves identifying surveys that contain questions on the topic of interest and then recording in a spreadsheet the survey, the variable representing the questions of interest in the dataset, the question text, the response values ordered from least to most of the concept being investigated, and the original textual response categories.
+The first step, identifying the relevant survey items, involves finding surveys that contain questions on the topic of interest and then recording in a spreadsheet the survey, the variable representing the question of interest in the dataset, the question text, the response values ordered from least to most of the concept being investigated, and the original textual response categories.
 At present, this step is done entirely by hand.
 To minimize data-entry errors, the dual-entry method is used here too.
 Multiple collaborators go through the entire process separately, and the resulting spreadsheets are compared to catch the omnipresent data-entry errors.
 
 The second step, accumulating the survey responses, is fully automated through the use of the `DCPOtools` R package [@Solt2018].
-When passed the spreadsheet created in the first step, this package reads in each survey dataset recorded, extracts the variable of interest, reorders the response values for this variable from least to most of the concept investigated, and aggregates the number of respondents in each of the reordered response categories in each country and in each year the survey was fielded.
+When passed the spreadsheet created in the first step, this package reads in each recorded survey dataset, extracts the variable of interest, reorders the response values for this variable from least to most of the concept investigated, and aggregates the number of respondents in each of the reordered response categories in each country for each year in which the survey was fielded.
 The package also automatically ensures that country names are standardized using the excellent `countrycode` package [@Arel-Bundock2018] and that the years accurately reflect actual fieldwork dates using internal crosswalk tables.
 The aggregated number of respondents for each observed response-item-country-year then serve as the source data for the latent variable model.
 
