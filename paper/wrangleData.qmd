@@ -269,11 +269,11 @@ Faced with the task of getting data into the correct format before harmonizing, 
 This technique may be straightforward, but it is very much prone to error.
 @Barchard2011 found that 'research assistants' assigned in an experiment to carefully enter data manually, even those instructed to double-check their entries against the original, had error rates approaching 1% in just a single roughly half-hour session.
 Rates likely go up as the tedious task goes on.
-Although the pernicious consequences of data-entry errors are easily grasped in everyday contexts---@Haegemens2019 [, 1] collects examples of misrouted financial transactions and airline flights---they have thus far gained little attention in political science, even among those working to harmonize large quantities of data.
+Although the pernicious consequences of data-entry errors are easily grasped in everyday contexts---@Haegemans2019 [, 1] collects examples of misrouted financial transactions and airline flights---they have thus far gained little attention in political science, even among those working to harmonize large quantities of data.
 
 We suggest three best practices for reducing the rate of data-entry errors.
 First, _automate data entry_ to the greatest extent possible.
-Second, _use the double-entry method_: when manual data entry cannot be avoided, each entry should be made twice.
+Second, _use the double-entry method_: when manual data entry cannot be avoided, each entry should be made twice, either by separate researchers or sequentially.
 Third, _embrace teamwork_ for any project involving entering data by hand, splitting the task up among team members will reduce the risk of errors going undetected.
 We next demonstrate the application of these practices within two ongoing harmonization efforts, the Standardized World Income Inequality Database (SWIID) and the Dynamic Comparative Public Opinion (DCPO) project.
 
@@ -361,31 +361,49 @@ However, it also means that some `r 100 - automated_percent`% of the observation
 The resulting spreadsheet can be found at <https://github.com/fsolt/swiid/blob/master/data-raw/fs_added_data.csv>.]
 Many sources contain just a handful or fewer observations, making the payoff to the often laborious process of data cleaning too small to justify the effort.
 Some sources---including most academic articles---are behind paywalls, making automation particularly challenging.
-When these sources contain more than a handful of observations, these are still collected using Sepulveda's -@Sepulveda2024 `tabulapdf` R package to avoid data-entry errors.
+When these sources contain more than a handful of observations, these are still collected using Sepulveda's [-@Sepulveda2024] `tabulapdf` R package to avoid data-entry errors.
 Other sources, such as many books, cannot be read directly into R.
 And finally, one source contains crucial information encoded in the typeface of its tables [see @Mitra2006, 6]; this information would be lost if the tables were read directly into R.
-All new observations are entered twice into separate spreadsheets, most often by two different researchers.
-This practice allows for automated cross-checks of the newly entered data that increase the chances that errors are identified and corrected [see @Barchard2011].
+All such new observations are entered twice into separate spreadsheets.
+Most often this has been done by two different investigators, but sometimes sequentially by a single researcher.
+Either way, using this double-entry method allows for automated cross-checks of the newly entered data that increase the chances that errors are identified and corrected [see @Barchard2011].
 
-The upshot the SWIID's highly automated process for collecting source data is that its harmonized estimates of income inequality are reliable, frequently updated, and employed by international organizations, central banks, and researchers working around the world.
-
-
-# Wrangling Survey Data for Harmonization
-
+To summarize, the process of collecting the source data for the SWIID is 90% automated, and the dual-entry method is employed for the remaining 10%.
+The upshot of this process is that the SWIID's harmonized estimates of income inequality are reliable, frequently updated, and employed around the world by international organizations, central banks, and researchers in academia and beyond.
 
 
-With democracy under increasing threat in countries around the world, how the public reacts is a crucial question.
-According to a classic and still vibrant literature, growing experience with democratic governance helps generate robust public support for democracy [see, e.g., @Lipset1959a; @Welzel2013; @Wuttke2022].
-@Claassen2020b argues instead that democratic support behaves thermostatically: that increases in democracy yield an authoritarian backlash in the public, while democratic backsliding prompts the public to rally to democracy's cause.
+# Wrangling Public Opinion Data for Harmonization
 
-The evidence it offers in support of this latter argument takes advantage of recent advances in modeling public opinion as a latent variable to measure democratic support.
-This approach provides estimates of the paper's dependent variable for over one hundred countries for up to nearly three decades, constituting a much larger evidentiary base than any previous study.
-These latent-variable estimates, in turn, were based on thousands of nationally aggregated responses to dozens of different questions from cross-national survey projects [@Claassen2020b, 40].
-Two pieces of data were collected for each distinct survey item in each country and year it was asked: the number of respondents to give a democracy-supporting response---defined, for ordinal responses, as those above the median value of the scale [@Claassen2020b, Appendix 1.3]---and the total number of respondents to whom the question was posed.
-Each of these 7,538 pieces of source data is recorded in a spreadsheet.^[
-The article's replication materials include only the latent variable estimates without the original survey aggregates that serve as their source data [see @Claassen2020c]. 
-Fortunately, however, the spreadsheet recording these original source data is included in the replication materials for a companion piece that employed the identical estimates [see @Claassen2020d].
-]
+Scholarship on comparative public opinion only rarely benefits from relevant items asked annually by the same survey in many countries (examples of such fortunate works include @Norris2011 [, 70-77] on trust in government and @Hagemann2017 on attitudes toward European integration).
+To address the lack of cross-national and longitudinal data on many topics, a number of works have presented latent variable models that harmonize available but incomparable survey items [see @Claassen2019; @Caughey2019; @McGann2019; @Solt2020c; @Kolczynska2024].
+This approach has been used to generate cross-national time-series measures of public opinion on a range of topics, from economic, social, and immigration conservatism [@Caughey2019] to trust in government [@Kolczynska2024].
+The Dynamic Comparative Public Opinion (DCPO) model presented in @Solt2020c in particular has been employed to measure gender egalitarianism [@Woo2023], political interest [@Hu2024], and support for gay rights [@Woo2025], among other aspects of public opinion (see https://dcpo.org/).
+
+This work is by nature extremely data intensive, drawing on information extracted from dozens if not hundreds of survey datasets.
+In DCPO projects, the collection of the source data proceeds in two steps: first, gathering the relevant survey items, and second, accumulating the survey responses.
+
+The first step, gathering the relevant survey items, involves identifying surveys that contain questions on the topic of interest and then recording in a spreadsheet the survey, the variable representing the questions of interest in the dataset, the question text, the response values ordered from least to most of the concept being investigated, and the original textual response categories.
+At present, this step is done entirely by hand.
+To minimize data-entry errors, the dual-entry method is used here too.
+Multiple collaborators go through the entire process separately, and the resulting spreadsheets are compared to catch the omnipresent data-entry errors.
+
+The second step, accumulating the survey responses, is fully automated through the use of the `DCPOtools` R package [@Solt2018].
+When passed the spreadsheet created in the first step, this package reads in each survey dataset recorded, extracts the variable of interest, reorders the response values for this variable from least to most of the concept investigated, and aggregates the number of respondents in each of the reordered response categories in each country and in each year the survey was fielded.
+The package also automatically ensures that country names are standardized using the excellent `countrycode` package [@Arel-Bundock2018] and that the years accurately reflect actual fieldwork dates using internal crosswalk tables.
+The aggregated number of respondents for each observed response-item-country-year then serve as the source data for the latent variable model.
+
+<!-- With democracy under increasing threat in countries around the world, how the public reacts is a crucial question. -->
+<!-- According to a classic and still vibrant literature, growing experience with democratic governance helps generate robust public support for democracy [see, e.g., @Lipset1959a; @Welzel2013; @Wuttke2022]. -->
+<!-- @Claassen2020b argues instead that democratic support behaves thermostatically: that increases in democracy yield an authoritarian backlash in the public, while democratic backsliding prompts the public to rally to democracy's cause. -->
+
+<!-- The evidence it offers in support of this latter argument takes advantage of recent advances in modeling public opinion as a latent variable to measure democratic support. -->
+<!-- This approach provides estimates of the paper's dependent variable for over one hundred countries for up to nearly three decades, constituting a much larger evidentiary base than any previous study. -->
+<!-- These latent-variable estimates, in turn, were based on thousands of nationally aggregated responses to dozens of different questions from cross-national survey projects [@Claassen2020b, 40]. -->
+<!-- Two pieces of data were collected for each distinct survey item in each country and year it was asked: the number of respondents to give a democracy-supporting response---defined, for ordinal responses, as those above the median value of the scale [@Claassen2020b, Appendix 1.3]---and the total number of respondents to whom the question was posed. -->
+<!-- Each of these 7,538 pieces of source data is recorded in a spreadsheet.^[ -->
+<!-- The article's replication materials include only the latent variable estimates without the original survey aggregates that serve as their source data [see @Claassen2020c].  -->
+<!-- Fortunately, however, the spreadsheet recording these original source data is included in the replication materials for a companion piece that employed the identical estimates [see @Claassen2020d]. -->
+<!-- ] -->
 
 We re-collected all of the source data for the publication from the original surveys.
 We identified the variables of the survey items used by the article within each survey dataset, and then we used an automated process to collect the needed data from the survey datasets while avoiding data-entry errors [see @Solt2018].
