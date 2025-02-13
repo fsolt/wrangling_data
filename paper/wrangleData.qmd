@@ -23,7 +23,7 @@ author:
     affiliations:
       - ref: psu
     orcid: https://orcid.org/0000-0001-7303-7443
-    email: yuehong-tai@uiowa.edu
+    email: yhcasstai@psu.edu
   - name: Frederick Solt
     affiliations:
       - ref: ia
