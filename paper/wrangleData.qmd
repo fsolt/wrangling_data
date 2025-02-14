@@ -7,6 +7,8 @@ format:
     include-in-header: 
       text: |
         \usepackage{typearea}
+        \usepackage{endnotes}
+        \let\footnote=\endnote
 
 crossref:
   sec-prefix: OSM
@@ -676,6 +678,9 @@ Having two sets of eyes on complex materials such as survey codebooks also incre
 Data-entry errors are inevitable, and even following these recommendations is unlikely to eliminate them entirely.
 Nonetheless, with careful attention, not only can the threat of data-entry errors to our 'janitor work', our efforts at data harmonization, and our understanding of the world be minimized, but the transparency, openness, and credibility of our research can continue to grow.
 
+# Notes {.unnumbered}
+\newpage
+\theendnotes
 
 # References {.unnumbered}
 
