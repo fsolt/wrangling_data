@@ -69,9 +69,9 @@ editor_options:
 editor:
   render-on-save: true
 title: |
-  | On 'Janitor Work' in Political Science:
-  | Best Practices for Wrangling Data
-  | Before Harmonization
+  | Data Wrangling Before Harmonization:
+  | Best Practices for Getting
+  | Past the 'Janitor Work'
 # subtitle: "Preliminary version. Do not circulate without permission."
 abstract: "This article focuses on a preliminary step in any ex-post data harmonization project---wrangling the pre-harmonized data---and suggests best practices for helping scholars avoid errors in this often-tedious work. To provide illustrations of these best practices, the article uses the examples of pre-harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple sources to create comparable estimates, and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data."
 
@@ -1049,7 +1049,7 @@ result_clsAPSR_tidy <- map(result_clsAPSR, function(aResult) {
 })
 ```
 
-```{r regressionPlot, fig.cap= "The Effect of Democracy on Change in Public Support", fig.width=7, fig.height=8}
+```{r regressionPlot, fig.cap= "\\label{fig:regressionPlot} The Effect of Democracy on Change in Public Support", fig.width=7, fig.height=8}
 
 txt_models <- paste0("Model ",
                      rep(1:2, each = 4), ".", rep(1:4, 2),
@@ -1130,7 +1130,7 @@ small_multiple(df_plot, axis_switch = TRUE, dot_args = list(size = .9, fatten = 
 # ggsave("images/results.png")
 ```
 
-Figure \@ref(fig:regressionPlot) presents our results in a "small multiple" plot [@SoltHu2015] for a clear comparison of the coefficients of each variable in the article's models. 
+Figure \ref{fig:regressionPlot} presents our results in a "small multiple" plot [@SoltHu2015] for a clear comparison of the coefficients of each variable in the article's models. 
 In the plot, the dots represent point estimates and the whiskers show the associated 95% confidence intervals.
 <!-- Each row depicts a variable's performance in its own scale across all of the models. -->
 <!-- The lighter dots and whiskers replicate those reported in the published article; the darker ones are the estimates obtained with the corrected data. -->
