@@ -597,11 +597,45 @@ On the other hand, these are mistakes that every researcher and RA could make.
 The commonality perhaps makes them as one of the largest obstacle on the way to data harmonization, which yet have thus far gained little attention in political science.
 
 In this article, we provide a practical routine taken the advantage of automatic programming and team work to reduce such data-entry errors and also improve the transparency of the wrangling process for researchers and reviewers to check the errors.
-The routine includes three steps: team-based data collection, automate data entry, and "second-order" data replication.
+The routine includes three steps: team-based data selection, automate data entry, and "second-order" data opening.
 We illustrate how researchers use this routine on statistical (*hard*) and opinion (*soft*) data with two ongoing harmonization efforts, the Standardized World Income Inequality Database (SWIID) and the Dynamic Comparative Public Opinion (DCPO) project.
 
 # A 3-Step Routine for Data Harmonization
 
+Our routine aims to helping researchers reach three goals for scientific research: 
+
+1. To incorporate as much available data as possible to increase generality of the inferences;
+1. To reduce the manual entry errors to improve the accuracy of the analytic data; and 
+1. To make the data wrangling process more smooth and traceable.
+
+The routine decomposes a data-wrangling process into three steps: data selection, data entry, and data opening. 
+In the following part, we will first address the challenges research may cope with in each step, and then provide some solutions and guides for them.
+
+To illustrate the solutions in real research practices, we use two data harmonization projects as examples, SWIID and DCPO.
+SWIID is a long-running project that seeks to provide harmonized income inequality statistics for the broadest possible coverage of countries and years [@Solt2009; @Solt2015; @Solt2016; @Solt2020].
+As of its most recent update at the time of this writing, its source data consists of some 27,000 observations of the Gini coefficient of income distribution in nearly 200 countries over as many as 65 years, collected from over 400 separate sources including international organizations, national statistics bureaus, and academic studies.
+
+DCPO is both a method and a database.
+Scholarship on comparative public opinion only rarely benefits from relevant items asked annually by the same survey in many countries [see, e.g., @Hagemann2017].
+To address the lack of cross-national and longitudinal data on many topics, a number of works have presented latent variable models that harmonize available but incomparable survey items [see @Caughey2019; @Claassen2019; @McGann2019; @Solt2020c; @Kolczynska2024].
+This approach has been used to generate cross-national time-series measures of public opinion on a range of topics, from economic, social, and immigration conservatism [@Caughey2019] to trust in government [@Kolczynska2024].
+DCPO as a Bayesian-based latent variable method provides an efficient way for researchers to achieve cross-sectional time-series comparison among surveys conducted in different countries addressing ordinal scale of the latent measures and opinion polarization in the source data [@Solt2020c].
+
+
+
+presented in  in particular has been employed to measure gender egalitarianism [@Woo2023], political interest [@Hu2024], and support for gay rights [@Woo2025], among other aspects of public opinion (see <https://dcpo.org/>).
+
+
+## Step 1: Team-Based Data Selection
+
+## Step 2: Automate Data Entry
+
+## Step 3: "Second-Order" Data Opening
+
+Those who are interested can access and explore these data on the web at <https://fsolt.org/swiid/swiid_source.html>.
+
+
+covers the process from data collection to cleaning and reformatting. 
 
 
 - Step 1: group with multiple members
@@ -625,7 +659,6 @@ We illustrate how researchers use this routine on statistical (*hard*) and opini
     - Github
 
 
-# Wrangling Income Inequality Data for Harmonization
 
 ```{r data-swiid}
 #| label: data
