@@ -88,7 +88,7 @@ keywords:
 #| label: setup
 #| include: false
 
-# options(repos = c(CRAN = "https://cloud.r-project.org"))
+options(repos = c(CRAN = "https://cloud.r-project.org"))
 
 if (!require(cmdstanr)) {
   install.packages("cmdstanr", repos = c(
@@ -130,7 +130,6 @@ p_load(
   glue
 )
 
-# Functions preload
 theme_set(theme_minimal())
 set.seed(313)
 
@@ -570,7 +569,7 @@ plot_support <- data_comparison %>%
     breaks = bad_items
   )
 
-tx_note <- str_wrap("Notes: Each point represents the percentage of respondents in a country-year to give a democracy-supporting response to a particular survey item. Hand-entered data is as reported in Claassen (2020c); the machine-collected data was collected directly from the original surveys.  The Asia Barometer's item on the evaluation of democracy accounts for most overreports, and the Pew Global Attitudes item on the importance of democracy accounts for most substantial underreports.  In both cases, as well as the overreports of the suitability of democracy item in the second wave of the Asian Barometer, the issues can be easily explained by errors in transcribing the data in accordance with the reported coding rule.  Deviations in other items result from inconsistent treatment of missing data and/or survey weights, reflecting in part differences in codebook reporting practices across surveys.",
+tx_note <- str_wrap("Notes: Each point represents the percentage of respondents in a country-year to give a democracy-supporting response to a particular survey item. Hand-entered data is as reported in Claassen (2020c); the machine-collected data was collected directly from the original surveys. Only 85% of the observations, the difference between these percentages was negligible—less than half a percent—yielding points approximately along the plot’s dotted line. The Asia Barometer's item on the evaluation of democracy accounts for most overreports, and the Pew Global Attitudes item on the importance of democracy accounts for most substantial underreports.  In both cases, as well as the overreports of the suitability of democracy item in the second wave of the Asian Barometer, the issues can be easily explained by errors in transcribing the data in accordance with the reported coding rule.  Deviations in other items result from inconsistent treatment of missing data and/or survey weights, reflecting in part differences in codebook reporting practices across surveys.",
   width = 96
 )
 

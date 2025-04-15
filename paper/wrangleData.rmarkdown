@@ -90,22 +90,22 @@ keywords:
 
 # options(repos = c(CRAN = "https://cloud.r-project.org"))
 
-if (!require(cmdstanr)) {
-  install.packages("cmdstanr", repos = c(
-    "https://mc-stan.org/r-packages/",
-    getOption("repos")
-  ))
-  library(cmdstanr)
-  install_cmdstan() # C++ toolchain required; see https://mc-stan.org/cmdstanr/articles/cmdstanr.html
-}
+# if (!require(cmdstanr)) {
+#   install.packages("cmdstanr", repos = c(
+#     "https://mc-stan.org/r-packages/",
+#     getOption("repos")
+#   ))
+#   library(cmdstanr)
+#   install_cmdstan() # C++ toolchain required; see https://mc-stan.org/cmdstanr/articles/cmdstanr.html
+# }
 
 if (!require(pacman)) {
   install.packages("pacman")
 }
 library(pacman)
 
-p_install(janitor, force = FALSE)
-p_install_gh(c("fsolt/DCPOtools"), force = FALSE)
+# # p_install(janitor, force = FALSE)
+# # p_install_gh(c("fsolt/DCPOtools"), force = FALSE)
 
 # load all the packages you will use below
 p_load(
@@ -130,7 +130,6 @@ p_load(
   glue
 )
 
-# Functions preload
 theme_set(theme_minimal())
 set.seed(313)
 
