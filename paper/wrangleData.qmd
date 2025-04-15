@@ -289,11 +289,7 @@ A growing volume of political science research aim to take the benefit to extend
 Nevertheless, associating with the increasing amount and diversity of data is the challenge of data wrangling, including a notorious bulk of manual work on indicator identification, data merging, data scaling, and so on [see, e.g., @Lohr2014].
 
 Such "janitor work" is often tiresome and easy to introduce errors.
-@Barchard2011 found that "research assistants"(RA) assigned in an experiment to carefully enter data manually, even those instructed to double-check their entries against the original, had error rates approaching 1% in just a single roughly half-hour session.
-The consequences of such errors can be pernicious.
-@Haegemans2019 [p. 1] has demonstrated examples of misrouted financial transactions and airline flights.
-Here we provide a more vivid one from political science to show how big difference merely data wrangling can make:
-
+Here we provide a vivid example from real-life research for readers to have a sense how things could go wrong and how bad the errors could cause.
 The example involves the data harmonization efforts to combine people's support of democracy across public surveys around the world into an analytic dataset.
 We compare the outcome based on two data-wrangling approaches: the one approach based on original hand-entered spreadsheet that has been applied in some prominent publications [see @Claassen2020a; @Claassen2020b] and subsequent studies [see @Claassen2022; @Jacob2025] and the other approach with multiple machine-collected steps that we will outline later in this article.
 
@@ -589,7 +585,6 @@ For `r {mean(data_comparison$diff_perc_abs < .5)*100} %>% round()`% of the count
 But for the remaining observations, the difference is too evident to be ignored.
 When digging in more, we observe that the obvious difference shown in @fig-comparison were caused by errors like inconsistent categorizing, recording the numerator of the percentage entering the denominator, and miscounting respondents who were not given the question in the original surveys into the total number of respondents (see more detailed comparisons in @sec-comparison).
 
-
 Each of these errors alone looks like an itty-bitty mistake.
 Researchers may also hold an illusion that such errors could be "washed out" as random noises.
 However, in @sec-consequence, we show that small mistakes can lead to completely opposite inferences [see also @HuEtAl2024a].
@@ -597,7 +592,7 @@ On the other hand, these are mistakes that every researcher and RA could make.
 The commonality perhaps makes them as one of the largest obstacle on the way to data harmonization, which yet have thus far gained little attention in political science.
 
 In this article, we provide a practical routine taken the advantage of automatic programming and team work to reduce such data-entry errors and also improve the transparency of the wrangling process for researchers and reviewers to check the errors.
-The routine includes three steps: team-based data selection, automate data entry, and "second-order" data opening.
+The routine includes three steps: data selection, entry, and opening.
 We illustrate how researchers use this routine on statistical (*hard*) and opinion (*soft*) data with two ongoing harmonization efforts, the Standardized World Income Inequality Database (SWIID) and the Dynamic Comparative Public Opinion (DCPO) project.
 
 # A 3-Step Routine for Data Harmonization
@@ -606,42 +601,106 @@ Our routine aims to helping researchers reach three goals for scientific researc
 
 1. To incorporate as much available data as possible to increase generality of the inferences;
 1. To reduce the manual entry errors to improve the accuracy of the analytic data; and 
-1. To make the data wrangling process more smooth and traceable.
+1. To smoothen the data wrangling process for the sake of effiency and transparency.
 
-The routine decomposes a data-wrangling process into three steps: data selection, data entry, and data opening. 
-In the following part, we will first address the challenges research may cope with in each step, and then provide some solutions and guides for them.
+The routine decomposes a data-wrangling process into three steps: 
 
-To illustrate the solutions in real research practices, we use two data harmonization projects as examples, SWIID and DCPO.
+1. team-based data selection;
+1. automate data entry; and 
+1. "second-order" data opening.
+
+To illustrate the above routine, we use two data harmonization projects as examples, SWIID and DCPO.
 SWIID is a long-running project that seeks to provide harmonized income inequality statistics for the broadest possible coverage of countries and years [@Solt2009; @Solt2015; @Solt2016; @Solt2020].
 As of its most recent update at the time of this writing, its source data consists of some 27,000 observations of the Gini coefficient of income distribution in nearly 200 countries over as many as 65 years, collected from over 400 separate sources including international organizations, national statistics bureaus, and academic studies.
 
 DCPO is both a method and a database.
 Scholarship on comparative public opinion only rarely benefits from relevant items asked annually by the same survey in many countries [see, e.g., @Hagemann2017].
 To address the lack of cross-national and longitudinal data on many topics, a number of works have presented latent variable models that harmonize available but incomparable survey items [see @Caughey2019; @Claassen2019; @McGann2019; @Solt2020c; @Kolczynska2024].
-This approach has been used to generate cross-national time-series measures of public opinion on a range of topics, from economic, social, and immigration conservatism [@Caughey2019] to trust in government [@Kolczynska2024].
-DCPO as a Bayesian-based latent variable method provides an efficient way for researchers to achieve cross-sectional time-series comparison among surveys conducted in different countries addressing ordinal scale of the latent measures and opinion polarization in the source data [@Solt2020c].
+Along this line, DCPO as a Bayesian-based latent variable method provides an efficient way for researchers to achieve cross-sectional time-series comparison among surveys conducted in different countries---better addressing ordinal scale of the latent measures and opinion polarization in the source data [@Solt2020c].
+To practice the method, DCPO project also growingly collect data sources for a variety of topics such as gender egalitarianism [@Woo2023], political interest [@Hu2024], and support for gay rights [@Woo2025], among other aspects of public opinion and open it freely for global researchers (see more updated data collections at <https://dcpo.org/>).
 
-
-
-presented in  in particular has been employed to measure gender egalitarianism [@Woo2023], political interest [@Hu2024], and support for gay rights [@Woo2025], among other aspects of public opinion (see <https://dcpo.org/>).
-
+In the following sections we first address the common chanlleges for the phases of data wrangling and explain how our routine can help deal with it illustrated with the data wrangling processes of the SWIID and DCPO projects.
 
 ## Step 1: Team-Based Data Selection
 
-## Step 2: Automate Data Entry
+Large scale of data selection and cleaning is almost always tedious, as something to be delegated to research assistants, to someone---indeed anyone, but usually research assistants (RA)---else [see @Torres2017].
+As previously illustrated, it is also that easy to make mistakes and errors.
+Beside the democratic-support example in political science, @Haegemans2019 [p. 1] has demonstrated examples of misrouted financial transactions and airline flights.
+In a more systematic examination, @Barchard2011 found that RA assigned in an experiment to carefully enter data manually, even those instructed to double-check their entries against the original, had error rates approaching 1% in just a single roughly half-hour session.
+The consequences of such errors can be pernicious.
+
+Our antidote for this issue is a combination of team work and automation. 
+We will focus more on the team work and discuss the latter in @sec-automate.
+The goal here is to select valid data for later analyses and reduce biases caused by inconsistent human judgment.
+A team work framework for this end requires a deliberative set and a dual-entry process.
+A deliberative set requires the members in a research team---regardless several coauthors or a primary author with one or two RAs---to have a clear and coherent understanding of the reseach questions and associated data goals.
+These understandings will help the team members identify the right data to collect and discover extra useful data sources that are not in the initial plan.
+In the SWIID program, for example, we told RAs that the goal of the research is to generate comparable statistics of country-level economic inequality.
+We provide a list of sources mainly from national statistic bureaus for them to start, but we also told them that update statistics for some countries may came from academic papers, published documents, and other sources and they are free to add them in while making sure a valid link of the new sources are also recorded.
+
+Ensuring team members to understand how the data would used later is also important, as they could have a better sense of what data are analyticable and a forward perspective of how many situations would the later entry part need to take care. 
+In the SWIID project, we told the RAs that the inequality statistics be recorded in four formats: Gini index in disposable (post-tax, post-transfer) income, Gini in market (pre-tax, pre-transfer) income, absolute redistribution (market-income inequality minus net-income inequality), or relative redistribution (market-income inequality minus net-income inequality, divided by market-income inequality).
+So, for later unification work, they need not only to record the digits but also seek documents to explain the methods of the statistics.
+In the DCPO project, participants were demonstrated how the method work and what type of data they need. 
+Their feedback of data format and weighting types which provide a valuable help of later build the automative data preparation software. 
+
+After then the first round of data selection and collection, the dural-entry section comes in. 
+Collaborators go through the process separately, and the resulting spreadsheets are compared to catch the omnipresent data-entry errors.
+Then, the entire team will come together to make a group decision about the disputed entries.
+For an effective cross-check, the coherent understanding of the research question and data goals is also essential.
+
+Note that the cross-check does not have to be accomplished in one time.
+In the SWIID project, the dataset requires update for almost every year and we also often hire new RAs.
+Therefore, the cross-check is often done in a rolling basis usually by the rookies who are in charge of checking the old data and updating malfunctional links.
+This is both a learning process and a way to improve data accuracy.
+
+The DCPO project, on the other hand, requires more judgements of the public opinion data from a theoretical angle---whether an entry represent support of democracy or gender egalitarianism and how many dimensions can a battery of questions have, etc.
+Most judgements have influences of the entire dataset and cannot wait until go though all the surveys.
+Therefore, We broke down the cross-check step into several lab meetings interspersed during the data selection to collect new insights from each members' selection works and make sure everyone were on the same page through the whole process.
+The process ends with a systemic cross-check of the final selected data among memebers. 
+
+
+## Step 2: Automate Data Entry {#sec-automate}
+
+Formating data is arguably the easiest step to involve manual errors and controversays.
+The best solution is to automate the entry process taken the advantages of the programming languages and application programming interfaces (APIs) of the data source.
+
+In the DCPO case, the entire data entry process accumulating the survey responses is fully automated through the use of the R-based software, `DCPOtools` [@Solt2018].
+The software reads in each recorded survey dataset from the first step, extracts the variable of interest, reorders the response values for this variable from least to most of the concept investigated, applies survey weights, and then aggregates the weighted number of respondents in each of the reordered response categories in each country for each year in which the survey was fielded.
+`DCPOtools` also automatically ensures that country names are standardized using the excellent @Arel-Bundock2018's excellent `countrycode` and that the years accurately reflect actual fieldwork dates using internal crosswalk tables.
+The aggregated number of respondents for each observed response-item-country-year then serve as the source data for the latent variable model.
+
+All the decisions during the above process are clearly recorded in R language.
+Every data entry is treated identically by the mechine.
+And this is still not the the complete version of data entry automation.
+An even better version starts the automation since the data selection step via programming and APIs.
+As shown in @fig-dataMethod, the current version of SWIID grapes `r api_percent`% of the observations through API.
+When no API is available, the automation script downloads and reads any available spreadsheets [see @Wickham2016a].
+In the absence of a spreadsheet, the process of scraping the data either directly from the web or, preferably, from a pdf file [see @Sepulveda2024] is automated.
+Together the collection of `r automated_percent`% of the source data is scripted.
+This means not only that the possibility of errors introduced by hand entry for a vast majority of observations is eliminated but also that the updates and revisions that are frequent in these data are automatically incorporated as they become available.^[
+  The R community has often built software to ease the access of APIs and make the batch work for multiple waves of data in a more comfortable and efficient way [see @Blondel2018; @Magnusson2014; @Lahti2017; @Lugo2017; @Wickham2018].
+]
+
+For data sources, such as those from academic articles or books, that have to be entered in hand, there is still rooms for automation. 
+For the remaining `r 100 - automated_percent`% of the SWIID observations, for instance, we collected them using Sepulveda's [-@Sepulveda2024] `tabulapdf` R package to avoid data-entry errors as long as they are in pdf.
+The advanced Optical Character Recognition (OCR) can extend this method on data sources even in hard copies
+
+And finally, one source of SWIID contains crucial information encoded in the typeface of its tables [see @Mitra2006, 6]; this information would be lost if the tables were read directly into R.
+We reapplied the approach from the data selection here to enter them twice into separate spreadsheets.^[Most often this has been done by two different investigators, but sometimes sequentially by a single researcher.]
+The dual-entry process allows for automated cross-checks of the newly entered data that increase the chances that errors are identified and corrected [see @Barchard2011].
+
 
 ## Step 3: "Second-Order" Data Opening
 
 Those who are interested can access and explore these data on the web at <https://fsolt.org/swiid/swiid_source.html>.
 
+The resulting spreadsheet can be found at <https://github.com/fsolt/swiid/blob/master/data-raw/fs_added_data.csv>.
+
 
 covers the process from data collection to cleaning and reformatting. 
 
 
-- Step 1: group with multiple members
-    - Efficiency 
-    - Double check
-    - Aware of the logic and the purposes of the project
 - Step 2: Collect and organize data
   - Challenges
       - The latest, best data
