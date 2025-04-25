@@ -49,7 +49,6 @@ filters:
 validate-yaml: false # for multibib to work
 bibliography: 
     main: "main_wrangling.bib"
-    appendix: "app_wrangling.bib"
 citation_package: natbib
 csl: "american-political-science-review.csl"
 tables: true # enable longtable and booktabs
@@ -283,28 +282,44 @@ body(small_multiple)[[19]] <- substitute(
       - DCPO -->
 
 Empowered by the spreading Internet and advancing computational power, researchers have entered an unprecedented age of data availability.
-A growing volume of political science research aim to take the benefit to extend the generality: they employ large quantities of data drawn from different sources.
-Nevertheless, associating with the increasing amount and diversity of data is the challenge of data wrangling, including a notorious bulk of manual work on indicator identification, data merging, data scaling, and so on [see, e.g., @Lohr2014].
+A growing volume of social science research aims to take the benefit to extend the generality: they employ large quantities of data drawn from different sources.
+However, as @Slomczynsi2025 emphasize, ensuring the quality of harmonized datasets remains a significant challenge in handling fitness to use and raw data quality monitoring among others.
+Taking large-scale survey harmonization as an example, they highlight how documenting variation across source datasets improves transparency and decision-making.
+Beyond the focus on the harmonization process itself, we argue that quality assurance must begin earlier, because harmonization depends on the quality of the preceding step: data wrangling-the step where rawest inputs are selected, processed, and prepared for harmonization.
 
-Such "janitor work" is often tiresome and easy to introduce errors.
+Nevertheless, the increasing amount and diversity of data is the challenge of data wrangling, due to a notorious bulk of manual work on indicator identification, data merging, data scaling, and so on [see, e.g., @Lohr2014].
+The repetitive "janitor work" is often tiresome and easy to introduce errors in data collection procedure. 
 
-The commonality perhaps makes them as one of the largest obstacle on the way to data harmonization, which yet have thus far gained little attention in political science.
+The issue is compounded when researchers rely on secondary sources such as processed codebooks rather than verifying original raw data. 
+Such dependence increases the risk of compounding errors, especially when researchers collect and integrate multiple datasets, each constructed independently and following its own protocol conventions.
 
-In this article, we provide a practical routine taken the advantage of automatic programming and team work to reduce such data-entry errors and also improve the transparency of the wrangling process for researchers and reviewers to check the errors.
+Beyond error risks, manual wrangling complicates full reproducibility in research pipeline which starts with the rawest form of the data to the final results [@Liu2019].
+These challenges are amplified when raw data comes from heterogeneous sources and have been processed using various software environments over time.
+This is a common scenario in secondary data collection.
+For example, older survey files stored in SPSS’s ASCII or portable formats often require extensive restructuring before they can be merged with new format of data.
+Such undocumented transformations make it difficult to track changes and undermine transparency.
+
+Finally, even meticulous documentation cannot eliminate the influence of human discretion embedded in manual processing.
+Such discretion leaves behind few traces, making it difficult for collaborators or reviewers to verify the wrangling process or trace sources of error.
+
+In short, poor source data quality, the absence of reproducibility, and untrackable human discretion in manual janitor work have collectively became the largest obstacle on the way to data harmonization, which yet have thus far gained little attention.
+
+In this article, we provide a practical routine taken the advantage of automatic programming and team work to reduce such data-entry errors and improve the reproducibility and transparency of the wrangling process for researchers and reviewers to check the errors.
 The routine includes three steps: data selection, data entry, and opening.
 We illustrate how researchers use this routine on statistical (*hard*) and opinion (*soft*) data with two ongoing harmonization efforts, the Standardized World Income Inequality Database (SWIID) and the Dynamic Comparative Public Opinion (DCPO) project.
+
 
 # A 3-Step Routine for Data Harmonization
 
 Our routine aims to helping researchers reach three goals for scientific research: 
 
-1. To incorporate as much available data as possible to increase generality of the inferences;
-1. To reduce the manual entry errors to improve the accuracy of the analytic data; and 
-1. To smoothen the data wrangling process for the sake of effiency and transparency.
+1. To incorporate as much available data as possible to provide base for comparable data and increase generality of the inferences;
+1. To reduce the manual entry errors to improve the accuracy of the harmonized data and analytic data; and 
+1. To improve the reproducibility of data wrangling process for the sake of transparency.
 
 The routine decomposes a data-wrangling process into three steps: 
 
-1. Team-based data selection;
+1. Team-based concept construct and data selection;
 1. Data entry automation; and 
 1. "Second-order" opening.
 
@@ -313,62 +328,74 @@ SWIID is a long-running project that seeks to provide harmonized income inequali
 As of its most recent update at the time of this writing, its source data consists of some 27,000 observations of the Gini coefficient of income distribution in nearly 200 countries over as many as 65 years, collected from over 400 separate sources including international organizations, national statistics bureaus, and academic studies.
 
 DCPO is both a method and a database.
-Scholarship on comparative public opinion only rarely benefits from relevant items asked annually by the same survey in many countries [see, e.g., @Hagemann2017].
-To address the lack of cross-national and longitudinal data on many topics, a number of works have presented latent variable models that harmonize available but incomparable survey items [see @Caughey2019; @Claassen2019; @McGann2019; @Solt2020c; @Kolczynska2024].
-Along this line, DCPO as a Bayesian-based latent variable method provides an efficient way for researchers to achieve cross-sectional time-series comparison among surveys conducted in different countries---better addressing ordinal scale of the latent measures and opinion polarization in the source data [@Solt2020c].
-To practice the method, DCPO project also growingly collect data sources for a variety of topics such as gender egalitarianism [@Woo2023], political interest [@Hu2024], and support for gay rights [@Woo2025], among other aspects of public opinion and open it freely for global researchers (see more updated data collections at <https://dcpo.org/>).
+Scholarship on comparative public opinion only rarely benefits from relevant items asked annually by the same survey in many countries [see, e.g., @HagemannEtAl2017].
+To address the lack of cross-national and longitudinal data on many topics, a number of works have presented latent variable models that harmonize available but incomparable survey items [see @CaugheyEtAl2019; @Claassen2019; @McGannEtAl2019; @Solt2020; @KolczynskaEtAl2024].
+Along this line, DCPO not only provides latent variable measurements but also automatized and reproducible data collection [@Solt2020], which has been applied in a complete pipeline for a variety of topics such as gender egalitarianism [@WooEtAl2023], political interest [@HuSolt2024a], and support for gay rights [@WooEtAl2024], among other aspects of public opinion and open it freely for global researchers (see more updated data collections at <https://dcpo.org/>).
 
-In the following sections we first address the common chanlleges for the phases of data wrangling and explain how our routine can help deal with it illustrated with the data wrangling processes of the SWIID and DCPO projects.
+In the following sections we first address the common challenges for the phases of data wrangling and explain how our routine can help deal with it illustrated with the data wrangling processes of the SWIID and DCPO projects.
 
-## Step 1: Team-Based Data Selection
+## Step 1: Team-Based Construct Building and Data Selection
 
 Large scale of data selection and cleaning is almost always tedious, as something to be delegated to research assistants, to someone---indeed anyone, but usually research assistants (RA)---else [see @Torres2017].
-As previously illustrated, it is also that easy to make mistakes and errors.
-Beside the democratic-support example in political science, @Haegemans2019 [p. 1] has demonstrated examples of misrouted financial transactions and airline flights.
-In a more systematic examination, @Barchard2011 found that RA assigned in an experiment to carefully enter data manually, even those instructed to double-check their entries against the original, had error rates approaching 1% in just a single roughly half-hour session.
+This manual procedure is easy to make mistakes and errors.
+@HaegemansEtAl2019 [p. 1] has demonstrated examples of misrouted financial transactions and airline flights.
+In a more systematic examination, @BarchardPace2011 found that RA assigned in an experiment to carefully enter data manually, even those instructed to double-check their entries against the original, had error rates approaching 1% in just a single roughly half-hour session.
 The consequences of such errors can be pernicious.
 
 Our antidote for this issue is a combination of team work and automation. 
 We will focus more on the team work and discuss the latter in @sec-automate.
-The goal here is to select valid data for later analyses and reduce biases caused by inconsistent human judgment.
+The goal here is to have consistent understanding on conceptualized construct, select valid data for later measurement and/or analyses, and reduce biases caused by inconsistent human judgment.
 A team work framework for this end requires a deliberative set and a dual-entry process.
+
 A deliberative set requires the members in a research team---regardless several coauthors or a primary author with one or two RAs---to have a clear and coherent understanding of the reseach questions and associated data goals.
 These understandings will help the team members identify the right data to collect and discover extra useful data sources that are not in the initial plan.
+
 In the SWIID program, for example, we told RAs that the goal of the research is to generate comparable statistics of country-level economic inequality.
-We provide a list of sources mainly from national statistic bureaus for them to start, but we also told them that update statistics for some countries may came from academic papers, published documents, and other sources and they are free to add them in while making sure a valid link of the new sources are also recorded.
+We provide a list of sources mainly from national statistic bureaus for them to start, but we also told them that update statistics for some countries may come from academic papers, published documents, and other sources and they are free to add them in while making sure a valid link of the new sources are also recorded.
 
 Ensuring team members to understand how the data would used later is also important, as they could have a better sense of what data are analyticable and a forward perspective of how many situations would the later entry part need to take care. 
 In the SWIID project, we told the RAs that the inequality statistics be recorded in four formats: Gini index in disposable (post-tax, post-transfer) income, Gini in market (pre-tax, pre-transfer) income, absolute redistribution (market-income inequality minus net-income inequality), or relative redistribution (market-income inequality minus net-income inequality, divided by market-income inequality).
 So, for later unification work, they need not only to record the digits but also seek documents to explain the methods of the statistics.
-In the DCPO project, participants were demonstrated how the method work and what type of data they need. 
-Their feedback of data format and weighting types which provide a valuable help of later build the automative data preparation software. 
 
-After then the first round of data selection and collection, the dural-entry section comes in. 
-Collaborators go through the process separately, and the resulting spreadsheets are compared to catch the omnipresent data-entry errors.
-Then, the entire team will come together to make a group decision about the disputed entries.
-For an effective cross-check, the coherent understanding of the research question and data goals is also essential.
 
-Note that the cross-check does not have to be accomplished in one time.
+In the DCPO project, clearly defining and agreeing upon the latent construct among team members is a critical first step for ensuring theoretical comparability across countries and over time  [@Koc2025]. 
+This process begins with a shared conceptual foundation established through literature review and corresponding pre-defined potential dimensions of the latent opinion.
+Each team member is then assigned survey datasets from specific geographic regions and tasked with identifying potentially relevant items and potential dimensions based on both general theoretical guidance and region-specific knowledge. 
+This structure ensures that the construct is informed by both global theory and local context.
+
+Before data selection begins, team members undergo hands-on training on how the method work and what type of data and detail they need to collect, such as data format and weighting types, which provide a valuable help of later build the automative data preparation software. 
+
+Following the initial round of item selection and collection, the dural-entry section comes in. 
+In this stage, each team member reviews and re-codes the survey data originally handled by another member.
+The independently coded versions are then compared to detect discrepancies, which may arise from misinterpretations of the construct, ambiguous item wording, or common entry errors.
+
+Disputed cases are flagged for group discussion.
+Some mismatches may indicate items that may not be conceptually equivalent across cultures or regions, and others suggest multidimensionality that requires theoretical disaggregation.
+For the latter, we either categorize such items into pre-defined dimensions and/or revise the codebook accordingly to add new dimensions—an iterative process aimed at improving construct validity, intercoder reliability, and reducing oversimplification of target variable [@Slomczynsi2025].
+
+Therefore, we broke down the cross-check step into several lab meetings interspersed during the data selection to collect new insights from each members' selection works and make sure everyone were on the same page through the whole process.
+The process ends with a systemic cross-check of the final selected data among members. 
+
 In the SWIID project, the dataset requires update for almost every year and we also often hire new RAs.
 Therefore, the cross-check is often done in a rolling basis usually by the rookies who are in charge of checking the old data and updating malfunctional links.
 This is both a learning process and a way to improve data accuracy.
 
-The DCPO project, on the other hand, requires more judgements of the public opinion data from a theoretical angle---whether an entry represent support of democracy or gender egalitarianism and how many dimensions can a battery of questions have, etc.
-Most judgements have influences of the entire dataset and cannot wait until go though all the surveys.
-Therefore, We broke down the cross-check step into several lab meetings interspersed during the data selection to collect new insights from each members' selection works and make sure everyone were on the same page through the whole process.
-The process ends with a systemic cross-check of the final selected data among memebers. 
-
 
 ## Step 2: Data Entry Automation {#sec-automate}
 
-Formating data is arguably the easiest step to involve manual errors and controversays.
+Formating data is arguably the easiest step to involve manual errors and controversies.
 The best solution is to automate the entry process taken the advantages of the programming languages and application programming interfaces (APIs) of the data source.
 
-In the DCPO case, the entire data entry process accumulating the survey responses is fully automated through the use of the R-based software, `DCPOtools` [@Solt2018].
-The software reads in each recorded survey dataset from the first step, extracts the variable of interest, reorders the response values for this variable from least to most of the concept investigated, applies survey weights, and then aggregates the weighted number of respondents in each of the reordered response categories in each country for each year in which the survey was fielded.
-`DCPOtools` also automatically ensures that country names are standardized using the excellent @Arel-Bundock2018's excellent `countrycode` and that the years accurately reflect actual fieldwork dates using internal crosswalk tables.
-The aggregated number of respondents for each observed response-item-country-year then serve as the source data for the latent variable model.
+In the DCPO case, the entire data entry process accumulating the survey responses is fully automated through the use of the R-based software, `DCPOtools` [@SoltEtAl2018a].
+This software processes the raw survey files directly—rather than relying on potentially inaccurate codebooks—ensuring that data entry is reproducible.
+Specifically, `DCPOtools` reads in each recorded survey dataset (including legacy formats such as ASCII or portable .por files), converts them to R-readable objects, extracts the variable of interest, reorders the response values for this variable from least to most of the concept investigated, applies survey weights, and then aggregates the weighted number of respondents in each of the reordered response categories in each country for each year based on the actual survey fieldwork dates.
+To further address the concerns about theoretical comparability, using a data-driven approach, `DCPO` projects employ a conservative filtering process. 
+Items that appear in fewer than five country-years in countries surveyed at least three times are removed through a two-round checking process [@WooEtAl2024; @TaiSolt2025]. 
+This approach aims to minimize the risk of sacrificing comparability for the sake of regional or temporal coverage [@Koc2025]. 
 
+
+`DCPOtools` also automatically ensures that country names are standardized using the excellent @Arel-BundockEtAl2018's excellent `countrycode` and that the years accurately reflect actual fieldwork dates using internal crosswalk tables.
+The aggregated number of respondents for each observed response-item-country-year then serve as the source data for the latent variable model where data is harmonized at the country-year level.
 
 
 ```{r}
@@ -452,25 +479,23 @@ swiid_source %>%
 
 
 
-All the decisions during the above process are clearly recorded in R language.
-Every data entry is treated identically by the mechine.
-And this is still not the the complete version of data entry automation.
+While coding datasets and items into structured spreadsheets facilitates automation, this is still not the the complete version of data entry automation.
 An even better version starts the automation since the data selection step via programming and APIs.
 As shown in @fig-dataMethod, the current version of SWIID grapes `r api_percent`% of the observations through API.
-When no API is available, the automation script downloads and reads any available spreadsheets [see @Wickham2016a].
+When no API is available, the automation script downloads and reads any available spreadsheets [see @Wickham2016].
 In the absence of a spreadsheet, the process of scraping the data either directly from the web or, preferably, from a pdf file [see @Sepulveda2024] is automated.
 Together the collection of `r automated_percent`% of the source data is scripted.
 This means not only that the possibility of errors introduced by hand entry for a vast majority of observations is eliminated but also that the updates and revisions that are frequent in these data are automatically incorporated as they become available.^[
-  The R community has often built software to ease the access of APIs and make the batch work for multiple waves of data in a more comfortable and efficient way [see @Blondel2018; @Magnusson2014; @Lahti2017; @Lugo2017; @Wickham2018].
+  The R community has often built software to ease the access of APIs and make the batch work for multiple waves of data in a more comfortable and efficient way [see @Blondel2018; @MagnussonEtAl2014; @LahtiEtAl2017; @Lugo2017; @WickhamEtAl2018].
 ]
 
 For data sources, such as those from academic articles or books, that have to be entered in hand, there is still rooms for automation. 
 For the remaining `r 100 - automated_percent`% of the SWIID observations, for instance, we collected them using Sepulveda's `tabulapdf` R package to avoid data-entry errors as long as they are in pdf [@Sepulveda2024].
-The advanced Optical Character Recognition (OCR) can extend this method on data sources even in hard copies
+The advanced Optical Character Recognition (OCR) can extend this method on data sources even in hard copies.
 
-And finally, one source of SWIID contains crucial information encoded in the typeface of its tables [see @Mitra2006, 6]; this information would be lost if the tables were read directly into R.
+And finally, one source of SWIID contains crucial information encoded in the typeface of its tables [see @MitraYemtsiv2006, 6]; this information would be lost if the tables were read directly into R.
 We reapplied the approach from the data selection here to enter them twice into separate spreadsheets.^[Most often this has been done by two different investigators, but sometimes sequentially by a single researcher.]
-The dual-entry process allows for automated cross-checks of the newly entered data that increase the chances that errors are identified and corrected [see @Barchard2011].
+The dual-entry process allows for automated cross-checks of the newly entered data that increase the chances that errors are identified and corrected [see @BarchardPace2011].
 
 
 ## Step 3: "Second-Order" Opening
@@ -480,40 +505,50 @@ Nevertheless, the continual raising controversies on the researcher degrees of f
 Especially in relation with data harmonization, we eager researchers to conduct a, what we called, the "second-order" opening. 
 That is, not only opening analytical steps (the "first-order") but also the data generation process (the "second-order"), including data collection, data cleaning, and data wrangling, as mentioned above.
 
-If researchers applied our suggestions of team-based data selection and data entry automation suggestions, the second-order opening would be fairly simple.
-They just need to share with the readers of the programing codes for data downloading, formating, and other wrangling process.
-Researchers can also take the advantage of well developed scientific and technical publishing system, such as Quarto or R markdown to put all the data wrangling and analyzing processes into one file together with the article or report.
+If researchers applied our suggestions of team-based construct building, systematic data selection, and automated data entry, the second-order opening becomes both feasible and efficient.
+Along with a clearly conceptualized theoretical framework, researchers can simply share their programming scripts for data downloading, formatting, and wrangling, ensuring that the full pipeline is documented and reproducible.
 
-A further possible step can be openning the entire researching process taken the advantage of the version control (e.g., Github) and open collaboration plateforms (e.g., Open Science Framework, OSF).
+With developed scientific and technical publishing system, such as Quarto or R markdown, and version control platforms (e.g., Github) and open collaboration platforms (e.g., Open Science Framework, OSF), researchers can integrate the entire workflow—from raw data collection to final analysis—within a single, publicly trackable archive.
 We reached at this step for all the DCPO projects so far. 
 Readers can find a Github repo for the research from scratch, and every wave of data update in the corresponding OSF project.
 
-Readers can find a comprehensve example applied the above second-order openning strategy in a DCPO project, @TaiEtAl2024. 
+
+<!--Readers can find a comprehensve example applied the above second-order openning strategy in a DCPO project, @TaiEtAl2024. 
 Its replication data includes three types of files beside a instruction (.md): a Rmarkdown file recording all the codes we wrangled and analyzed the data together with the main text and appendices, several auxiliary files (.lua, .bib) for the Rmarkdown to render, and data files for running each chunk of codes in the Rmarkdown [@TaiEtAl2022].
 Moreover, readers can track the entire process of how the project grew through an publicly open Github repo, <https://github.com/fsolt/dcpo_dem_mood>.
 They can also see the data updating history and outcomes in an OSF project, <https://osf.io/tnp2a/>.
-Similarly, people can see the updating history of the in  SWIID dataset in <https://github.com/fsolt/swiid>.
+Similarly, people can see the updating history of the in  SWIID dataset in <https://github.com/fsolt/swiid>.-->
 
 # Discussion
 
 Harmonization projects are often data-intensive efforts, data-wrangling is often substantial, and data-entry errors are particularly dangerous to these undertakings.
-These errors would be rarely uncovered by merely examining the data and their distribution [@Barchard2011, 1837-1838].
+These errors would be rarely uncovered by merely examining the data and their distribution [@BarchardPace2011, 1837-1838].
 Our routine---as fully demonstrated in @fig-diagram ---provide an approach to both minimize the manual errors during the wrangling process and provide transparent records for checking the errors and replications.
 
 ![](images/data_diagram.png){#fig-diagram fig-align="center" height=500}
 
-To accomplish the routine---like similar open-science prescriptions---undoubtedly take effort [see @Engzell2021].
-while the double-entry method is labor intensive, experiments have shown that it reduces error rates by thirty-fold even when done immediately after the initial collection and by the same person [@Barchard2011, 1837]; this payoff justifies the extra effort.
+To accomplish the routine---like similar open-science prescriptions---undoubtedly take effort [see @EngzellRohrer2021].
+
+While the double-entry method is labor intensive, experiments have shown that it reduces error rates by thirty-fold even when done immediately after the initial collection and by the same person [@BarchardPace2011, 1837]; this payoff justifies the extra effort.
 Teamwork cuts the other way.
-For any project involving entering data by hand, splitting the task up among team members lessens the probability of errors due to fatigue arising in the first place, and coupled with the double-entry method, allows discrepancies to be noted, discussed, and resolved correctly.
-Having two sets of eyes on complex materials such as survey codebooks also increases the chances that nuances of the presentation like survey weights will be uncovered.
+For any project involving identifying data by hand, splitting the task up among team members lessens the probability of errors due to fatigue arising in the first place, and coupled with the double-entry method, allows discrepancies to be noted, discussed, and resolved correctly.
 
-Fortunately for current political scientists, as researchers automate more of their data entry, the chances that they can reuse their code in subsequent projects improve; moreover, as the examples of the API packages used by the SWIID and `DCPOtools` demonstrate, many common janitor-work chores already have been packaged as open-source software to make researchers' task even easier and more straightforward. 
-With the development of large language models, in the near future perhaps some parts of the routine can be accomplished by intelligent agents---which would definitely push our automation recommendation to another level.
+Fortunately, social scientists today benefit from growing efforts to standardize harmonization workflows [@Slomczynsi2025] and automate data processing and linkage [@Kritzinger2025].
+Researchers can increasingly reuse high-quality harmonized datasets in new projects, enhancing research efficiency and comparability.
 
-A final point we would like to clarify is that, although reducing entry in hand is the primary theme of our three-step routine, it does not mean less engagement of researchers.
-As shown @fig-diagram and illustrated in the SWIID and DCPO examples, the researchers have the responsibility for all the important decisions from clarifying the research question and data demands at the beginning to conduct version controls and develop a full-pack replication folder in the end.
-Data-entry errors are inevitable, and even following these recommendations is unlikely to eliminate them entirely.
+
+Moreover, as the examples of the API packages used by the SWIID and `DCPOtools` demonstrate, many common janitor-work chores already have been packaged as open-source software to make researchers' task even easier and more straightforward. 
+With the development of large language models, in the near future perhaps some parts of the routine can be accomplished by intelligent agents---which would definitely push our automation recommendation to another level, potentially fulfilling calls to push automation to the next level [@Kritzinger2025].
+
+A final point we would like to clarify is that, in our three-step routine, researchers remain central to the harmonization process.
+As shown @fig-diagram and illustrated in the SWIID and DCPO examples, the researchers have the responsibility for all the important decisions from clarifying the research question, building theoretical constructs, and specifying data demands at the beginning to conducting version controls and developing a full-pack replication folder in the end.
+Early and critical steps—such as construct development and codebook refinement—must be conducted iteratively and collaboratively to achieve high intercoder reliability.
+Even when data entry is automated, human validation remains essential.
+Researchers must verify that variables conform to expected formats (e.g., string, numeric) and that values fall within plausible ranges.
+To minimize system-related discrepancies, the computing environment used should also be documented [@Liu2019].
+
+For any ex-post data harmonization project, careful attention to the pre-harmonization stages—construct building, data identification, collection, and entry—substantially contributes to the overall quality of the harmonized dataset.
+While some level of error is inevitable even under best practices, following systematic procedures can mitigate risks. 
 Nonetheless, with researchers' responsiblee attention, not only can the threat of data-entry errors to our 'janitor work', our efforts at data harmonization, and our understanding of the world be minimized, but the transparency, openness, and credibility of our research can continue to grow.
 
 \newpage
@@ -524,600 +559,6 @@ Nonetheless, with researchers' responsiblee attention, not only can the threat o
 ::: {#refs-main}
 :::
 
-\pagebreak
 
-\hypertarget{appendix-appendix}{%
-\appendix}
 
-# Online Supplementary Materials {.unnumbered}
 
-\setcounter{page}{1}
-\renewcommand{\thepage}{A\arabic{page}}
-\setcounter{figure}{0}
-\renewcommand{\thefigure}{A.\arabic{figure}}
-\setcounter{table}{0}
-\renewcommand{\thetable}{A.\arabic{table}}
-
-# Details on Data-Entry Problems in the Democratic Support Source Data {#sec-comparison}
-
-Comparing the original hand-entered dataset [@Claassen2020d] with data that were machine-collected using the `DCPOtools` package for R [@Solt2018] revealed three survey items for which the hand-entered data did not match the data's documented coding rules.
-These rules indicate that responses above the median value in the response scale are to be considered as supporting democracy, while those at the median value and below are not [see @Claassen2020b, Appendix 1.3].
-
-First, the Asia Barometer asked respondents in 35 country-years to indicate whether they thought "a democratic political system" would be very good, fairly good, or bad for their country.
-According to the original study's coding rules [see @Claassen2020b, Appendix 1.3], only answers above the median of the response categories should be considered as democracy supporting, yet in this case the lukewarm intermediate category was coded as supporting democracy as well.
-Similarly tepid responses at and below the median response category to similar questions (e.g., in the Arab Barometer, that democracy was "somewhat appropriate" for the country) were coded as not supportive, confirming that this is indeed a data-entry error.
-This discrepancy resulted in hand-entered percentages of democracy-supporting responses ranging from `r data_comparison %>% filter(item=="evdemoc_asiab") %>% pull(diff_perc) %>% min() %>% round()` to `r data_comparison %>% filter(item=="evdemoc_asiab") %>% pull(diff_perc) %>% max() %>% round()` percentage points higher than the data automatically collected directly from the survey datasets.
-<!-- and averaging `r data_comparison %>% filter(item=="evdemoc_asiab") %>% pull(diff_perc) %>% mean() %>% round()` points higher. -->
-
-Second, the four waves of the Asian Barometer included the following item: "Here is a similar scale of 1 to 10 measuring the extent to which people think democracy is suitable for our country. If 1 means that democracy is completely unsuitable for [name of country] today and 10 means that it is completely suitable, where would you place our country today?"
-In accordance with the coding rules of the study, responses of 6 through 10 are considered democracy supporting, and that is how the first, third, and fourth waves of the survey are coded.
-For the second wave, however, 5 was erroneously also included among the democracy-supporting responses.
-This data-entry error resulted percentages overstated by as much as `r data_comparison %>% filter(item=="democsuit_asianb" & (year==2005|year==2006|year==2008)) %>% pull(diff_perc) %>% max() %>% round()` percentage points in 9 country-years. 
-
-And third, the Pew Global Attitudes surveys' four-point item asking about the importance of living in a country with regular and fair contested elections: the question wording is "How important is it to you to live in a country where honest elections are held regularly with a choice of at least two political parties? Is it very important, somewhat important, not too important or not important at all?"
-In this case, rather than including respondents who gave both responses above the median---"very important" and "somewhat important"---only those respondents who answered "very important" were entered as supporting democracy.
-This error caused the hand-entered percentages to be substantially lower in 91 country-years.
-
-# Consequences for Inference of Democratic Support Data-Entry Errors {#sec-consequence}
-
-```{r}
-#| label: correctedCm5
-#| eval: false
-#| include: false
-#| results: false
-
-iter <- 500
-
-cm5 <- cmdstan_model(here("codes", "supdem.stan.mod5.stan"))
-
-corrected_output <- cm5$sample(
-  data = claassen_input[1:11],
-  max_treedepth = 11,
-  adapt_delta = 0.99,
-  step_size = 0.02,
-  seed = 324,
-  chains = 4,
-  parallel_chains = 4,
-  iter_warmup = iter / 2,
-  iter_sampling = iter / 2,
-  refresh = iter / 50
-)
-
-results_path <- here::here(file.path(
-  "data",
-  "corrected",
-  {
-    str_replace_all(Sys.time(), "[- :]", "") %>%
-      str_replace("\\d{2}$", "")
-  }
-))
-dir.create(results_path,
-  showWarnings = FALSE,
-  recursive = TRUE
-)
-corrected_output$save_data_file(
-  dir = results_path,
-  random = FALSE
-)
-corrected_output$save_output_files(
-  dir = results_path,
-  random = FALSE
-)
-
-```
-
-```{r}
-#| label: correctedCm5_results
-#| cache: true
-
-
-# if (!exists("results_path")) {
-#   latest <- "202205211148"
-#   results_path <- here::here("data", "corrected", latest)
-#
-#   # Define OSF_PAT in .Renviron: https://docs.ropensci.org/osfr/articles/auth
-#   if (!file.exists(file.path(results_path, paste0("supdem.stan.mod5-", latest, "-1.csv")))) {
-#     dir.create(results_path, showWarnings = FALSE, recursive = TRUE)
-#     osf_retrieve_node("vmxkn") %>%
-#       osf_ls_files() %>%
-#       filter(name == latest) %>%
-#       osf_download(path = here::here("data", "corrected"))
-#   }
-# }
-
-latest <- "202206151125"
-results_path <- here::here("data", "corrected", latest)
-
-corrected_output <- as_cmdstan_fit(here::here(
-  results_path,
-  list.files(results_path, pattern = "csv$")
-))
-
-```
-
-```{r}
-#| label: correctedCm5_summary
-#| cache: true
-
-summarize_cm5_results <- function(cm5_input,
-                                  cm5_output,
-                                  pars = c("theta"),
-                                  probs = c(.1, .9)) {
-  question <- country <- year <- parameter <- variable <- kk <- tt <- qq <- rr <- NULL
-
-  dat <- cm5_input$data
-
-  qcodes <- dat %>%
-    dplyr::transmute(
-      item = item,
-      qq = as.numeric(as.factor(item))
-    ) %>%
-    unique()
-
-  kcodes <- dat %>%
-    dplyr::transmute(
-      country = country,
-      kk = as.numeric(as.factor(country))
-    ) %>%
-    unique()
-
-  tcodes <- dat %>%
-    dplyr::transmute(
-      year = year,
-      tt = as.numeric(as.factor(year))
-    ) %>%
-    unique() %>%
-    arrange(year)
-
-
-  ktcodes <- dat %>%
-    dplyr::group_by(country) %>%
-    dplyr::summarize(
-      first_yr = min(year),
-      last_yr = max(year)
-    )
-
-  if ("R6" %in% class(cm5_output)) {
-    fit <- cm5_output
-
-    summary_measures <- c("mean", "median", "sd", "mad", "rhat", "ess_bulk", "ess_tail")
-
-    res <- map_df(pars, function(par) {
-      if (par == "theta") {
-        fit$summary(
-          "theta",
-          ~ posterior::quantile2(., probs = probs),
-          summary_measures
-        ) %>%
-          dplyr::mutate(
-            tt = as.numeric(gsub(
-              "theta\\[(\\d+),\\d+\\]",
-              "\\1",
-              variable
-            )),
-            kk = as.numeric(gsub(
-              "theta\\[\\d+,(\\d+)\\]",
-              "\\1",
-              variable
-            ))
-          ) %>%
-          dplyr::left_join(kcodes, by = "kk") %>%
-          dplyr::left_join(tcodes, by = "tt") %>%
-          dplyr::left_join(ktcodes, by = "country") %>%
-          dplyr::filter(year >= first_yr & year <= last_yr) %>%
-          dplyr::arrange(kk, tt) %>%
-          dplyr::select(
-            country, year,
-            starts_with("me"),
-            sd, mad, starts_with("q"),
-            rhat, starts_with("ess"),
-            variable, kk, tt
-          )
-      } else if (par == "sigma") {
-        fit$summary(
-          "sigma",
-          ~ posterior::quantile2(., probs = probs),
-          summary_measures
-        ) %>%
-          dplyr::mutate(
-            tt = as.numeric(gsub(
-              "sigma\\[(\\d+),\\d+\\]",
-              "\\1",
-              variable
-            )),
-            kk = as.numeric(gsub(
-              "sigma\\[\\d+,(\\d+)\\]",
-              "\\1",
-              variable
-            ))
-          ) %>%
-          dplyr::left_join(kcodes, by = "kk") %>%
-          dplyr::left_join(tcodes, by = "tt") %>%
-          dplyr::mutate(year = if_else(tt == 1,
-            as.integer(year),
-            as.integer(min(year, na.rm = TRUE) + tt - 1)
-          )) %>%
-          dplyr::left_join(ktcodes, by = "country") %>%
-          dplyr::filter(year >= first_yr & year <= last_yr) %>%
-          dplyr::arrange(kk, tt) %>%
-          dplyr::select(
-            country, year,
-            starts_with("me"),
-            sd, mad, starts_with("q"),
-            rhat, starts_with("ess"),
-            variable, kk, tt
-          )
-      } else if (par == "alpha") {
-        fit$summary(
-          "alpha",
-          ~ posterior::quantile2(., probs = probs),
-          summary_measures
-        ) %>%
-          dplyr::mutate(qq = as.numeric(gsub(
-            "alpha\\[(\\d+)]",
-            "\\1",
-            variable
-          ))) %>%
-          dplyr::left_join(qcodes, by = "qq") %>%
-          dplyr::arrange(qq) %>%
-          dplyr::select(question, n, everything())
-      } else if (par == "beta") {
-        fit$summary(
-          "beta",
-          ~ posterior::quantile2(., probs = probs),
-          summary_measures
-        ) %>%
-          dplyr::mutate(
-            rr = as.numeric(gsub(
-              "beta\\[(\\d+),\\d+\\]",
-              "\\1",
-              variable
-            )),
-            qq = as.numeric(gsub(
-              "beta\\[\\d+,(\\d+)\\]",
-              "\\1",
-              variable
-            ))
-          ) %>%
-          dplyr::left_join(qcodes, by = "qq") %>%
-          dplyr::arrange(qq, rr) %>%
-          dplyr::filter(rr <= rr_max) %>%
-          dplyr::select(question, n, everything())
-      } else if (par == "delta") {
-        fit$summary(
-          "delta",
-          ~ posterior::quantile2(., probs = probs),
-          summary_measures
-        ) %>%
-          dplyr::mutate(
-            qq = as.numeric(gsub(
-              "delta\\[(\\d+),\\d+\\]",
-              "\\1",
-              parameter
-            )),
-            kk = as.numeric(gsub(
-              "delta\\[\\d+,(\\d+)\\]",
-              "\\1",
-              parameter
-            ))
-          ) %>%
-          dplyr::left_join(qcodes, by = "qq") %>%
-          dplyr::left_join(kcodes, by = "kk") %>%
-          dplyr::arrange(qq) %>%
-          dplyr::select(question, n, country, everything())
-      }
-    })
-  } else {
-    res <- map_df(pars, function(par) {
-      if (par == "theta") {
-        rstan::summary(dcpo_output, pars = "theta", probs = probs) %>%
-          dplyr::first() %>%
-          as.data.frame() %>%
-          tibble::rownames_to_column("parameter") %>%
-          tibble::as_tibble() %>%
-          dplyr::mutate(
-            tt = as.numeric(gsub(
-              "theta\\[(\\d+),\\d+\\]",
-              "\\1",
-              parameter
-            )),
-            kk = as.numeric(gsub(
-              "theta\\[\\d+,(\\d+)\\]",
-              "\\1",
-              parameter
-            ))
-          ) %>%
-          dplyr::left_join(kcodes, by = "kk") %>%
-          dplyr::left_join(tcodes, by = "tt") %>%
-          dplyr::mutate(year = if_else(tt == 1,
-            as.integer(year),
-            as.integer(min(year, na.rm = TRUE) + tt - 1)
-          )) %>%
-          dplyr::left_join(ktcodes, by = "country") %>%
-          dplyr::filter(year >= first_yr & year <= last_yr) %>%
-          dplyr::arrange(kk, tt) %>%
-          dplyr::select(-first_yr, -last_yr)
-      } else if (par == "sigma") {
-        rstan::summary(dcpo_output, pars = "sigma", probs = probs) %>%
-          dplyr::first() %>%
-          as.data.frame() %>%
-          tibble::rownames_to_column("parameter") %>%
-          tibble::as_tibble() %>%
-          dplyr::mutate(
-            tt = as.numeric(gsub(
-              "sigma\\[(\\d+),\\d+\\]",
-              "\\1",
-              parameter
-            )),
-            kk = as.numeric(gsub(
-              "sigma\\[\\d+,(\\d+)\\]",
-              "\\1",
-              parameter
-            ))
-          ) %>%
-          dplyr::left_join(kcodes, by = "kk") %>%
-          dplyr::left_join(tcodes, by = "tt") %>%
-          dplyr::arrange(kk, tt)
-      } else if (par == "alpha") {
-        rstan::summary(dcpo_output, pars = "alpha", probs = probs) %>%
-          dplyr::first() %>%
-          as.data.frame() %>%
-          tibble::rownames_to_column("parameter") %>%
-          tibble::as_tibble() %>%
-          dplyr::mutate(qq = as.numeric(gsub(
-            "alpha\\[(\\d+)]",
-            "\\1",
-            parameter
-          ))) %>%
-          dplyr::left_join(qcodes, by = "qq") %>%
-          dplyr::arrange(qq)
-      } else if (par == "beta") {
-        rstan::summary(dcpo_output, pars = "beta", probs = probs) %>%
-          dplyr::first() %>%
-          as.data.frame() %>%
-          tibble::rownames_to_column("parameter") %>%
-          tibble::as_tibble() %>%
-          dplyr::mutate(
-            rr = as.numeric(gsub(
-              "beta\\[(\\d+),\\d+\\]",
-              "\\1",
-              parameter
-            )),
-            qq = as.numeric(gsub(
-              "beta\\[\\d+,(\\d+)\\]",
-              "\\1",
-              parameter
-            ))
-          ) %>%
-          dplyr::left_join(qcodes, by = "qq") %>%
-          dplyr::arrange(qq, rr)
-      } else if (par == "delta") {
-        rstan::summary(dcpo_output, pars = "delta", probs = probs) %>%
-          dplyr::first() %>%
-          as.data.frame() %>%
-          tibble::rownames_to_column("parameter") %>%
-          tibble::as_tibble() %>%
-          dplyr::mutate(
-            qq = as.numeric(gsub(
-              "delta\\[(\\d+),\\d+\\]",
-              "\\1",
-              parameter
-            )),
-            kk = as.numeric(gsub(
-              "delta\\[\\d+,(\\d+)\\]",
-              "\\1",
-              parameter
-            ))
-          ) %>%
-          dplyr::left_join(qcodes, by = "qq") %>%
-          dplyr::left_join(kcodes, by = "kk") %>%
-          dplyr::arrange(qq)
-      }
-    })
-  }
-
-  return(res)
-}
-
-
-theta_summary <- summarize_cm5_results(
-  claassen_input,
-  corrected_output,
-  "theta"
-)
-
-if (!file.exists(here::here("data", "dem_mood_apsr.csv"))) {
-  tempfile <- dataverse::get_file_by_doi(filedoi = "doi:10.7910/DVN/FECIO3/ACMGQG") # APSR replication
-
-  writeBin(tempfile, here::here("data", "dem_mood_apsr.csv"))
-  rm(tempfile)
-}
-
-df_apsr <- read_csv(here::here("data", "dem_mood_apsr.csv")) %>%
-  left_join(theta_summary, by = c("Year" = "year", "Country" = "country"))
-```
-
-@Claassen2020b argued that public support for democracy moved thermostatically in response to changes in democracy, that is, that that changes in the latter prompt opposite changes in the former.
-Here we show that correcting the data-entry errors we document yield results that provide no support for this conclusion.
-After generating the latent variable of democratic support with these corrections, we replicated each of the models presented in @Claassen2020b exactly using both the original and the new version of the latent variable.
-The results using the corrected data reveal that there is no evidence of a thermostatic relationship.
-
-```{r regressionResult}
-#| label: regressionResult
-
-sd.plm <- pdata.frame(df_apsr, index = c("Country", "Year"))
-sd.plm2 <- pdata.frame(
-  df_apsr %>%
-    mutate(SupDem_trim = mean),
-  index = c("Country", "Year")
-)
-
-ls_ivECM <- rep(
-  c(
-    "diff(Libdem_z, lag = 1) + plm::lag(Libdem_z, 1)",
-    "diff(Polyarchy_z, lag = 1) + plm::lag(Polyarchy_z, 1) + diff(Liberal_z, lag = 1) + plm::lag(Liberal_z, 1)"
-  ),
-  each = 2
-) %>%
-  paste0(rep(
-    c(
-      "",
-      " + diff(Corrup_TI_z, lag = 1) + plm::lag(Corrup_TI_z, 1)"
-    ),
-    times = 2
-  ))
-
-ls_eqECM <- glue("diff(SupDem_trim, lag = 1) ~ plm::lag(SupDem_trim, 1:2) + {ls_ivECM} + diff(lnGDP_imp, lag = 1) + plm::lag(lnGDP_imp, 1)") %>%
-  as.vector()
-
-ls_ivFD <- rep(
-  c(
-    "Libdem_z",
-    "Polyarchy_z + Liberal_z"
-  ),
-  each = 2
-) %>%
-  paste0(rep(
-    c(
-      "",
-      " + Corrup_TI_z"
-    ),
-    times = 2
-  ))
-
-ls_eqFD <- glue("SupDem_trim ~ {ls_ivFD} + lnGDP_imp") %>%
-  as.vector()
-
-ls_mod_original <- c(
-  glue("plm({ls_eqECM}, model = 'pooling', data = sd.plm)"),
-  glue("plm({ls_eqFD}, model = 'fd', index = 'Country', data = sd.plm)")
-)
-ls_mod_correct <- c(
-  glue("plm({ls_eqECM}, model = 'pooling', data = sd.plm2)"),
-  glue("plm({ls_eqFD}, model = 'fd', index = 'Country', data = sd.plm2)")
-)
-
-ls_mod <- c(ls_mod_original, ls_mod_correct)
-
-result_clsAPSR <- map(ls_mod, ~ eval(parse(text = .)))
-
-result_clsAPSR_tidy <- map(result_clsAPSR, function(aResult) {
-  tidy_result <- tidy(aResult, conf.int = TRUE) %>%
-    mutate(std.error = vcovHC_se(aResult))
-
-  glance_result <- glance.plm(aResult)
-
-  ls_result <- list(tidy_result, glance_result)
-})
-```
-
-```{r}
-#| label: fig-regressionPlot
-#| fig-cap: "The Effect of Democracy on Change in Public Support"
-#| fig-width: 7
-#| fig-height: 8
-
-
-txt_models <- paste0("Model ",
-                     rep(1:2, each = 4), ".", rep(1:4, 2),
-                     " (",
-                     rep(c("EC", "EC", "FD", "FD"), 2),
-                     ")")
-
-vec_numCoef <- map_dbl(c(1, 2, 5, 6, 3, 4, 7, 8), # ECM ECM FD FD
-                       ~nrow(result_clsAPSR_tidy[[.]][[1]])) - 1 # subtract the intercepts
-
-txt_model_lab <- map2(txt_models, vec_numCoef, ~rep(.x, times = .y)) %>% 
-    unlist() # model lists
-txt_model_lab <- c(txt_model_lab[str_which(txt_model_lab, "EC")], 
-                   txt_model_lab[str_which(txt_model_lab, "FD")])
-# Modify the orders to match the dataset
-
-index_coefName <- c(
-    `plm::lag(SupDem_trim, 1:2)1` = "Democratic~Support[t-1]",
-    `plm::lag(SupDem_trim, 1:2)2` = "Democratic~Support[t-2]",
-    `diff(Libdem_z, lag = 1)` = "Delta~Liberal~Democracy",
-    `Libdem_z` = "Delta~Liberal~Democracy",
-    `plm::lag(Libdem_z, 1)` = "Liberal~Democracy[t-1]",
-    `diff(Polyarchy_z, lag = 1)` = "Delta~Electoral~Democracy",
-    `Polyarchy_z` = "Delta~Electoral~Democracy",
-    `plm::lag(Polyarchy_z, 1)` = "Electoral~Democracy[t-1]",
-    `diff(Liberal_z, lag = 1)` = "Delta~Minoritarian~Democracy",
-    `Liberal_z` = "Delta~Minoritarian~Democracy",
-    `plm::lag(Liberal_z, 1)` = "Minoritarian~Democracy[t-1]",
-    `diff(lnGDP_imp, lag = 1)` = "Delta~Log~GDP~per~capita",
-    `lnGDP_imp` = "Delta~Log~GDP~per~capita",
-    `plm::lag(lnGDP_imp, 1)` = "Log~GDP~per~capita[t-1]",
-    `diff(Corrup_TI_z, lag = 1)` = "Delta~Corruption",
-    `Corrup_TI_z` = "Delta~Corruption",
-    `plm::lag(Corrup_TI_z, 1)` = "Corruption[t-1]"
-)
-
-df_plot <- map_dfr(result_clsAPSR_tidy, ~.[[1]]) %>% 
-    filter(term != "(Intercept)") %>%
-    mutate(
-        type = ifelse(str_detect(term, "(_z|imp)$"), "FD", "EC"),
-        term = index_coefName[term],
-        term = factor(term, levels = unique(index_coefName)),
-        submodel = rep(c("Published", "Corrected"), each = nrow(.)/2),
-        submodel = factor(submodel, levels = c("Published","Corrected")),
-        model = rep(txt_model_lab, times = 2),
-        model = factor(model, levels = txt_models)
-    )
-
-txt_caption <- strwrap("Notes: Replications of Claassen (2020), Table 1, 47, and Table 2, 49.  Models denoted 'EC' are error-correction models; those marked 'FD' are first-difference models.", width = 115) %>% 
-  paste0(sep="", collapse="\n")
-
-small_multiple(df_plot, axis_switch = TRUE, dot_args = list(size = .9, fatten = 1)) +
-    geom_hline(yintercept = 0, colour = "grey50", linetype = 2) +
-    scale_color_grey(start = 0.8, end = 0.4, 
-                     name = NULL,
-                     breaks = c("Published",
-                              "Corrected"),
-                     labels = c("Publication Data",
-                              "Corrected Data")) +
-    theme(axis.text.x  = element_text(angle = 90, hjust = .5),
-          strip.text.y.left = element_text(angle = 0),
-          legend.position = c(0.006, -.01),
-          legend.justification = c(1, 1), 
-          legend.title = element_blank(),
-          legend.title.align = 0.5,
-          legend.text = element_text(size = 8),
-          legend.background = element_rect(color="gray90"),
-          legend.spacing = unit(-5, "pt"),
-          legend.key.width = unit(4.5, "mm"),
-          legend.key.height = unit(7, "mm"),
-          plot.title.position = "plot",
-          plot.caption.position = "plot",
-          plot.caption = element_text(size = 10, hjust = 0)) +
-  guides(color = guide_legend(override.aes = list(size=.3))) +
-  ggtitle("Dependent Variable: Change in Public Democratic Support") +
-  labs(caption = txt_caption)
-
-# ggsave("images/results.png")
-```
-
-
-@fig-regressionPlot presents our results in a "small multiple" plot [@SoltHu2015] for a clear comparison of the coefficients of each variable in the article's models. 
-In the plot, the dots represent point estimates and the whiskers show the associated 95% confidence intervals.
-<!-- Each row depicts a variable's performance in its own scale across all of the models. -->
-<!-- The lighter dots and whiskers replicate those reported in the published article; the darker ones are the estimates obtained with the corrected data. -->
-Models 1.1 through 1.4, which replicate those presented in Table 1 of @Claassen2020b [p. 47], examine the effects of overall liberal democracy using error-correction models and first-difference models.
-As @Claassen2020b [p. 46] notes, the thermostatic theory predicts that the estimated coefficient of the change in liberal democracy will be negative, while the classic theory suggests that lagged levels of liberal democracy will be positive.
-When using the original publication data with their data-entry errors, we replicate the results of the article exactly: the coefficients estimated for the change in liberal democracy are large, negative, and statistically significant across all four models, just as the thermostatic theory predicts. 
-The positive and statistically significant result for the lagged level of liberal democracy found in Model 1.1---supporting the classic theory---disappears when corruption is taken into account in Model 1.2, suggesting that "this effect is not particularly robust" [@Claassen2020b, p. 47].
-
-When the data-entry errors are corrected, however, the results for these models suggest a very different set of conclusions.
-The standard errors shrink across the board---indicating that the models are better estimated in the corrected data---but so do the magnitudes of the coefficients.
-The positive and statistically significant result for the lagged level of liberal democracy remains in Model 1.1.
-The estimate is only slightly smaller than in the publication data, and as with the publication data, it disappears when corruption is added in Model 1.2: the evidence, such as it is, for the classic theory, operationalized as a short-run process, remains substantively unchanged.
-On the other hand, the estimates for the change in liberal democracy that provided support for the thermostatic theory are much smaller---very nearly exactly zero---and fail to reach statistical significance in any of these four models.
-Models 2.1 through 2.4, which break liberal democracy into its electoral democracy and minoritarian democracy components, similarly undermine claims for the thermostatic theory.
-The strong and statistically significant negative coefficients for the change in minoritarian democracy on public democratic support that are found using the publication dataset evaporate when the data-entry errors are corrected.
-There is no support for the thermostatic theory.
-
-
-<!-- # References {.unnumbered} -->
-
-<!-- ::: {#refs-appendix} -->
-<!-- ::: -->
