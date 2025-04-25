@@ -9,7 +9,6 @@ format:
         \usepackage{typearea}
         \usepackage{endnotes}
         \let\footnote=\endnote
-
 crossref:
   sec-prefix: OSM
   sec-labels: alpha A
@@ -69,19 +68,17 @@ editor_options:
 editor:
   render-on-save: false
 title: |
-  | Data Wrangling Before Harmonization:
   | Best Practices for Getting
   | Past the 'Janitor Work'
+  | Data Wrangling Before Harmonization:
 # subtitle: "Preliminary version. Do not circulate without permission."
 abstract: "This article focuses on a preliminary step in any ex-post data harmonization project---wrangling the pre-harmonized data---and suggests best practices for helping scholars avoid errors in this often-tedious work. To provide illustrations of these best practices, the article uses the examples of pre-harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple sources to create comparable estimates, and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data."
-
 keywords: 
   - Data generation process
   - Machine assistance
   - Manual coding
   - Data cleaning
   - Data management
-
 ---
 
 ```{r}

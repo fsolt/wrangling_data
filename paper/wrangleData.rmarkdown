@@ -9,7 +9,6 @@ format:
         \usepackage{typearea}
         \usepackage{endnotes}
         \let\footnote=\endnote
-
 crossref:
   sec-prefix: OSM
   sec-labels: alpha A
@@ -69,43 +68,41 @@ editor_options:
 editor:
   render-on-save: false
 title: |
-  | Data Wrangling Before Harmonization:
   | Best Practices for Getting
   | Past the 'Janitor Work'
+  | Data Wrangling Before Harmonization:
 # subtitle: "Preliminary version. Do not circulate without permission."
 abstract: "This article focuses on a preliminary step in any ex-post data harmonization project---wrangling the pre-harmonized data---and suggests best practices for helping scholars avoid errors in this often-tedious work. To provide illustrations of these best practices, the article uses the examples of pre-harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple sources to create comparable estimates, and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data."
-
 keywords: 
   - Data generation process
   - Machine assistance
   - Manual coding
   - Data cleaning
   - Data management
-
 ---
 
 ```{r}
 #| label: setup
 #| include: false
 
-# options(repos = c(CRAN = "https://cloud.r-project.org"))
+options(repos = c(CRAN = "https://cloud.r-project.org"))
 
-# if (!require(cmdstanr)) {
-#   install.packages("cmdstanr", repos = c(
-#     "https://mc-stan.org/r-packages/",
-#     getOption("repos")
-#   ))
-#   library(cmdstanr)
-#   install_cmdstan() # C++ toolchain required; see https://mc-stan.org/cmdstanr/articles/cmdstanr.html
-# }
+if (!require(cmdstanr)) {
+  install.packages("cmdstanr", repos = c(
+    "https://mc-stan.org/r-packages/",
+    getOption("repos")
+  ))
+  library(cmdstanr)
+  install_cmdstan() # C++ toolchain required; see https://mc-stan.org/cmdstanr/articles/cmdstanr.html
+}
 
 if (!require(pacman)) {
   install.packages("pacman")
 }
 library(pacman)
 
-# # p_install(janitor, force = FALSE)
-# # p_install_gh(c("fsolt/DCPOtools"), force = FALSE)
+p_install(janitor, force = FALSE)
+p_install_gh(c("fsolt/DCPOtools"), force = FALSE)
 
 # load all the packages you will use below
 p_load(
@@ -569,7 +566,7 @@ plot_support <- data_comparison %>%
     breaks = bad_items
   )
 
-tx_note <- str_wrap("Notes: Each point represents the percentage of respondents in a country-year to give a democracy-supporting response to a particular survey item. Hand-entered data is as reported in Claassen (2020c); the machine-collected data was collected directly from the original surveys.  The Asia Barometer's item on the evaluation of democracy accounts for most overreports, and the Pew Global Attitudes item on the importance of democracy accounts for most substantial underreports.  In both cases, as well as the overreports of the suitability of democracy item in the second wave of the Asian Barometer, the issues can be easily explained by errors in transcribing the data in accordance with the reported coding rule.  Deviations in other items result from inconsistent treatment of missing data and/or survey weights, reflecting in part differences in codebook reporting practices across surveys.",
+tx_note <- str_wrap("Notes: Each point represents the percentage of respondents in a country-year to give a democracy-supporting response to a particular survey item. Hand-entered data is as reported in Claassen (2020c); the machine-collected data was collected directly from the original surveys. Only 85% of the observations, the difference between these percentages was negligible—less than half a percent—yielding points approximately along the plot’s dotted line. The Asia Barometer's item on the evaluation of democracy accounts for most overreports, and the Pew Global Attitudes item on the importance of democracy accounts for most substantial underreports.  In both cases, as well as the overreports of the suitability of democracy item in the second wave of the Asian Barometer, the issues can be easily explained by errors in transcribing the data in accordance with the reported coding rule.  Deviations in other items result from inconsistent treatment of missing data and/or survey weights, reflecting in part differences in codebook reporting practices across surveys.",
   width = 96
 )
 
