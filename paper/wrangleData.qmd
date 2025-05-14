@@ -190,10 +190,7 @@ as_glance_tibble <- function(..., na_types) {
   tibble::as_tibble_row(entries)
 }
 
-tidy.pgmm <- function(x,
-                      conf.int = FALSE,
-                      conf.level = 0.95,
-                      ...) {
+tidy.pgmm <- function(x, conf.int = FALSE, conf.level = 0.95, ...) {
   result <- summary(x)$coefficients %>%
     tibble::as_tibble(rownames = "term") %>%
     dplyr::rename(
@@ -277,300 +274,6 @@ The wrangling step determines the quality of data in the harmonization process, 
 The conventional approach usually involves a notorious bulk of manual work on indicator identification, data merging, data scaling, and so on [see, e.g., @Lohr2014].
 The tiresome task is easy to introduce errors in data collection procedure. 
 Manual wrangling make a full reproducibility of research pipeline more difficulty and undermine the transparency [@Liu2019].
-
-Here we provide a vivid example from real-life research to show how different results the seemingly basic, well-described hand-entered steps can produce.
-We attempted to replicate the spreadsheets applied in prominent studies [@Claassen2020a; @Claassen2020b] following the replication instructions of the publications but with a more automatic process (elaborated below).
-@fig-comparison presents democracy support percentages from both methods. 
-Points on the diagonal show agreement; points above indicate higher hand-entered values, while points below show lower hand-entered percentages compared to machine-collected data.
-
-```{r data-dcpo}
-#| label: data_comparison
-#| include: false
-
-
-if (!file.exists(here::here("data", "supdem raw survey marginals.csv"))) {
-  tempfile <- dataverse::get_file_by_doi("10.7910/DVN/HWLW0J/RA8IJC",
-    server = "dataverse.harvard.edu"
-  ) # AJPS replication file, not included in APSR replication
-
-  writeBin(tempfile, here::here("data", "supdem raw survey marginals.csv"))
-  rm(tempfile)
-}
-
-# publication data
-sd <- read_csv(here::here("data", "supdem raw survey marginals.csv"), col_types = "cdcddcdc") %>%
-  mutate(
-    item_fam = str_extract(tolower(Item), "^[a-z]+"),
-    country = countrycode::countrycode(Country, "country.name", "country.name"),
-    dataset = "supdem"
-  ) %>%
-  rename(year = Year, project = Project) %>%
-  with_min_yrs(2) # Selecting data w. at least two years
-
-# corrected data
-if (!file.exists(here::here("data", "claassen_input_raw.csv"))) {
-  claassen_input_raw <- DCPOtools:::claassen_setup(
-    vars = read_csv(here::here("data", "mood_dem.csv"),
-      col_types = "cccccc"
-    )
-  ) %>%
-    pluck("lower")
-
-  write_csv(claassen_input_raw,
-    file = here::here(
-      "data",
-      "claassen_input_raw.csv"
-    )
-  )
-}
-
-claassen_input_raw <- read_csv(
-  here::here(
-    "data",
-    "claassen_input_raw.csv"
-  ),
-  col_types = "cdcddcd"
-)
-
-claassen_input_raw1 <- claassen_input_raw %>%
-  filter(!((
-    str_detect(item, "army_wvs") &
-      # WVS obs identified as problematic by Claassen
-      ((country == "Albania" & year == 1998) |
-        (country == "Indonesia" &
-          (year == 2001 | year == 2006)) |
-        (country == "Iran" & year == 2000) |
-        (country == "Pakistan" &
-          (year == 1997 | year == 2001)) | # 1996 in Claassen
-        (country == "Vietnam" & year == 2001)
-      )
-  ) |
-    (
-      str_detect(item, "strong_wvs") &
-        ((country == "Egypt" & year == 2012) |
-          (country == "Iran" &
-            (year == 2000 | year == 2007)) | # 2005 in Claassen
-          (country == "India") |
-          (country == "Pakistan" &
-            (year == 1997 | year == 2001)) | # 1996 in Claassen
-          (country == "Kyrgyzstan" &
-            (year == 2003 | year == 2011)) |
-          (country == "Romania" &
-            (year == 1998 | year == 2005 | year == 2012)) |
-          (country == "Vietnam" & year == 2001)
-        )
-    ) |
-    (
-      country %in% c(
-        "Puerto Rico",
-        "Northern Ireland",
-        "SrpSka Republic",
-        "Hong Kong SAR China"
-      )
-    ))) %>%
-  with_min_yrs(2)
-
-claassen_input0 <- DCPOtools::format_claassen(claassen_input_raw1)
-
-cri <- claassen_input0$data %>%
-  mutate(
-    p_dcpo = str_extract(survey, "^[a-z]+"),
-    project = case_when(
-      p_dcpo == "afrob" ~ "afb",
-      p_dcpo == "amb" ~ "lapop",
-      p_dcpo == "arabb" ~ "arb",
-      p_dcpo == "asiab" ~ "asb",
-      p_dcpo == "asianb" ~ "asnb",
-      p_dcpo == "neb" ~ "ndb",
-      p_dcpo == "sasianb" ~ "sab",
-      TRUE ~ p_dcpo
-    ),
-    item_fam = str_extract(item, "^[a-z]+"),
-    item_fam = if_else(item_fam == "election", "elec", item_fam),
-    dataset = "cri"
-  )
-
-supdem_cri <- full_join(sd, cri, by = c("country", "year", "item_fam", "project"))
-
-# While DCPO assigns actual year of survey, Claassen (2020) often uses nominal year
-# of wave, so some corrections are required to match observations (~8% of obs);
-# we could write about this as a data-entry error, too, but no space to spare,
-# so we'll adopt those years instead to facilitate straight-up comparison
-no_problems <- inner_join(sd %>% select(-dataset),
-  cri %>% select(-dataset),
-  by = c("country", "year", "item_fam", "project")
-) %>%
-  mutate(diff_year = 0) # 3403 obs
-
-needed <- anti_join(
-  sd %>% select(-dataset),
-  cri %>% select(-dataset)
-) # 313 obs
-
-available <- anti_join(
-  cri %>% select(-dataset),
-  sd %>% select(-dataset)
-) # 1310 obs
-
-year_fixes <- left_join(needed, # 304 obs
-  available,
-  by = c("country", "project", "item_fam")
-) %>%
-  mutate(diff = year.x - year.y) %>%
-  group_by(country, project, item_fam, year.x) %>%
-  mutate(closest_to_claassen = min(abs(diff))) %>%
-  ungroup() %>%
-  group_by(country, project, item_fam, year.y) %>%
-  mutate(closest_to_dcpo = min(abs(diff))) %>%
-  ungroup() %>%
-  filter(closest_to_claassen == abs(diff) & closest_to_dcpo == abs(diff) & abs(diff) <= 3) %>%
-  filter(!(country == "Egypt" & year.x == 2014 & survey == "afrob5")) %>% # double matches (it's really afrob6)
-  mutate(
-    year = year.y,
-    diff_year = abs(diff)
-  )
-
-cys_crosswalk <- year_fixes %>%
-  select(country, y_dcpo = year.y, y_claassen = year.x, survey) %>%
-  distinct()
-
-claassen_input_raw2 <- claassen_input_raw1 %>%
-  # left_join(cys_crosswalk, by = c("country", "year" = "y_dcpo", "survey")) %>%
-  # mutate(year = if_else(is.na(y_claassen), year, y_claassen),
-  #        p_dcpo = str_extract(survey, "^[a-z]+"),
-  #        project = case_when(p_dcpo == "afrob" ~ "afb",
-  #                            p_dcpo == "amb" ~ "lapop",
-  #                            p_dcpo == "arabb" ~ "arb",
-  #                            p_dcpo == "asiab" ~ "asb",
-  #                            p_dcpo == "asianb" ~ "asnb",
-  #                            p_dcpo == "neb" ~ "ndb",
-  #                            p_dcpo == "sasianb" ~ "sab",
-  #                            TRUE ~ p_dcpo)) %>%
-  # right_join(sd %>%
-  #             distinct(country, year, project),
-  #           by = c("country", "year", "project")) %>%
-  right_join(sd %>% distinct(country), by = "country")
-
-claassen_input <- DCPOtools:::format_claassen(claassen_input_raw2)
-
-cri2 <- claassen_input$data %>%
-  mutate(
-    p_dcpo = str_extract(survey, "^[a-z]+"),
-    project = case_when(
-      p_dcpo == "afrob" ~ "afb",
-      p_dcpo == "amb" ~ "lapop",
-      p_dcpo == "arabb" ~ "arb",
-      p_dcpo == "asiab" ~ "asb",
-      p_dcpo == "asianb" ~ "asnb",
-      p_dcpo == "neb" ~ "ndb",
-      p_dcpo == "sasianb" ~ "sab",
-      TRUE ~ p_dcpo
-    ),
-    item_fam = str_extract(item, "^[a-z]+"),
-    item_fam = if_else(item_fam == "election", "elec", item_fam),
-    dataset = "cri2"
-  )
-
-supdem_cri2 <- full_join(sd,
-  cri2,
-  by = c("country", "year", "item_fam", "project")
-)
-
-no_problems2 <- inner_join(sd %>% select(-dataset),
-  cri2 %>% select(-dataset),
-  by = c("country", "year", "item_fam", "project")
-) %>%
-  mutate(year_correct = TRUE) # 3706 obs
-
-needed2 <- anti_join(
-  sd %>% select(-dataset),
-  cri2 %>% select(-dataset)
-) # 10 obs; these are not in the surveys
-
-data_comparison <- bind_rows(no_problems, year_fixes) %>%
-  mutate(
-    perc_cls = Response / Sample * 100,
-    perc_ours = x / samp * 100,
-    diff_perc = perc_cls - perc_ours,
-    diff_perc_abs = abs(diff_perc),
-    diff_x = round(Response - x),
-    diff_samp = round(Sample - samp)
-  ) %>%
-  select(-CAbb, -COWCode)
-
-save(data_comparison, file = here::here("data", "data_comparison.rda"))
-```
-
-```{r comparison-dcpo}
-#| label: fig-comparison
-#| fig-cap: "Comparing Democracy-Supporting Responses in Hand-Entered and Machine-Collected Data."
-#| fig-align: "center"
-#| fig-height: 5
-
-load(here::here("data", "data_comparison.rda"))
-
-bad_items <- c(
-  "Asia Barometer:\nEvaluation of Democracy",
-  "Asian Barometer II:\nSuitability of Democracy",
-  "Pew Global Attitudes:\nImportance of Democracy",
-  "Other Items"
-)
-
-plot_support <- data_comparison %>%
-  mutate(p_dcpo3 = case_when(
-    Item == "EvDemoc_asb" ~ "Asia Barometer:\nEvaluation of Democracy",
-    Item == "DemocSuit_asnb" & dplyr::between(year, 2005, 2008) ~ "Asian Barometer II:\nSuitability of Democracy",
-    Item == "ImpDemoc_pew" ~ "Pew Global Attitudes:\nImportance of Democracy",
-    TRUE ~ "Other Items"
-  ) %>%
-    factor(levels = bad_items)) %>%
-  ggplot(aes(x = perc_ours, y = perc_cls)) +
-  geom_point(aes(color = p_dcpo3, shape = p_dcpo3), size = 1.5) +
-  labs(
-    y = "Hand-Entered Data",
-    x = "Machine-Collected Data"
-  ) +
-  geom_abline(intercept = 0, slope = 1, linetype = "dotted") +
-  theme_bw() +
-  theme(
-    legend.justification = c(1, 0),
-    legend.position = c(.99, .01),
-    legend.text = element_text(size = 6),
-    legend.background = element_rect(fill = "transparent"),
-    legend.key.size = unit(1.1, "lines")
-  ) +
-  scale_colour_manual(
-    name = element_blank(),
-    values = alpha(
-      c(
-        "gray50",
-        "gray10",
-        "gray35",
-        "gray50"
-      ),
-      c(1, 1, 1, .3)
-    ),
-    breaks = bad_items
-  ) +
-  scale_shape_discrete(
-    name = element_blank(),
-    breaks = bad_items
-  )
-
-tx_note <- str_wrap("Notes: Each point represents the percentage of respondents in a country-year to give a democracy-supporting response to a particular survey item. Hand-entered data is as reported in Claassen (2020c); the machine-collected data was collected directly from the original surveys. Only 85% of the observations, the difference between these percentages was negligible—less than half a percent—yielding points approximately along the plot’s dotted line. The Asia Barometer's item on the evaluation of democracy accounts for most overreports, and the Pew Global Attitudes item on the importance of democracy accounts for most substantial underreports.  In both cases, as well as the overreports of the suitability of democracy item in the second wave of the Asian Barometer, the issues can be easily explained by errors in transcribing the data in accordance with the reported coding rule.  Deviations in other items result from inconsistent treatment of missing data and/or survey weights, reflecting in part differences in codebook reporting practices across surveys.",
-  width = 96
-)
-
-plot_support +
-  patchwork::plot_annotation(caption = tx_note) &
-  theme(plot.caption = element_text(hjust = 0))
-
-```
-
-For about `r {mean(data_comparison$diff_perc_abs < .5)*100} %>% round()`% of country-year-item observations, differences between percentages are negligible-less than half a percent-resulting in points near the plot’s diagonal. 
-However, for the remaining cases, differences are significant and cannot be ignored.
-These discrepancies stem from decisions on categorization, processing numerators and denominators in ratio calculation, and whether counting respondents excluded from original surveys (see more details in @sec-comparison). 
-Though errors introduced during such processes seems minor and may appear as random noise, they can lead to opposite conclusions [@HuEtAl2024a]. 
 Such issues pose a major, yet underrecognized, challenge to data harmonization in political science.
 
 In this article, we provide a practical routine taken the advantage of automatic programming and team work to reduce such data-entry errors and improve the reproducibility and transparency of the wrangling process for researchers and reviewers to check the errors.
@@ -672,15 +375,87 @@ To address theoretical comparability concerns, DCPO employs conservative filteri
 
 
 ```{r}
-#| label: data
+#| label: swiidData
 #| include: false
 
-api <- c("LISSY", "CEPALStat", "OECD", "Eurostat", "Beegle et al. 2016", "Statistics Canada", "Statistics Denmark", "Statistics Finland", "CSO Ireland", "Statistics Norway", "Statistics Sweden", "World Bank Poverty & Inequality Platform", "Statbank Greenland")
-sheet <- c("SEDLAC", "Transmonee 2012", "Personal communication, K. Beegle, 2016-08-01", "World Bank Povcalnet", "Australian Bureau of Statistics", "Instituto Naciónal de Estadística de Bolivia", "Instituto de Pesquisa Económica Aplicada", "Departamento Administrativo Nacional de Estadística Colombia", "Instituto Naciónal de Estadística y Censos Costa Rica", "Central Agency for Public Mobilization and Statistics Egypt", "Statistics Estonia", "Statistics Georgia", "Statistics Hong Kong 2017", "Statistics Indonesia", "Istat", "Statistical Institute of Jamaica", "Kazakhstan Committee on Statistics", "Statistics Korea", "National Statistical Committee of Kyrgyzstan", "National Bureau of Statistics of Moldova", "Statistical Office of Montenegro", "Statistics New Zealand 1999", "Philippines Statistical Agency", "Russian Federal State Statistics Service", "Singapore Department of Statistics", "Slovenia Statistics Office", "Slovenia Statistics Office 2005", "Instituto Nacional de Estadística Spain", "Switzerland Federal Statistics Office", "Taiwan Directorate General of Budget, Accounting, and Statistics", "Turkish Statistical Institute", "UK Office for National Statistics", "Institute for Fiscal Studies", "U.S. Congressional Budget Office", "U.S. Census Bureau", "Instituto Nacional de Estadística Venezuela", "Milanovic 2016", "Milanovic 2016; Brandolini 1998", "Ackah, Bussolo, De Hoyos, and Medvedev 2008", "NESDC Thailand", "U.S. Census Bureau 1998", "Dirección General de Estadística, Encuestas y Censos")
+api <- c(
+  "LISSY",
+  "CEPALStat",
+  "OECD",
+  "Eurostat",
+  "Beegle et al. 2016",
+  "Statistics Canada",
+  "Statistics Denmark",
+  "Statistics Finland",
+  "CSO Ireland",
+  "Statistics Norway",
+  "Statistics Sweden",
+  "World Bank Poverty & Inequality Platform",
+  "Statbank Greenland"
+)
+
+sheet <- c(
+  "SEDLAC",
+  "Transmonee 2012",
+  "Personal communication, K. Beegle, 2016-08-01",
+  "World Bank Povcalnet",
+  "Australian Bureau of Statistics",
+  "Instituto Naciónal de Estadística de Bolivia",
+  "Instituto de Pesquisa Económica Aplicada",
+  "Departamento Administrativo Nacional de Estadística Colombia",
+  "Instituto Naciónal de Estadística y Censos Costa Rica",
+  "Central Agency for Public Mobilization and Statistics Egypt",
+  "Statistics Estonia",
+  "Statistics Georgia",
+  "Statistics Hong Kong 2017",
+  "Statistics Indonesia",
+  "Istat",
+  "Statistical Institute of Jamaica",
+  "Kazakhstan Committee on Statistics",
+  "Statistics Korea",
+  "National Statistical Committee of Kyrgyzstan",
+  "National Bureau of Statistics of Moldova",
+  "Statistical Office of Montenegro",
+  "Statistics New Zealand 1999",
+  "Philippines Statistical Agency",
+  "Russian Federal State Statistics Service",
+  "Singapore Department of Statistics",
+  "Slovenia Statistics Office",
+  "Slovenia Statistics Office 2005",
+  "Instituto Nacional de Estadística Spain",
+  "Switzerland Federal Statistics Office",
+  "Taiwan Directorate General of Budget, Accounting, and Statistics",
+  "Turkish Statistical Institute",
+  "UK Office for National Statistics",
+  "Institute for Fiscal Studies",
+  "U.S. Congressional Budget Office",
+  "U.S. Census Bureau",
+  "Instituto Nacional de Estadística Venezuela",
+  "Milanovic 2016",
+  "Milanovic 2016; Brandolini 1998",
+  "Ackah, Bussolo, De Hoyos, and Medvedev 2008",
+  "NESDC Thailand",
+  "U.S. Census Bureau 1998",
+  "Dirección General de Estadística, Encuestas y Censos"
+)
 scrape <- c(
-  "National Statistical Service of Armenia", "Belarus National Committee of Statistics", "Statistics Hong Kong 2012", "Statistics Hong Kong 2007", "Dirección General de Estadística, Encuestas y Censos 2016", "Economy Planning Unit of Malaysia", "Perry 2018", "Dirección General de Estadística, Encuestas y Censos 2017", "Statistics Sri Lanka 2015", "NESDB Thailand", "Instituto Nacional de Estadística Uruguay", "General Statistics Office of Vietnam 2013", "General Statistics Office of Vietnam", # <- scrape from pdf
+  "National Statistical Service of Armenia",
+  "Belarus National Committee of Statistics",
+  "Statistics Hong Kong 2012",
+  "Statistics Hong Kong 2007",
+  "Dirección General de Estadística, Encuestas y Censos 2016",
+  "Economy Planning Unit of Malaysia",
+  "Perry 2018",
+  "Dirección General de Estadística, Encuestas y Censos 2017",
+  "Statistics Sri Lanka 2015",
+  "NESDB Thailand",
+  "Instituto Nacional de Estadística Uruguay",
+  "General Statistics Office of Vietnam 2013",
+  "General Statistics Office of Vietnam", # <- scrape from pdf
   # webscrape ->
-  "Institut National de la Statistique et des Études Économiques France", "Statistical Center of Iran", "National Statistical Office of Thailand"
+  "Institut National de la Statistique et des Études Économiques France",
+  "Statistical Center of Iran",
+  "National Statistical Office of Thailand"
 )
 
 length(api) <- length(sheet)
@@ -690,13 +465,44 @@ mode <- tibble(api, sheet, scrape) %>%
   gather(key = mode, value = source1) %>%
   filter(!is.na(source1))
 
-swiid_source <- read_csv("https://raw.githubusercontent.com/fsolt/swiid/master/data/swiid_source.csv",
-  col_types = "cdddcclcccc"
-) %>%
+## Merely to deal with the Internet under GFW
+## Enable the following when making the replication file
+# swiid_source <- read_csv(
+#   "https://raw.githubusercontent.com/fsolt/swiid/master/data/swiid_source.csv",
+#   col_types = "cdddcclcccc"
+# ) %>%
+#   left_join(mode, by = "source1") %>%
+#   mutate(mode = if_else(is.na(mode), "hand", mode))
+
+swiid_source <- rio::import(here("data", "swiid_source.csv")) %>%
   left_join(mode, by = "source1") %>%
   mutate(mode = if_else(is.na(mode), "hand", mode))
 
-wordify_numeral <- function(x) setNames(c("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", " seventeen", "eighteen", "nineteen"), 1:19)[x]
+wordify_numeral <- function(x)
+  setNames(
+    c(
+      "one",
+      "two",
+      "three",
+      "four",
+      "five",
+      "six",
+      "seven",
+      "eight",
+      "nine",
+      "ten",
+      "eleven",
+      "twelve",
+      "thirteen",
+      "fourteen",
+      "fifteen",
+      "sixteen",
+      " seventeen",
+      "eighteen",
+      "nineteen"
+    ),
+    1:19
+  )[x]
 
 api_percent <- swiid_source %>%
   count(mode == "api") %>%
@@ -719,32 +525,37 @@ automated_percent <- swiid_source %>%
 #| fig-height: 2
 #| fig-width: 4
 
-
 swiid_source %>%
   count(mode) %>%
-  mutate(method = fct_recode(factor(mode),
-    "API" = "api",
-    "Spreadsheet\nDownload" = "sheet",
-    "Web/PDF\nScrape" = "scrape",
-    "Hand\nEntered" = "hand"
+  mutate(
+    method = fct_recode(
+      factor(mode),
+      "API" = "api",
+      "Spreadsheet\nDownload" = "sheet",
+      "Web/PDF\nScrape" = "scrape",
+      "Hand\nEntered" = "hand"
+    ) %>%
+      fct_relevel(
+        "Hand\nEntered",
+        "Web/PDF\nScrape",
+        "Spreadsheet\nDownload",
+        "API"
+      )
   ) %>%
-    fct_relevel(
-      "Hand\nEntered",
-      "Web/PDF\nScrape",
-      "Spreadsheet\nDownload",
-      "API"
-    )) %>%
   ggplot(aes(x = n, y = method, fill = method)) +
   geom_bar(stat = "identity") +
   theme_bw() +
   theme(axis.title.y = element_blank()) +
   xlab("Observations") +
-  scale_fill_manual("Legend", values = c(
-    "Hand\nEntered" = "gray75",
-    "Web/PDF\nScrape" = "gray10",
-    "Spreadsheet\nDownload" = "gray10",
-    "API" = "gray10"
-  )) +
+  scale_fill_manual(
+    "Legend",
+    values = c(
+      "Hand\nEntered" = "gray75",
+      "Web/PDF\nScrape" = "gray10",
+      "Spreadsheet\nDownload" = "gray10",
+      "API" = "gray10"
+    )
+  ) +
   theme(legend.position = "none")
 
 # Hand-Entered and Machine-Collected
@@ -818,37 +629,3 @@ While some error is inevitable, with responsible researcher oversight, data-entr
 
 ::: {#refs-main}
 :::
-
-\pagebreak
-
-\hypertarget{appendix-appendix}{%
-\appendix}
-
-# Online Supplementary Materials {.unnumbered}
-
-\setcounter{page}{1}
-\renewcommand{\thepage}{A\arabic{page}}
-\setcounter{figure}{0}
-\renewcommand{\thefigure}{A.\arabic{figure}}
-\setcounter{table}{0}
-\renewcommand{\thetable}{A.\arabic{table}}
-
-# Sources of differences shown in @fig-comparison {#sec-comparison}
-
-Comparing the original hand-entered dataset [@Claassen2020d] with data that were machine-collected using the `DCPOtools` package for R [@Solt2018] revealed three survey items for which the hand-entered data did not match the data's documented coding rules.
-These rules indicate that responses above the median value in the response scale are to be considered as supporting democracy, while those at the median value and below are not [see @Claassen2020b, Appendix 1.3].
-
-First, the Asia Barometer asked respondents in 35 country-years to indicate whether they thought "a democratic political system" would be very good, fairly good, or bad for their country.
-According to the original study's coding rules [see @Claassen2020b, Appendix 1.3], only answers above the median of the response categories should be considered as democracy supporting, yet in this case the lukewarm intermediate category was coded as supporting democracy as well.
-Similarly tepid responses at and below the median response category to similar questions (e.g., in the Arab Barometer, that democracy was "somewhat appropriate" for the country) were coded as not supportive, confirming that this is indeed a data-entry error.
-This discrepancy resulted in hand-entered percentages of democracy-supporting responses ranging from `r data_comparison %>% filter(item=="evdemoc_asiab") %>% pull(diff_perc) %>% min() %>% round()` to `r data_comparison %>% filter(item=="evdemoc_asiab") %>% pull(diff_perc) %>% max() %>% round()` percentage points higher than the data automatically collected directly from the survey datasets.
-<!-- and averaging `r data_comparison %>% filter(item=="evdemoc_asiab") %>% pull(diff_perc) %>% mean() %>% round()` points higher. -->
-
-Second, the four waves of the Asian Barometer included the following item: "Here is a similar scale of 1 to 10 measuring the extent to which people think democracy is suitable for our country. If 1 means that democracy is completely unsuitable for [name of country] today and 10 means that it is completely suitable, where would you place our country today?"
-In accordance with the coding rules of the study, responses of 6 through 10 are considered democracy supporting, and that is how the first, third, and fourth waves of the survey are coded.
-For the second wave, however, 5 was erroneously also included among the democracy-supporting responses.
-This data-entry error resulted percentages overstated by as much as `r data_comparison %>% filter(item=="democsuit_asianb" & (year==2005|year==2006|year==2008)) %>% pull(diff_perc) %>% max() %>% round()` percentage points in 9 country-years. 
-
-And third, the Pew Global Attitudes surveys' four-point item asking about the importance of living in a country with regular and fair contested elections: the question wording is "How important is it to you to live in a country where honest elections are held regularly with a choice of at least two political parties? Is it very important, somewhat important, not too important or not important at all?"
-In this case, rather than including respondents who gave both responses above the median---"very important" and "somewhat important"---only those respondents who answered "very important" were entered as supporting democracy.
-This error caused the hand-entered percentages to be substantially lower in 91 country-years.
