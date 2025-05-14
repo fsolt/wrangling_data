@@ -38,7 +38,7 @@ affiliations:
     name: Center for Social Data Analytics, Pennsylvania State University, University Park, USA
   - id: ia
     name: Department of Political Science, University of Iowa, Iowa City, USA
-thanks: "Corresponding author: [yuehong-tai@uiowa.edu](mailto:yuehong-tai@uiowa.edu). Current version: `r format(Sys.time(), '%B %d, %Y')`.  Replication materials and complete revision history may be found at [https://github.com/fsolt/wrangling_data](https://github.com/fsolt/wrangling_data). The authors contributed equally to this work.  Yue Hu appreciates the funding support from the National Natural Science Foundation of China (72374116) and Tsinghua University Initiative Scientific Research Program (2024THZWJC01)."
+thanks: "Corresponding author: [yhcasstai@psu.edu](mailto:yhcasstai@psu.edu). Current version: `r format(Sys.time(), '%B %d, %Y')`.  Replication materials and complete revision history may be found at [https://github.com/fsolt/wrangling_data](https://github.com/fsolt/wrangling_data). The authors contributed equally to this work.  Yue Hu appreciates the funding support from the National Natural Science Foundation of China (72374116) and Tsinghua University Initiative Scientific Research Program (2024THZWJC01)."
 citeproc: false # to make multibib and wordcount work
 filters:
   - authors-block
@@ -68,8 +68,8 @@ editor:
   render-on-save: true
 title: |
   | Best Practices for Getting
-  | Past the 'Janitor Work'
-  | Data Wrangling Before Harmonization:
+  | Past the 'Janitor Work':
+  | Data Wrangling Before Harmonization
 # subtitle: "Preliminary version. Do not circulate without permission."
 abstract: "This article focuses on a preliminary step in any ex-post data harmonization project---wrangling the pre-harmonized data---and suggests best practices for helping scholars avoid errors in this often-tedious work. To provide illustrations of these best practices, the article uses the examples of pre-harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple sources to create comparable estimates, and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data."
 keywords: 
@@ -274,7 +274,17 @@ The wrangling step determines the quality of data in the harmonization process, 
 The conventional approach usually involves a notorious bulk of manual work on indicator identification, data merging, data scaling, and so on [see, e.g., @Lohr2014].
 The tiresome task is easy to introduce errors in data collection procedure. 
 Manual wrangling make a full reproducibility of research pipeline more difficulty and undermine the transparency [@Liu2019].
-Such issues pose a major, yet underrecognized, challenge to data harmonization in political science.
+
+These challenges are amplified when raw data comes from heterogeneous sources and have been processed using various software environments over time.
+This is a common scenario in secondary data collection.
+For example, older survey files stored in SPSS’s ASCII or portable formats often require extensive restructuring before they can be merged with new format of data.
+Such undocumented transformations make it difficult to track changes and undermine transparency.
+
+Finally, even meticulous documentation cannot eliminate the influence of human discretion embedded in manual processing.
+Such discretion leaves behind few traces, making it difficult for collaborators or reviewers to verify the wrangling process or trace sources of error.
+
+In short, poor source data quality, the absence of reproducibility, and untrackable human discretion in manual janitor work have collectively became the largest obstacle on the way to data harmonization, which yet have thus far gained little attention.
+
 
 In this article, we provide a practical routine taken the advantage of automatic programming and team work to reduce such data-entry errors and improve the reproducibility and transparency of the wrangling process for researchers and reviewers to check the errors.
 The routine includes three steps: data selection, data entry, and opening.
@@ -352,14 +362,6 @@ For the latter, we either categorize such items into pre-defined dimensions and/
 Therefore, we broke down the cross-check step into several lab meetings interspersed during the data selection to collect new insights from each members' selection works and make sure everyone were on the same page through the whole process.
 The process ends with a systemic cross-check of the final selected data among members. 
 
-In the DCPO project, the process begins with a shared conceptual foundation through literature review and pre-defined dimensions of latent opinion.
-Clearly defining the latent construct among team members is essential for ensuring theoretical comparability across countries and time [@Koc2025]
-Then, team members are assigned datasets from specific regions to identify relevant items based on both theoretical guidance and regional knowledge. 
-After initial item selection, each member reviews another's coded data to identify discrepancies from misinterpretations or ambiguous items, a.k.a., a dual-entry process.
-
-Disputed cases are flagged for later group discussions, revealing items lacking cross-cultural equivalence or suggesting multidimensionality requiring theoretical disaggregation.
-The iterative process aimed at improving construct validity and reducing oversimplification [@Slomczynsi2025]. 
-The team conducts several lab meetings during data selection to incorporate insights and ensure alignment throughout the process.
 
 ## Step 2: Data Entry Automation {#sec-automate}
 
@@ -602,9 +604,11 @@ Similarly, people can see the updating history of the in  SWIID dataset in <http
 
 # Discussion
 
-![](images/data_diagram.png){#fig-diagram fig-align="center" height=400}
 
-Implementing these open-science practices requires effort [see @EngzellRohrer2021]. 
+![The 3-Step Routine of Data Wrangling Before Harmonization](images/data_diagram.png){#fig-diagram fig-align="center" height=600}
+
+@fig-diagram presents the whole process of the 3-step routine of data wrangling for later harmonization phase.
+Implementing these practices requires effort, just as in many open-science endeavors [see @EngzellRohrer2021]. 
 Though labor-intensive, the double-entry method reduces error rates thirty-fold [@BarchardPace2011, p. 1837], justifying the investment. 
 Teamwork distributes tasks, reducing fatigue-related errors, while allowing discrepancies to be resolved through discussion.
 
