@@ -585,7 +585,6 @@ For data sources, such as those from academic articles or books, that have to be
 For the remaining `r 100 - automated_percent`% of the SWIID observations, for instance, we collected them using Sepulveda's `tabulapdf` R package to avoid data-entry errors as long as they are in pdf [@Sepulveda2024].
 The advanced Optical Character Recognition (OCR) can extend this method on data sources even in hard copies.
 
-
 And finally, for data that one has to enter manually, the team-based working flow can be supplementary.
 One source of SWIID contains crucial information encoded in the typeface of its tables [see @MitraYemtsiv2006, p. 6]; this information would be lost if the tables were read directly into R.
 We reapplied the approach from the data selection here to enter them twice into separate spreadsheets.^[Most often this has been done by two different investigators, but sometimes sequentially by a single researcher.]
@@ -595,11 +594,19 @@ The dual-entry process allows for automated cross-checks of the newly entered da
 ## Step 3: "Second-Order" Opening
 
 Since the replication crisis, replication files for analytical results in academic articles has become a standard requirement for top-tier journals in political science [@ChangLi2015; @OpenScienceCollaboration2015]. 
-Nevertheless, the continual raising controversies on the researcher degrees of freedom indicated that current open is still not adequate.^[See a summary of the "researcher degrees of freedom" literature in @HuEtAl2024a.]
+Nevertheless, the continual raising controversies on the researcher degrees of freedom indicated that current open is still not adequate.^[See a summary of the "researcher degrees of freedom" discussion in @HuEtAl2024a.]
 Especially in relation with data harmonization, we eager researchers to conduct a, what we called, the "second-order" opening. 
-That is, not only opening analytical steps (the "first-order") but also the data generation process (the "second-order"), including data collection, data cleaning, and data wrangling, as mentioned above.
+That is, not only opening analytical steps (the "first-order") but also the data generation process (the "second-order"), including data collection, cleaning, and wrangling.
 
-If researchers applied our suggestions of team-based construct building, systematic data selection, and automated data entry, the second-order opening becomes both feasible and efficient.
+Empirical evidence has indicated the severe consequences without the second-order opening.
+A recent research has found that the variation in the estimated effects caused by researchers may outweigh the population's variation [@HolzmeisterEtAl2024].
+Within these researcher-choice variations, a substantial portion comes from the data-wrangling process [@Huntington-KleinEtAl2025, p. 33].
+In a "many-analyst" analysis, @Huntington-KleinEtAl2025 requested 146 research teams to complete the same research task.
+The study found that the teams who were given the same research design but no pre-cleaned data set generated the highest outcome variation---even higher than those teams who were only given the research task.
+The teams who were given the pre-cleaned data set generated the lowest outcome variation.
+These findings indicate that the research replicability cannot be guaranteed if only with the first- but not the second-order opening.
+
+If researchers apply our suggestions of team-based construct building, systematic data selection, and automated data entry, the second-order opening will be both feasible and efficient.
 Along with a clearly conceptualized theoretical framework, researchers can simply share their programming scripts for data downloading, formatting, and wrangling, ensuring that the full pipeline is documented and reproducible.
 
 With developed scientific and technical publishing system, such as Quarto or R markdown, and version control platforms (e.g., Github) and open collaboration platforms (e.g., Open Science Framework, OSF), researchers can integrate the entire workflow—from raw data collection to final analysis—within a single, publicly trackable archive.
@@ -616,7 +623,7 @@ Similarly, people can see the updating history of the in  SWIID dataset in <http
 # Discussion
 
 
-![The 3-Step Routine of Data Wrangling Before Harmonization](images/data_diagram.png){#fig-diagram fig-align="center" height=600}
+![The TAO of Data Wrangling Before Data Harmonization. Source: Self generated.](images/data_diagram.png){#fig-diagram fig-align="center" height=600}
 
 @fig-diagram presents the whole process of the 3-step routine of data wrangling for later harmonization phase.
 Implementing these practices requires effort, just as in many open-science endeavors [see @EngzellRohrer2021]. 
