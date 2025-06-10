@@ -286,7 +286,6 @@ Such discretion leaves behind few traces, making it difficult for collaborators 
 
 In short, poor source data quality, the absence of reproducibility, and untrackable human discretion in manual janitor work have collectively became the largest obstacle on the way to data harmonization, which yet have thus far gained little attention.
 
-
 In this article, we provide a practical routine taken the advantage of automatic programming and team work to reduce such data-entry errors and improve the reproducibility and transparency of the wrangling process for researchers and reviewers to check the errors.
 The routine includes three steps: data selection, data entry, and opening.
 We illustrate how researchers use this routine on statistical (*hard*) and opinion (*soft*) data with two ongoing harmonization efforts, the Standardized World Income Inequality Database (SWIID) and the Dynamic Comparative Public Opinion (DCPO) project.
@@ -335,7 +334,7 @@ A deliberative set requires the members in a research team---regardless several 
 These understandings will help the team members identify the right data to collect and discover extra useful data sources that are not in the initial plan.
 
 In the SWIID program, for example, we told RAs that the goal of the research is to generate comparable statistics of country-level economic inequality.
-We provide a list of sources mainly from national statistic bureaus for them to start, but we also told them that update statistics for some countries may come from academic papers, published documents, and other sources, and they are free to add them in while making sure a valid link of the new sources are also recorded.
+We provide a list of sources mainly from national statistic bureaus for them to start, but we also told them that updated statistics for some countries may come from academic papers, published documents, and other sources, and they are free to add them in while making sure a valid link of the new sources are also recorded.
 
 Ensuring team members to understand how the data would use later is also important, as they could have a better sense of what data are analyticable and a forward perspective of how many situations would the later entry part need to take care. 
 In the SWIID project, we told the RAs that the inequality statistics be recorded in four formats: Gini index in disposable (post-tax, post-transfer) income, Gini in market (pre-tax, pre-transfer) income, absolute redistribution (market-income inequality minus net-income inequality), or relative redistribution (market-income inequality minus net-income inequality, divided by market-income inequality).
@@ -344,7 +343,6 @@ So, for later unification work, they need not only to record the digits but also
 The SWIID project requires update for almost every year and we also often hire new RAs.
 Therefore, the cross-check is done in a rolling basis usually by the rookies who are in charge of checking the old data and updating malfunctional links.
 This is both a learning process and a way to improve data accuracy.
-
 
 In the DCPO project, clearly defining and agreeing upon the latent construct among team members is a critical first step for ensuring theoretical comparability across countries and over time  [@Koc2025]. 
 This process begins with a shared conceptual foundation established through literature review and corresponding pre-defined potential dimensions of the latent opinion.
@@ -364,6 +362,11 @@ For the latter, we either categorize such items into pre-defined dimensions and/
 Therefore, we broke down the cross-check step into several lab meetings interspersed during the data selection to collect new insights from each members' selection works and make sure everyone were on the same page through the whole process.
 The process ends with a systemic cross-check of the final selected data among members. 
 
+In addition to reducing manual biases, teamwork also helps expand the data pool.
+Both SWIID and DCPO projects enrolled team members from countries other than the U.S.
+These members have well used their language and cultural advantages to discover more data recorded in non-English languages and improve the precision of the data selections.
+To some extent, data from different sources also help correct the biases caused by the designers' cultural backgrounds. 
+
 
 ## Step 2: Data Entry Automation {#sec-automate}
 
@@ -376,7 +379,6 @@ It converts various file formats to R-readable objects, extracts variables of in
 
 To address theoretical comparability concerns, DCPO employs conservative filtering, removing items appearing in fewer than five country-years in countries surveyed at least three times, minimizing the risk of sacrificing comparability for coverage [@Koc2025].
 `DCPOtools` standardizes country names using @Arel-BundockEtAl2018's `countrycode` and ensures years reflect actual fieldwork dates, creating aggregated respondent data for the latent variable model.
-
 
 ```{r}
 #| label: swiidData
@@ -567,6 +569,9 @@ swiid_source %>%
 
 While coding datasets and items into structured spreadsheets facilitates automation, an even better version starts the automation since the data selection step via programming and APIs.
 As shown in @fig-dataMethod, the current version of SWIID grapes `r api_percent`% of the observations through API.
+In @sec-packages, we also provide an incomplete list of R packages that can ease the processes to, for example, collect data with APIs and clean and transform data. 
+Readers can also use the codes in this article's replication file to explore more automation options for more specific needs.
+
 When no API is available, the automation script downloads and reads any available spreadsheets [see @Wickham2016].
 In the absence of a spreadsheet, the process of scraping the data either directly from the web or, preferably, from a pdf file [see @Sepulveda2024] is automated.
 Together the collection of `r automated_percent`% of the source data is scripted.
