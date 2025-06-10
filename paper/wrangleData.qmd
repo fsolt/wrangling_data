@@ -671,7 +671,7 @@ kw_transform <- c("convert data", "reformat", "transform", "aggregate", "rescale
 kw_short <- c(kw_download[1], kw_clean[1], kw_transform[1])
 
 ls_packages <- map(kw_short, \(keyword){
-  pkg_search(keyword, format = "long", size = 20) |> 
+  pkg_search(keyword, format = "long", size = 50) |> 
     select(package, title, maintainer = maintainer_name) 
 }) |> 
   set_names(c("download", "clean", "transform"))
@@ -683,6 +683,10 @@ ls_packages <- map(kw_short, \(keyword){
 tt(ls_packages$download, 
   caption = "Example packages for downloading data with API\\label{tbl-download}",
   width = c(0.2, 0.5, 0.3)) |> 
+  style_tt(
+    tabularray_inner = "stretch=0",
+    fontsize = 0.7
+  ) |> 
   theme_tt("multipage")
 
 ```
@@ -692,6 +696,10 @@ tt(ls_packages$download,
 tt(ls_packages$clean, 
   caption = "Example packages for wrangling data with API\\label{tbl-clean}",
   width = c(0.2, 0.5, 0.3)) |> 
+  style_tt(
+    tabularray_inner = "stretch=0",
+    fontsize = 0.7
+  ) |>
   theme_tt("multipage")
 
 ```
@@ -701,6 +709,10 @@ tt(ls_packages$clean,
 tt(ls_packages$transform, 
   caption = "Example packages for transforming data with API\\label{tbl-transform}",
   width = c(0.2, 0.5, 0.3)) |> 
+  style_tt(
+    tabularray_inner = "stretch=0",
+    fontsize = 0.7
+  ) |>
   theme_tt("multipage")
 
 ```
