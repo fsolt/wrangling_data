@@ -3,7 +3,7 @@ format:
   pdf:
     number-sections: true
     papersize: a4
-    keep-tex: true
+    keep-tex: false
     include-in-header: 
       text: |
         \usepackage{typearea}
@@ -296,8 +296,9 @@ We illustrate how researchers use this routine on statistical (*hard*) and opini
 
 Our routine aims to helping researchers reach three goals for scientific research: 
 
+1. To reduce the manual entry errors to improve the accuracy of the harmonized data and analytic data; 
 1. To incorporate as much available data as possible to provide a base for comparable data and increase generality of the inferences;
-1. To reduce the manual entry errors to improve the accuracy of the harmonized data and analytic data; and 
+and
 1. To improve the reproducibility of data wrangling process for the sake of transparency.
 
 The routine decomposes a data-wrangling process into three steps: 
@@ -684,7 +685,7 @@ tt(ls_packages$download,
 ```{r}
 
 tt(ls_packages$clean, 
-  caption = "Example packages for downloading data with API\\label{tbl-clean}",
+  caption = "Example packages for wrangling data with API\\label{tbl-clean}",
   width = c(0.2, 0.5, 0.3)) |> 
   theme_tt("multipage")
 
@@ -693,7 +694,7 @@ tt(ls_packages$clean,
 ```{r}
 
 tt(ls_packages$transform, 
-  caption = "Example packages for downloading data with API\\label{tbl-transform}",
+  caption = "Example packages for transforming data with API\\label{tbl-transform}",
   width = c(0.2, 0.5, 0.3)) |> 
   theme_tt("multipage")
 
