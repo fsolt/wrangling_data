@@ -325,7 +325,7 @@ In the following sections we first address the common challenges for the phases 
 Large scale of data selection and cleaning is almost always tedious, as something to be delegated to research assistants, to someone---indeed anyone, but usually research assistants (RA)---else [see @Torres2017].
 This manual procedure is easy to make mistakes and errors.
 @HaegemansEtAl2019 [p. 1] has demonstrated examples of misrouted financial transactions and airline flights.
-In a more systematic examination, @BarchardPace2011 found that RA assigned in an experiment to carefully enter data manually, even those instructed to double-check their entries against the original, had error rates approaching 1% in just a single roughly half-hour session.
+In a more systematic examination, @BarchardPace2011 found that RA assigned in an experiment to carefully enter data manually and instructed to prioritize accuracy over speed still had error rates approaching 1% in just a single roughly half-hour session.
 The consequences of such errors can be pernicious.
 
 Our antidote for this issue is a combination of team work and automation. 
