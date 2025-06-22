@@ -67,7 +67,7 @@ editor_options:
 editor:
   render-on-save: true
 title: |
-  | A TAO of Data Wrangling:
+  | A TAO for Data Wrangling:
   | A Practical Routine for Getting
   | Past the 'Janitor Work'
 subtitle: "Preliminary version. Do not circulate without permission."
@@ -274,15 +274,13 @@ body(small_multiple)[[19]] <- substitute(
 Empowered by the spreading Internet and advancing computational power, researchers have entered an unprecedented age of data availability.
 A growing volume of social science research aims to take the benefit to extend the generality: they employ large quantities of data drawn from different sources.
 However, ensuring the quality of harmonized datasets remains a significant challenge in handling fitness to use and raw data quality monitoring among others [@Slomczynsi2025].
-Beyond the focus on the harmonization process itself, we argue that quality assurance must begin *earlier* to the data-wrangling step where raw inputs are selected, processed, and prepared for harmonization.
 
 The wrangling step determines the quality of data in the harmonization process, and the challenges is how to properly and transparently clean the increasing amount and diversity of data.
 The conventional approach usually involves a notorious bulk of manual work on indicator identification, data merging, data scaling, and so on [see, e.g., @Lohr2014].
 The tiresome task is easy to introduce errors in data collection procedure. 
 Manual wrangling make a full reproducibility of research pipeline more difficulty and undermine the transparency [@Liu2019].
 
-These challenges are amplified when raw data comes from heterogeneous sources and have been processed using various software environments over time.
-This is a common scenario in secondary data collection.
+These challenges are amplified when raw data comes from heterogeneous sources and has been processed using various software environments over time.
 For example, older survey files stored in SPSS's ASCII or portable formats often require extensive restructuring before they can be merged with new format of data.
 Such undocumented transformations make it difficult to track changes and undermine transparency.
 
@@ -290,13 +288,12 @@ Finally, even meticulous documentation cannot eliminate the influence of human d
 Such discretion leaves behind few traces, making it difficult for collaborators or reviewers to verify the wrangling process or trace sources of error.
 
 In short, poor source data quality, the absence of reproducibility, and untrackable human discretion in manual janitor work have collectively became the largest obstacle on the way to data harmonization, which yet have thus far gained little attention.
-
 In this article, we provide a practical routine (a "TAO") taken advantage of automatic programming and teamwork to reduce such data-entry errors and improve the reproducibility and transparency of the wrangling process for researchers and reviewers to check the errors.
-This TAO routine covers the three phases of data wrangling: data collection/selection, data entry, and opening.
+This TAO covers the three phases of data wrangling: data collection/selection, data entry, and opening.
 We illustrate how researchers use this routine on statistical (*hard*) and opinion (*soft*) data with two ongoing harmonization efforts, the Standardized World Income Inequality Database (SWIID) and the Dynamic Comparative Public Opinion (DCPO) project.
 
 
-# A 3-Step "Tao" for Data Wrangling
+# A 3-Step "TAO" for Data Wrangling
 
 Our routine aims to helping researchers reach three goals for scientific research: 
 
@@ -311,20 +308,19 @@ The routine decomposes a data-wrangling process into three steps:
 1. Data entry **a**utomation; and 
 1. "Second-order" **o**pening.
 
-To illustrate the above routine, we use two data harmonization projects as examples, SWIID and DCPO.
-SWIID is a long-running project that seeks to provide harmonized income inequality statistics for the broadest possible coverage of countries and years [@Solt2009; @Solt2015; @Solt2016; @Solt2020].
+We use two data harmonization projects, SWIID and DCPO, to illustrate this routine.
+SWIID is a long-running project that seeks to provide harmonized income inequality statistics for the broadest possible coverage of countries and years [@Solt2020].
 As of its most recent update at the time of this writing, its source data consists of some 27,000 observations of the Gini coefficient of income distribution in nearly 200 countries over as many as 65 years, collected from over 400 separate sources including international organizations, national statistics bureaus, and academic studies.
 
 DCPO is both a method and a database.
 Scholarship on comparative public opinion only rarely benefits from relevant items asked annually by the same survey in many countries [see, e.g., @HagemannEtAl2017].
-To address the lack of cross-national and longitudinal data on many topics, a number of works have presented latent variable models that harmonize available but incomparable survey items [see e.g., @CaugheyEtAl2019; @Claassen2019; @KolczynskaEtAl2024].
-Along this line, DCPO not only provides latent variable measurements but also automatized and reproducible data collection [@Solt2020], which has been applied in a complete pipeline for a variety of topics such as gender egalitarianism [@WooEtAl2023], political interest [@HuSolt2024a], and support for gay rights [@WooEtAl2024], among other aspects of public opinion and open it freely for global researchers (see more updated data collections at <https://dcpo.org/>).
+To address the lack of cross-national and longitudinal data on many topics, a number of works have presented latent variable models that harmonize available but incomparable survey items [see e.g., @CaugheyEtAl2019; @Claassen2019].
+Along this line, DCPO not only provides latent variable measurements but also automatized and reproducible data collection [@Solt2020], which has been applied in a complete pipeline for a variety of topics such as gender egalitarianism, political interest, and support for gay rights, among other aspects of public opinion and open it freely for global researchers (see more updated data collections at <https://dcpo.org/>).
 
-In the following sections we first address the common challenges for the phases of data wrangling and explain how our routine can help deal with it illustrated with the data wrangling processes of the SWIID and DCPO projects.
 
 ## Step 1: Team-Based Construct Building and Data Selection
 
-Large scale of data selection and cleaning is almost always tedious, as something to be delegated to research assistants, to someone---indeed anyone, but usually research assistants (RA)---else [see @Torres2017].
+Large scale of data selection and cleaning is almost always tedious, as something to be delegated to research assistants, to someone---indeed anyone, but usually research assistants (RA)---else.
 This manual procedure is easy to make mistakes and errors.
 @HaegemansEtAl2019 [p. 1] has demonstrated examples of misrouted financial transactions and airline flights.
 In a more systematic examination, @BarchardPace2011 found that RA assigned in an experiment to carefully enter data manually and instructed to prioritize accuracy over speed still had error rates approaching 1% in just a single roughly half-hour session.
@@ -349,10 +345,11 @@ The SWIID project requires update for almost every year and we also often hire n
 Therefore, the cross-check is done in a rolling basis usually by the rookies who are in charge of checking the old data and updating malfunctional links.
 This is both a learning process and a way to improve data accuracy.
 
-In the DCPO project, clearly defining and agreeing upon the latent construct among team members is a critical first step for ensuring theoretical comparability across countries and over time  [@Koc2025]. 
+In the DCPO project, clearly defining and agreeing upon the latent construct among team members is a critical first step for ensuring theoretical comparability across countries and over time [@Koc2025]. 
 This process begins with a shared conceptual foundation established through literature review and corresponding pre-defined potential dimensions of the latent opinion.
 Each team member is then assigned survey datasets from specific geographic regions and tasked with identifying potentially relevant items and potential dimensions based on both general theoretical guidance and region-specific knowledge. 
 This structure ensures that the construct is informed by both global theory and local context.
+(Check a more elaborate checklist in @sec-checklist.)
 
 Before data selection begins, team members undergo hands-on training on how the method work and what type of data and detail they need to collect, such as data format and weighting types, which provide a valuable help of later build the automative data preparation software. 
 
@@ -579,19 +576,17 @@ The list has been long, but far from complete.
 If readers modify the arguments of the codes in this article's replication file that we use to create the list, they will discover times more packages that already exist to help collect and wrangle data.
 The keyword-based searching function that most these packages equip also ensure researchers to conduct data harmonization analysis with most updated data pools the sources have.
 
-When no API is available, the automation script downloads and reads any available spreadsheets [see @Wickham2016].
+When no API is available, the automation script downloads and reads any available spreadsheets.
 In the absence of a spreadsheet, the process of scraping the data either directly from the web or, preferably, from a pdf file [see @Sepulveda2024] is automated.
 Together the collection of `r automated_percent`% of the source data is scripted.
-This means not only that the possibility of errors introduced by hand entry for a vast majority of observations is eliminated but also that the updates and revisions that are frequent in these data are automatically incorporated as they become available.^[
-  The R community has often built software to ease the access of APIs and make the batch work for multiple waves of data in a more comfortable and efficient way [see @Blondel2018; @MagnussonEtAl2014; @LahtiEtAl2017; @Lugo2017; @WickhamEtAl2018].
-]
+This means not only that the possibility of errors introduced by hand entry for a vast majority of observations is eliminated but also that the updates and revisions that are frequent in these data are automatically incorporated as they become available.
 
 For data sources, such as those from academic articles or books, that have to be entered in hand, there is still rooms for automation. 
 For the remaining `r 100 - automated_percent`% of the SWIID observations, for instance, we collected them using Sepulveda's `tabulapdf` R package to avoid data-entry errors as long as they are in pdf [@Sepulveda2024].
 The advanced Optical Character Recognition (OCR) can extend this method on data sources even in hard copies.
 
 And finally, for data that one has to enter manually, the team-based working flow can be supplementary.
-One source of SWIID contains crucial information encoded in the typeface of its tables [see @MitraYemtsiv2006, p. 6]; this information would be lost if the tables were read directly into R.
+One source of SWIID contains crucial information encoded in the typeface of its tables; this information would be lost if the tables were read directly into R.
 We reapplied the approach from the data selection here to enter them twice into separate spreadsheets.^[Most often this has been done by two different investigators, but sometimes sequentially by a single researcher.]
 The dual-entry process allows for automated cross-checks of the newly entered data that increase the chances that errors are identified and corrected [see @BarchardPace2011].
 
@@ -619,14 +614,7 @@ We reached at this step for all the DCPO projects so far.
 Readers can find a Github repo for the research from scratch, and every wave of data update in the corresponding OSF project.^[See a comprehensive example applied the second-order opening strategy in @TaiEtAl2024. ]
 
 
-<!--Readers can find a comprehensve example applied the above second-order openning strategy in a DCPO project, @TaiEtAl2024. 
-Its replication data includes three types of files beside a instruction (.md): a Rmarkdown file recording all the codes we wrangled and analyzed the data together with the main text and appendices, several auxiliary files (.lua, .bib) for the Rmarkdown to render, and data files for running each chunk of codes in the Rmarkdown [@TaiEtAl2022].
-Moreover, readers can track the entire process of how the project grew through an publicly open Github repo, <https://github.com/fsolt/dcpo_dem_mood>.
-They can also see the data updating history and outcomes in an OSF project, <https://osf.io/tnp2a/>.
-Similarly, people can see the updating history of the in  SWIID dataset in <https://github.com/fsolt/swiid>.-->
-
 # Discussion
-
 
 ![The TAO of Data Wrangling Before Data Harmonization. Source: Self generated.](images/data_diagram.png){#fig-diagram fig-align="center" height=600}
 
@@ -658,8 +646,12 @@ While some error is inevitable, with responsible researcher oversight, data-entr
 ::: {#refs-main}
 :::
 
+\clearpage
 
-# Supplementary Materials {.appendix}
+\hypertarget{appendix-appendix}{%
+\appendix}
+
+# Online Supplementary Materials {.unnumbered}
 
 ```{r}
 #| label: setup-app
@@ -668,8 +660,15 @@ While some error is inevitable, with responsible researcher oversight, data-entr
 p_load("pkgsearch")
 ```
 
+\setcounter{page}{1}
+\renewcommand{\thepage}{A\arabic{page}}
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{A.\arabic{figure}}
+\setcounter{table}{0}
+\renewcommand{\thetable}{A.\arabic{table}}
 
-## Checklist for Deliberation Process
+# Checklist for Deliberation Process {#sec-checklist}
+
 Below is a checklist with notes or rationales for key decisions made during the deliberation process.
 The focus on each step may vary depending on the research purpose.
 For example, in public opinion harmonization projects like DCPO, more time is typically devoted to conceptualization and construct development compared to administrative data projects such as SWIID.
@@ -678,70 +677,86 @@ However, this general checklist can serve as a useful guide across a range of ha
 ```{r}
 
 deliberation_data <- data.frame(
-  Step = c("1.Clarify Conceptual Construct", 
-           "1.Clarify Conceptual Construct", 
-           "1.Clarify Conceptual Construct", 
-              "2.Document Research Goals",
-           "2.Document Research Goals",
-           "2.Document Research Goals",
-        
-              "3.Assign Data Collection", 
-           "3.Assign Data Collection", 
-           "3.Assign Data Collection", 
-              "4.Dual-Entry and Cross-Check", 
-           "4.Dual-Entry and Cross-Check", 
-           "4.Dual-Entry and Cross-Check", 
-              "5.Deliberation on Discrepancies", 
-           "5.Deliberation on Discrepancies", 
-           "5.Deliberation on Discrepancies", 
-              "6.Log Data and Decision"),
+  Step = c(
+    "1.Clarify Conceptual Construct",
+    "1.Clarify Conceptual Construct",
+    "1.Clarify Conceptual Construct",
+    "2.Document Research Goals",
+    "2.Document Research Goals",
+    "2.Document Research Goals",
+
+    "3.Assign Data Collection",
+    "3.Assign Data Collection",
+    "3.Assign Data Collection",
+    "4.Dual-Entry and Cross-Check",
+    "4.Dual-Entry and Cross-Check",
+    "4.Dual-Entry and Cross-Check",
+    "5.Deliberation on Discrepancies",
+    "5.Deliberation on Discrepancies",
+    "5.Deliberation on Discrepancies",
+    "6.Log Data and Decision"
+  ),
   Checklist = c(
     "Literature review and shared across the team.",
     "Confirm shared understanding of theoretical construct.",
     "Relevant theoretical dimensions are discussed and documented.",
-    
+
     "Instructions on key variable formats and downstream analytical needs.",
     "Review initial codebook.",
     "Data input training.",
-    
+
     "Assign datasets to team members by geography or source.",
     "Each team member maintains a seperate sheet for raw data collection and a log of decisions.",
     "",
-    
+
     "Conduct dual entry by second team member.",
     "Discrepancies flagged and logged for group discussion.",
     "",
-    
-    "Team discussion on discrepancies.","
+
+    "Team discussion on discrepancies.",
+    "
     Items with unclear mapping to conceptual dimensions are categorized or excluded.",
     "Update codebook/documentation",
-    
-   
+
     "Log all decisions and changes in version-controlled repository (e.g., OSF, GitHub)."
   ),
- 
-  Notes = c("Notes from team discussion", "",  "", 
-            "Update when necessary", "", "", 
-                                       "Document ambiguous items", "", "", 
-                                       "Record discrepancies found", "",   "", 
-                                       "Provide examples of key disputes and how they were resolved", "",  "", 
-                                       "Mention major updates.")
+
+  Notes = c(
+    "Notes from team discussion",
+    "",
+    "",
+    "Update when necessary",
+    "",
+    "",
+    "Document ambiguous items",
+    "",
+    "",
+    "Record discrepancies found",
+    "",
+    "",
+    "Provide examples of key disputes and how they were resolved",
+    "",
+    "",
+    "Mention major updates."
+  )
 )
 
 
-tt(deliberation_data,
-   caption = "Checklist with Decision Rationale",
-   width = c(0.3, 0.5, 0.2)) |> 
-   style_tt(fontsize = 0.7) |> 
-   style_tt( i = c(1, 4, 7, 10, 13 ), j = c(1,3), rowspan = 3, fontsize = 0.7) |> 
-   style_tt( i = c(8,11), j = c(2), rowspan = 2, fontsize = 0.7) |> 
+tt(
+  deliberation_data,
+  caption = "Checklist with Decision Rationale",
+  width = c(0.3, 0.5, 0.2)
+) |>
+  style_tt(fontsize = 0.7) |>
+  style_tt(i = c(1, 4, 7, 10, 13), j = c(1, 3), rowspan = 3, fontsize = 0.7) |>
+  style_tt(i = c(8, 11), j = c(2), rowspan = 2, fontsize = 0.7) |>
   theme_tt("grid")
 
 ```
 
 
 
-## R packages for data wrangling {#sec-packages}
+# R packages for data wrangling {#sec-packages}
 
 Here are the tables of example R packages that researchers can use to collect, clean, and transform data.
 The tables were generated by the `pkgsearch::pkg_search()` function with the keywords relating to data downloading (@tbl-download), wrangling (@tbl-clean), and transforming (@tbl-transform).

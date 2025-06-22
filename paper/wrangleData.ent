@@ -1,61 +1,4 @@
 \@doanenote {1}
-macro:->
-The
-R
-community
-has
-often
-built
-software
-to
-ease
-the
-access
-of
-APIs
-and
-make
-the
-batch
-work
-for
-multiple
-waves
-of
-data
-in
-a
-more
-comfortable
-and
-efficient
-way
-(see
-\citeproc
-{ref-Blondel2018}{Blondel
-2018};
-\citeproc
-{ref-LahtiEtAl2017}{Lahti
-et
-al.
-2017};
-\citeproc
-{ref-Lugo2017}{Lugo
-2017};
-\citeproc
-{ref-MagnussonEtAl2014}{Magnusson,
-Lahti,
-and
-Hansson
-2014};
-\citeproc
-{ref-WickhamEtAl2018}{Wickham,
-Hester,
-and
-Ooms
-2018}).
-\@endanenote 
-\@doanenote {2}
 macro:->Most
 often
 this
@@ -74,7 +17,7 @@ a
 single
 researcher.
 \@endanenote 
-\@doanenote {3}
+\@doanenote {2}
 macro:->See
 a
 summary
@@ -93,7 +36,7 @@ Solt
 (\citeproc
 {ref-HuEtAl2024a}{2024}).
 \@endanenote 
-\@doanenote {4}
+\@doanenote {3}
 macro:->See
 a
 comprehensive
