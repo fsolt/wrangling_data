@@ -269,7 +269,7 @@ body(small_multiple)[[19]] <- substitute(
 
 \pagebreak
 
-# A Wrangling Issue of Data Harmonization
+# The Issue of Wrangling in Data Harmonization
 
 Empowered by the spreading Internet and advancing computational power, researchers have entered an unprecedented age of data availability.
 A growing volume of social science research aims to take the benefit to extend generality: they employ large quantities of data drawn from different sources.
@@ -280,25 +280,13 @@ The wrangling step determines the quality of data in the harmonization process, 
 The conventional approach usually and notoriously involves a great deal of manual work on indicator identification, data merging, data scaling, and so on [see, e.g., @Lohr2014].
 Manual wrangling undermines transparency and makes full reproducibility of the research pipeline more difficult to achieve [@Liu2019].
 Worse, this tiresome task makes it easy to introduce errors in the data.
-
-In addition, manual wrangling make a full reproducibility of research pipeline more difficult and undermine the transparency [@Liu2019], especially when raw data comes from heterogeneous sources and has been processed using various software environments over time.
-For example, older survey files stored in SPSS's ASCII or portable formats often require extensive restructuring before they can be merged with newer datasets.
-The undocumented transformations can complicate reproducibility.
-
 Finally, even meticulous documentation cannot eliminate the influence of human discretion embedded in manual processing.
 Such discretion often leaves behind few traces, making it challenging for collaborators or reviewers to verify the wrangling process or diagnose sources of error.
 
-<<<<<<< HEAD
 In short, poor source data quality, the absence of reproducibility, and untrackable human discretion in manual janitor work have collectively become the largest obstacle on the way to data harmonization, yet thus far this obstacle has gained little attention.
 In this article, we provide a practical routine (a "TAO") that takes advantage of automatic programming and teamwork to reduce data-entry errors and improve the reproducibility and transparency of the wrangling process for researchers and reviewers.
 This TAO covers the three phases of data wrangling: data selection and collection, data entry, and opening.
 We illustrate how researchers can use this routine on statistics and survey data with examples of two ongoing harmonization efforts, the Standardized World Income Inequality Database (SWIID) and the Dynamic Comparative Public Opinion (DCPO) project.
-=======
-In short, poor source data quality, the absence of reproducibility, and untrackable human discretion in manual janitor work have collectively became the largest obstacle on the way to data harmonization, which yet have thus far gained little attention.
-In this article, we provide a practical routine (a "TAO") that takes advantage of automatic programming and teamwork to reduce such data-entry errors and improve the reproducibility and transparency of the wrangling process for researchers and reviewers to check the errors.
-This TAO covers the three phases of data wrangling: data collection/selection, data entry, and opening.
-We illustrate how researchers use this routine on statistical (*hard*) and opinion (*soft*) data with two ongoing harmonization efforts, the Standardized World Income Inequality Database (SWIID) and the Dynamic Comparative Public Opinion (DCPO) project.
->>>>>>> refs/remotes/origin/main
 
 
 # A 3-Step "TAO" for Data Wrangling
@@ -318,98 +306,62 @@ The routine decomposes a data-wrangling process into three steps:
 
 We use two data harmonization projects, SWIID and DCPO, to illustrate this routine.
 SWIID is a long-running project that seeks to provide harmonized income inequality statistics for the broadest possible coverage of countries and years [@Solt2020].
-As of its most recent update at the time of this writing, its source data consists of some 27,000 observations of the Gini coefficient of income distribution in nearly 200 countries over as many as 65 years, collected from over 400 separate sources including international organizations, national statistics bureaus, and academic studies.
+As of its most recent update at the time of this writing, its source data consists of more than 27,000 observations of the Gini coefficient of income distribution in nearly 200 countries over as many as 65 years, collected from over 400 separate sources including international organizations, national statistics bureaus, and academic studies.
 
 DCPO is both a method and a database.
 Scholarship on comparative public opinion only rarely benefits from relevant items asked annually by the same survey in many countries [see, e.g., @HagemannEtAl2017].
 To address the lack of cross-national and longitudinal data on many topics, a number of works have presented latent variable models that harmonize available but incomparable survey items [see e.g., @CaugheyEtAl2019; @Claassen2019].
-<<<<<<< HEAD
-Along this line, DCPO not only provides latent variable measurements but also automatized and reproducible data collection [@Solt2020], which has been applied in a complete pipeline for a variety of topics such as gender egalitarianism [@Woo2023], political interest [@Hu2025a], and support for gay rights [@Woo2025], among other aspects of public opinion and open it freely for global researchers (see the data available at <https://dcpo.org/>).
-=======
-In line with this work, DCPO not only generates latent variable estimates but also provides automatized and reproducible data collection tools [@Solt2020].
-It has been applied in a complete pipeline on topics such as gender egalitarianism, political interest, and support for gay rights, among other public opinion topics, and is freely available for researchers (see more updated data collections at <https://dcpo.org/>).
->>>>>>> refs/remotes/origin/main
+Advancing this line of work, DCPO not only provides latent variable measurements but also automated and reproducible data collection [@Solt2020], which has been applied in a complete pipeline for a variety of topics such as gender egalitarianism [@Woo2023], political interest [@Hu2025a], and support for gay rights [@Woo2025], among other aspects of public opinion and open it freely for global researchers (see the data available at <https://dcpo.org/>).
 
 
 ## Step 1: Team-Based Construct Building and Data Selection
 
-<<<<<<< HEAD
 Large-scale data selection and cleaning is often viewed as tiresome, as something to be delegated to research assistants, to someone---indeed anyone---else.
 Performing these tasks manually makes it easy to make mistakes and errors.
 @HaegemansEtAl2019 [p. 1] lists examples of misrouted financial transactions and airline flights.
 In a more systematic examination, @BarchardPace2011 found that RAs assigned in an experiment to carefully enter data manually and instructed to prioritize accuracy over speed still had error rates approaching 1% in just a single roughly half-hour session.
 The consequences of such errors are pernicious, undermining our results and more broadly our confidence in the scientific enterprise.
-=======
-Large scale of data selection and cleaning is almost always tedious, as something to be delegated to research assistants, to someone---indeed anyone, but usually research assistants (RA)---else.
-This manual procedure is susceptible to errors.
-@HaegemansEtAl2019 [p. 1] has demonstrated examples of misrouted financial transactions and airline flights.
-In a more systematic examination, @BarchardPace2011 found that RA assigned in an experiment to carefully enter data manually and instructed to prioritize accuracy over speed still had error rates approaching 1% in just a single roughly half-hour session.
-The consequences of such errors can be pernicious.
->>>>>>> refs/remotes/origin/main
 
 Our antidote for this issue is a combination of teamwork and automation. 
 We will focus first on teamwork and discuss the latter in @sec-automate.
 The goals here are to have consistent understanding on the conceptualized construct, to select valid data for later measurement and/or analyses, and to reduce biases caused by inconsistent human judgment.
 A teamwork process to these ends requires using a deliberative set and a dual-entry process.
 
-<<<<<<< HEAD
 A deliberative set requires the members in a research team---whether several coauthors or a primary author with one or more RAs---to have a clear and coherent understanding of the research questions and associated data goals.
 These understandings will help the team members identify the right data to collect and discover extra useful data sources that are not in the initial plan.
 
 In the early years of the SWIID program, for example, RAs were told that the goal of the project is to generate comparable statistics of country-level economic inequality.
 They were provided a list of sources to start with, mainly from national statistic bureaus, but also told that updated statistics for some countries may come from academic papers, published documents, and other sources, and encouraged to add each of these new sources by recording a valid link.
-=======
-A deliberative set requires the members in a research team---regardless several coauthors or a primary author with one or two RAs---to have a clear and coherent understanding of the research questions and associated data goals.
-These understandings will help the team members identify the right data to collect and discover extra useful data sources that are not in the initial plan.
-
-In the SWIID program, for example, we explain to research assistants that the project aims to generate comparable statistics of country-level economic inequality.
-We provide a list of sources-primarily from national statistic bureaus-as a starting point, but also note that updated statistics might be available from academic publications or other documents.
-Research assistants are encouraged to include such sources, provided they document valid links.
-
-
-Ensuring that team members understand how the data will be used later is also important, as it helps them develop a better sense of which data is analytically useful and prepare for the demands of later data-entry stages.
-In the SWIID project, we instruct RAs to record inequality statistics in four formats: Gini index in disposable (post-tax, post-transfer) income, Gini in market (pre-tax, pre-transfer) income, absolute redistribution (market-income inequality minus net-income inequality), or relative redistribution (market-income inequality minus net-income inequality, divided by market-income inequality).
-For later unification work, they are expected to record the values and document the methods used to generate them.
-
-The SWIID project requires update for almost every year and we frequently hire new RAs.
-Therefore, cross-checking is conducted on a rolling basis usually by new team members who review the previously collected data and update broken or outdatedlinks.
-This is both a learning process and a means of improving data accuracy.
->>>>>>> refs/remotes/origin/main
 
 In the DCPO project, clearly defining and agreeing upon the latent construct among team members is a critical first step for ensuring theoretical comparability across countries and over time [@Koc2025]. 
-This process begins with a shared conceptual foundation established through literature review and corresponding pre-defined potential dimensions of the latent opinion.
+This process begins with a shared conceptual foundation established through literature review and the corresponding pre-defined potential dimensions of latent opinion.
 Each team member is then assigned survey datasets from specific geographic regions and tasked with identifying potentially relevant items and potential dimensions based on both general theoretical guidance and region-specific knowledge. 
 This structure ensures that the construct is informed by both global theory and local context.
 (For a more detailed checklist, see @sec-checklist.)
 
-Before data selection begins, team members undergo hands-on training on how the method works and what types of data and metadata they need to collect-such as data format and weighting types-that are essential for enabling the automated data preparation process. 
+Before data selection begins, team members undergo hands-on training on how the method works and what types of data and metadata they need to collect, such as data format and weighting types, that are essential for enabling the automated data preparation process. 
 
-Following the initial round of item selection and collection, the dural-entry section begins. 
+Following the initial round of item selection and collection, the dual-entry section begins. 
 In this stage, each team member reviews and re-codes the survey data originally handled by another member.
-The independently coded versions are then compared to detect discrepancies, which may arise from misinterpretations of the construct, ambiguous item wording, or common entry errors.
+The independently coded versions are then compared to detect discrepancies, which may arise from misinterpretations of the construct, ambiguous item wording, or data-entry errors.
 
 Disputed cases are flagged for group discussion.
 Some mismatches may indicate items that may not be conceptually equivalent across cultures or regions, and others suggest multidimensionality that requires theoretical disaggregation.
-For the latter, we either categorize such items into pre-defined dimensions and/or revise the codebook accordingly to add new dimensions—an iterative process aimed at improving construct validity, intercoder reliability, and reducing oversimplification of target variable [@Slomczynsi2025].
+For the latter, we either categorize such items into pre-defined dimensions and/or revise the codebook accordingly to add new dimensions---an iterative process aimed at improving construct validity, intercoder reliability, and reducing oversimplification of the target variable [@Slomczynsi2025].
 
-Therefore, we organize multiple lab meetings throughout the data selection phase to share insights from each member’s coding work and ensure conceptual alignment across the team.
+Therefore, multiple lab meetings are held throughout the data selection phase to share insights from each member's coding work and ensure conceptual alignment across the team.
 The process concludes with a final cross-check of the selected items by all members.
 
 In addition to reducing manual biases, teamwork also helps expand the data pool.
-Both SWIID and DCPO projects enrolled team members from outside the U.S.
-These members draw on their linguistic and cultural expertise to detect extra sources in non-English languages and improve the precision of the data selections.
+Both SWIID and DCPO projects enrolled team members from outside the United States.
+These members draw on their linguistic and cultural expertise to detect extra sources in non-English languages and improve the precision of the data selection.
 To some extent, data from different sources help correct the biases caused by the designers' cultural backgrounds. 
 
 
 ## Step 2: Data Entry Automation {#sec-automate}
 
-<<<<<<< HEAD
-Formatting data is arguably the easiest step to involve manual errors and controversies.
-The best solution is to automate the entry process taking the advantages of the programming languages and application programming interfaces (APIs) of the data source.
-=======
 Formatting data is arguably the step most prone to manual errors and controversies.
-The best solution is to automate the entry process taken the advantages of the programming languages and application programming interfaces (APIs) of the data source.
->>>>>>> refs/remotes/origin/main
+The best solution is to automate the entry process, taking advantage of scripting and any application programming interfaces (APIs) provided by the data source.
 
 In the DCPO case, data entry is fully automated through the R-based software, `DCPOtools` [@SoltEtAl2018a]. 
 This software processes raw survey files directly, ensuring reproducible data entry. 
@@ -605,49 +557,47 @@ swiid_source %>%
 # Hand-Entered and Machine-Collected
 ```
 
-While coding datasets and items into structured spreadsheets facilitates automation, an even better version starts the automation since the data selection step via programming and APIs.
-As shown in @fig-dataMethod, the current version of SWIID grapes `r api_percent`% of the observations through API.
-In @sec-packages, we provide an illustrative list of R packages that can assist with tasks such as collecting data via APIs, and cleaning and transforming data.
-The list has been long, but far from complete.
-If readers modify the arguments of the codes in this article's replication file that we use to create the list, they will discover times more packages that already exist to help collect and wrangle data.
+While coding datasets and items into structured spreadsheets facilitates automation, an even better approach starts the automation from the data selection step via scripting and APIs.
+As shown in @fig-dataMethod, the current version of SWIID collects `r api_percent`% of the observations through APIs.
+In @sec-packages, we provide an illustrative list of R packages that can assist with tasks such as collecting data via APIs and cleaning and transforming data.
+The list is long but far from complete.
+If readers modify the arguments of the codes in this article's replication file that we use to create the list, they will discover many times more packages that already exist to help collect and wrangle data.
 The keyword-based searching function that most these packages equip also ensure researchers to conduct data harmonization analysis with most updated data pools the sources have.
 
-When no API is available, the automation script downloads and reads any available spreadsheets.
+Returning to the case of the SWIID: when no API is available, the automation script downloads and reads any available spreadsheets.
 In the absence of a spreadsheet, the process of scraping the data either directly from the web or, preferably, from a pdf file [see @Sepulveda2024] is automated.
 Together the collection of `r automated_percent`% of the source data is scripted.
 This means not only that the possibility of errors introduced by hand entry for a vast majority of observations is eliminated but also that the updates and revisions that are frequent in these data are automatically incorporated as they become available.
 
-For data sources, such as those from academic articles or books, that have to be entered in hand, there is still rooms for automation. 
-For the remaining `r 100 - automated_percent`% of the SWIID observations, for instance, we collected them using Sepulveda's `tabulapdf` R package to avoid data-entry errors as long as they are in pdf [@Sepulveda2024].
-The advanced Optical Character Recognition (OCR) can extend this method on data sources even in hard copies.
-
-And finally, for data that one has to enter manually, the team-based working flow can be supplementary.
-One source of SWIID contains crucial information encoded in the typeface of its tables; this information would be lost if the tables were read directly into R.
-We reapplied the approach from the data selection here to enter them twice into separate spreadsheets.^[Most often this has been done by two different investigators, but sometimes sequentially by a single researcher.]
+Even for data sources that have to be entered in hand, such as those from academic articles or books, there is still opportunity for partial automation.
+For the remaining `r 100 - automated_percent`% of the SWIID observations, for instance, many were collected using Sepulveda's `tabulapdf` R package to avoid data-entry errors.
+Optical Character Recognition (OCR) can be used to extend this method to even hard-copy data sources.
+Finally, for data that one has to enter manually, the teamwork is crucial.
+Mirroring the approach for data selection described above, each hand-entered observation was independently entered twice into two separate spreadsheets.
 The dual-entry process allows for automated cross-checks of the newly entered data that increase the chances that errors are identified and corrected [see @BarchardPace2011].
 
 
 ## Step 3: "Second-Order" Opening
 
 Since the replication crisis, replication files for analytical results in academic articles has become a standard requirement for top-tier journals in political science [@ChangLi2015; @OpenScienceCollaboration2015]. 
-Nevertheless, the continual raising controversies on the researcher degrees of freedom indicated that current open is still not adequate.^[See a summary of the "researcher degrees of freedom" discussion in @HuEtAl2024a.]
-Especially in relation with data harmonization, we eager researchers to conduct a, what we called, the "second-order" opening. 
-That is, not only opening analytical steps (the "first-order") but also the data generation process (the "second-order"), including data collection, cleaning, and wrangling.
+Nevertheless, issue of researcher degrees of freedom indicates that current degree of openness is frequently still inadequate [see @HuTaiSolt2025.]
+Especially in relation with data harmonization, we encourage researchers to conduct what we will call a "second-order" opening of their research process. 
+This involves not only opening one's analytical steps (the first-order opening common today) but also the data generation process (the second-order opening), including data collection, cleaning, and wrangling.
 
-Empirical evidence has indicated the severe consequences without the second-order opening.
-A recent research has found that the variation in the estimated effects caused by researchers may outweigh the population's variation [@HolzmeisterEtAl2024].
-Within these researcher-choice variations, a substantial portion comes from the data-wrangling process [@Huntington-KleinEtAl2025, p. 33].
+Empirical evidence has indicated the severe consequences of neglecting second-order opening.
+Recent research has found that the variation in the estimated effects caused by researchers may outweigh the population's variation [@HolzmeisterEtAl2024].
+Within this researcher-choice variation, a substantial portion comes from the data-wrangling process [@Huntington-KleinEtAl2025, 33].
 In a "many-analyst" analysis, @Huntington-KleinEtAl2025 requested 146 research teams to complete the same research task.
 The study found that the teams who were given the same research design but no pre-cleaned data set generated the highest outcome variation---even higher than those teams who were only given the research task.
 The teams who were given the pre-cleaned data set generated the lowest outcome variation.
-These findings indicate that the research replicability cannot be guaranteed if only with the first- but not the second-order opening.
+These findings indicate that the research replicability cannot be secured by first-order opening without second-order opening.
 
 If researchers apply our suggestions of team-based construct building, systematic data selection, and automated data entry, the second-order opening will be both feasible and efficient.
-Along with a clearly conceptualized theoretical framework, researchers can simply share their programming scripts for data downloading, formatting, and wrangling, ensuring that the full pipeline is documented and reproducible.
+Along with a clearly conceptualized theoretical framework, researchers can simply share their programming scripts for data downloading, formatting, and wrangling, and thereby ensure that the full pipeline is documented and reproducible.
 
-With developed scientific and technical publishing system, such as Quarto or R markdown, and version control platforms (e.g., Github) and open collaboration platforms (e.g., Open Science Framework, OSF), researchers can integrate the entire workflow—from raw data collection to final analysis—within a single, publicly trackable archive.
+With developed scientific and technical publishing system, such as Quarto or R Markdown, version control platforms like Github, and open collaboration platforms including the Open Science Framework, researchers can integrate the entire workflow—--from raw data collection to final analysis--—within a single, publicly trackable archive.
 We reached at this step for all the DCPO projects so far. 
-Readers can find a Github repo for the research from scratch, and every wave of data update in the corresponding OSF project.^[See a comprehensive example applied the second-order opening strategy in @TaiEtAl2024. ]
+Readers can trace a research project from the start in a Github repo and every wave of data update in the corresponding OSF project [see, for example, @TaiEtAl2024].
 
 
 # Discussion
@@ -656,15 +606,15 @@ Readers can find a Github repo for the research from scratch, and every wave of 
 
 @fig-diagram presents the whole process of the 3-step routine of data wrangling for later harmonization phase.
 Implementing these practices requires effort, just as in many open-science endeavors [see @EngzellRohrer2021]. 
-Though labor-intensive, the double-entry method reduces error rates thirty-fold [@BarchardPace2011, p. 1837], justifying the investment. 
-Teamwork fosters conceptual alignment and construct refinement through collaborative discussion, while also distributing tasks to reduce fatigue-related errors
+Though labor-intensive, the double-entry method reduces error rates thirty-fold [@BarchardPace2011, p. 1837], which easily justifies the additional investment. 
+Teamwork fosters conceptual alignment and construct refinement through collaborative discussion while also distributing tasks to reduce fatigue-related errors.
 
 Social scientists now benefit from standardized harmonization workflows [@Slomczynsi2025] and automated data processing [@Kritzinger2025]. 
 Researchers can reuse high-quality harmonized datasets, enhancing efficiency and comparability.
 Open-source software packages like those used by the SWIID and `DCPOtools` have already automated many data preparation tasks. 
 With large language models emerging, intelligent agents may soon handle parts of these routines, potentially advancing automation to new levels [@Kritzinger2025].
 
-A final point we would like to clarify is that, in our three-step routine, researchers remain central to harmonization. 
+A final point we would like to emphasize is that, in our three-step routine, researchers remain central to data harmonization. 
 As illustrated in the SWIID and DCPO examples, researchers are responsible for all critical decisions from clarifying research questions and building theoretical constructs to conducting version control and developing replication materials.
 Early and critical steps, such as construct development and codebook refinement, must be conducted iteratively to achieve high intercoder reliability. 
 Even with automated data entry, human validation remains essential for verifying variable formats and value ranges. 
