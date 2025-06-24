@@ -582,7 +582,7 @@ The dual-entry process allows for automated cross-checks of the newly entered da
 Since the replication crisis, replication files for analytical results in academic articles has become a standard requirement for top-tier journals in political science [@ChangLi2015; @OpenScienceCollaboration2015]. 
 Nevertheless, issue of researcher degrees of freedom indicates that current degree of openness is frequently still inadequate [see @HuTaiSolt2025.]
 Especially in relation with data harmonization, we encourage researchers to conduct what we will call a "second-order" opening of their research process. 
-This involves not only opening one's analytical steps (the first-order opening common today) but also the data generation process (the second-order opening), including data collection, cleaning, and wrangling.
+This involves not only opening one's analytical steps (the first-order opening common today) but also one's data generation process (the second-order opening), including data collection, cleaning, and wrangling.
 
 Empirical evidence has indicated the severe consequences of neglecting second-order opening.
 Recent research has found that the variation in the estimated effects caused by researchers may outweigh the population's variation [@Holzmeister2024].
