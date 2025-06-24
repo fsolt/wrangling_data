@@ -585,9 +585,9 @@ Especially in relation with data harmonization, we encourage researchers to cond
 This involves not only opening one's analytical steps (the first-order opening common today) but also the data generation process (the second-order opening), including data collection, cleaning, and wrangling.
 
 Empirical evidence has indicated the severe consequences of neglecting second-order opening.
-Recent research has found that the variation in the estimated effects caused by researchers may outweigh the population's variation [@HolzmeisterEtAl2024].
-Within this researcher-choice variation, a substantial portion comes from the data-wrangling process [@Huntington-KleinEtAl2025, 33].
-In a "many-analyst" analysis, @Huntington-KleinEtAl2025 requested 146 research teams to complete the same research task.
+Recent research has found that the variation in the estimated effects caused by researchers may outweigh the population's variation [@Holzmeister2024].
+Within this researcher-choice variation, a substantial portion comes from the data-wrangling process [@Huntington-Klein2025, 33].
+In a "many-analyst" analysis, @Huntington-Klein2025 requested 146 research teams to complete the same research task.
 The study found that the teams who were given the same research design but no pre-cleaned data set generated the highest outcome variation---even higher than those teams who were only given the research task.
 The teams who were given the pre-cleaned data set generated the lowest outcome variation.
 These findings indicate that the research replicability cannot be secured by first-order opening without second-order opening.
@@ -625,7 +625,6 @@ While some error is inevitable, with responsible researcher oversight, data-entr
 
 
 \newpage
-\theendnotes
 
 # References {.unnumbered}
 
