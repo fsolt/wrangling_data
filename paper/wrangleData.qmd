@@ -671,12 +671,14 @@ p_load("pkgsearch")
 
 # Checklist for Deliberation Process {#sec-checklist}
 
-Below is a checklist with notes or rationales for key decisions made during the deliberation process.
+@tbl-checklist is a checklist with notes or rationales for key decisions made during the deliberation process.
 The focus on each step may vary depending on the research purpose.
 For example, in public opinion harmonization projects like DCPO, more time is typically devoted to conceptualization and construct development compared to administrative data projects such as SWIID.
 However, this general checklist can serve as a useful guide across a range of harmonization efforts.
 
 ```{r}
+#| label: tbl-checklist
+#| tbl-cap: Checklist with Decision Rationale
 
 deliberation_data <- data.frame(
   Step = c(
@@ -752,7 +754,6 @@ deliberation_data <- data.frame(
 
 tt(
   deliberation_data,
-  caption = "Checklist with Decision Rationale",
   width = c(0.3, 0.5, 0.2)
 ) |>
   style_tt(fontsize = 0.7) |>
@@ -792,9 +793,10 @@ ls_packages <- map(kw_short, \(keyword){
 
 
 ```{r}
+#| label: tbl-download
+#| tbl-cap: Example packages for downloading data with API
 
 tt(ls_packages$download, 
-  caption = "Example packages for downloading data with API\\label{tbl-download}",
   width = c(0.2, 0.5, 0.3)) |> 
   style_tt(
     tabularray_inner = "stretch=0",
@@ -805,9 +807,10 @@ tt(ls_packages$download,
 ```
 
 ```{r}
+#| label: tbl-clean
+#| tb-cap: Example packages for cleaning data with API
 
 tt(ls_packages$clean, 
-  caption = "Example packages for wrangling data with API\\label{tbl-clean}",
   width = c(0.2, 0.5, 0.3)) |> 
   style_tt(
     tabularray_inner = "stretch=0",
@@ -818,9 +821,10 @@ tt(ls_packages$clean,
 ```
 
 ```{r}
+#| label: tbl-transform
+#| tbl-cap: Example packages for transforming data with API
 
 tt(ls_packages$transform, 
-  caption = "Example packages for transforming data with API\\label{tbl-transform}",
   width = c(0.2, 0.5, 0.3)) |> 
   style_tt(
     tabularray_inner = "stretch=0",
