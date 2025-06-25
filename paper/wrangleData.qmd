@@ -14,34 +14,36 @@ crossref:
   sec-labels: alpha A
     
 author:
-  - name: Yue Hu
-    affiliations:
-      - ref: tsu
-    orcid: 0000-0002-2829-3971
-    email: yuehu@tsinghua.edu.cn
-    url: https://www.drhuyue.site
-  - name: Yuehong Cassandra Tai
-    affiliations:
-      - ref: psu
-    orcid: https://orcid.org/0000-0001-7303-7443
-    email: yhcasstai@psu.edu
-  - name: Frederick Solt
-    affiliations:
-      - ref: ia
-    orcid: 0000-0002-3154-6132
-    email: frederick-solt@uiowa.edu
-    url: https://www.fsolt.org
-affiliations:
-  - id: tsu
-    name: Department of Political Science, Tsinghua University, Beijing, China
-  - id: psu
-    name: Center for Social Data Analytics, Pennsylvania State University, University Park, USA
-  - id: ia
-    name: Department of Political Science, University of Iowa, Iowa City, USA
-thanks: "Corresponding author: Yuehong Cassandra Tai, [yhcasstai@psu.edu](mailto:yhcasstai@psu.edu). Current version: `r format(Sys.time(), '%B %d, %Y')`.  Replication materials and complete revision history may be found at [https://github.com/fsolt/wrangling_data](https://github.com/fsolt/wrangling_data). The authors contributed equally to this work.  Yue Hu appreciates the funding support from the National Natural Science Foundation of China (72374116) and Tsinghua University Initiative Scientific Research Program (2024THZWJC01)."
+   - name: ""
+     affiliations: ""
+#  - name: Yue Hu
+#    affiliations:
+#      - ref: tsu
+#    orcid: 0000-0002-2829-3971
+#    email: yuehu@tsinghua.edu.cn
+#    url: https://www.drhuyue.site
+#  - name: Yuehong Cassandra Tai
+#    affiliations:
+#      - ref: psu
+#    orcid: https://orcid.org/0000-0001-7303-7443
+#    email: yhcasstai@psu.edu
+#  - name: Frederick Solt
+#    affiliations:
+#      - ref: ia
+#    orcid: 0000-0002-3154-6132
+#    email: frederick-solt@uiowa.edu
+#    url: https://www.fsolt.org
+#affiliations:
+#  - id: tsu
+#    name: Department of Political Science, Tsinghua University, Beijing, China
+#  - id: psu
+#    name: Center for Social Data Analytics, Pennsylvania State University, University Park, USA
+#  - id: ia
+#    name: Department of Political Science, University of Iowa, Iowa City, USA
+#thanks: "Corresponding author: Yuehong Cassandra Tai, [yhcasstai@psu.edu](mailto:yhcasstai@psu.edu). Current version: `r format(Sys.time(), '%B %d, %Y')`.  Replication materials and complete revision history may be found at [https://github.com/fsolt/wrangling_data](https://github.com/fsolt/wrangling_data). The authors contributed equally to this work.  Yue Hu appreciates the funding support from the National Natural Science Foundation of China (72374116) and Tsinghua University Initiative Scientific Research Program (2024THZWJC01)."
 citeproc: false # to make multibib and wordcount work
 filters:
-  - authors-block
+#  - authors-block
   - multibib # separate bib for main and appendix
   - at: pre-render
     path: "_extensions/andrewheiss/wordcount/wordcount.lua"
@@ -70,17 +72,17 @@ title: |
   | A TAO for Data Wrangling:
   | A Practical Routine for Getting
   | Past the 'Janitor Work'
-subtitle: "Preliminary version. Do not circulate without permission."
-abstract: |
-    This article focuses on a preliminary step in any ex-post data harmonization project---wrangling the pre-harmonized data---and suggests a practical routine for helping researchers reduce human errors in this often-tedious work. 
-    The routine includes three steps: (1) *T*eam-based concept construct and data selection; (2) Data entry *a*utomation; and (3) "Second-order" *o*pening---a "Tao" of data wrangling. 
-    We illustrate the routine with the examples of pre-harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple sources to create comparable estimates, and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data.
-keywords: 
-  - Data generation process
-  - Machine assistance
-  - Manual coding
-  - Data cleaning
-  - Data management
+#subtitle: "Preliminary version. Do not circulate without permission."
+#abstract: |
+#    This article focuses on a preliminary step in any ex-post data harmonization project---wrangling the pre-harmonized data---and suggests a practical routine for helping researchers reduce human errors in this often-tedious work. 
+#    The routine includes three steps: (1) *T*eam-based concept construct and data selection; (2) Data entry *a*utomation; and (3) "Second-order" *o*pening---a "Tao" of data wrangling. 
+#    We illustrate the routine with the examples of pre-harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple sources to create comparable estimates, and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data.
+#keywords: 
+#  - Data generation process
+#  - Machine assistance
+#  - Manual coding
+#  - Data cleaning
+#  - Data management
 ---
 
 ```{r}
@@ -632,6 +634,7 @@ While some error is inevitable, with responsible researcher oversight, data-entr
 :::
 
 \clearpage
+\newpage
 
 \hypertarget{appendix-appendix}{%
 \appendix}
@@ -643,7 +646,7 @@ While some error is inevitable, with responsible researcher oversight, data-entr
 #| include: false
 
 p_load("pkgsearch")
-options(tinytable_theme_placement_latex_float = "H")
+#options(tinytable_theme_placement_latex_float = "H")
 ```
 
 \setcounter{page}{1}
@@ -785,7 +788,7 @@ tt(ls_packages$download,
     tabularray_inner = "stretch=0",
     fontsize = 0.7
   ) |> 
-    theme_tt("multipage")
+    theme_tt(c("multipage"))
 
 ```
 
