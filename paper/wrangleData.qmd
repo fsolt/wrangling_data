@@ -274,10 +274,10 @@ body(small_multiple)[[19]] <- substitute(
 # The Issue of Wrangling in Data Harmonization
 
 Empowered by the spreading Internet and advancing computational power, researchers have entered an unprecedented age of data availability.
-A growing volume of social science research aims to take the benefit to extend generality: they employ large quantities of data drawn from different sources.
-However, significant challenges in ensuring the quality of harmonized datasets remain in handling fitness for use and monitoring raw data quality [@Slomczynsi2025].
+A growing volume of social science research aims to take the benefit to extend generality: they employ large quantities of data drawn from different sources [@ChengEtAl2024;@KizilovaEtAl2024; @RugglesEtAl2024; @WysmulekEtAl2022].
+However, significant challenges in ensuring the quality of harmonized datasets remain in handling fitness for use and monitoring raw data quality [@Slomczynsi2025;@DubrowTomescu-Dubrow2016].
 
-The wrangling step determines the quality of data in the harmonization process, and the challenge is how to properly and transparently clean the increasing amount and diversity of data.
+The wrangling step determines the quality of data in the harmonization process, and the challenge is how to properly and transparently clean the increasing amount and diversity of data [@Kolczynska2022].
 The conventional approach usually and notoriously involves a great deal of manual work on indicator identification, data merging, data scaling, and so on [see, e.g., @Lohr2014].
 Manual wrangling undermines transparency and makes full reproducibility of the research pipeline more difficult to achieve [@Liu2019].
 Worse, this tiresome task makes it easy to introduce errors in the data.
