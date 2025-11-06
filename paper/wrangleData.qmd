@@ -360,12 +360,12 @@ The process concludes with a final cross-check of the selected items by all memb
 In addition to reducing manual biases, teamwork also helps expand the data pool.
 Both SWIID and DCPO projects enrolled team members from outside the United States.
 These members draw on their linguistic and cultural expertise to detect extra sources in non-English languages and improve the precision of the data selection.
-To some extent, data from different sources help correct the biases caused by the designers' cultural backgrounds. 
+To some extent, data from different sources help correct the biases caused by the survey designers' cultural backgrounds. 
 
 
 ## Step 2: Data Entry Automation {#sec-automate}
 
-Formatting data is arguably the step most prone to manual errors and controversies.
+Putting the data into a format ready to merge is arguably the step most prone to manual errors and controversies.
 The best solution is to automate the entry process, taking advantage of scripting and any application programming interfaces (APIs) provided by the data source.
 
 In the DCPO case, data entry is fully automated through the R-based software, `DCPOtools` [@SoltEtAl2018a]. 
@@ -566,13 +566,12 @@ While coding datasets and items into structured spreadsheets facilitates automat
 As shown in @fig-dataMethod, the current version of SWIID collects `r api_percent`% of the observations through APIs.
 In @sec-packages, we provide an illustrative list of R packages that can assist with tasks such as collecting data via APIs and cleaning and transforming data.
 The list is long but far from complete.
-If readers modify the arguments of the codes in this article's replication file that we use to create the list, they will discover many times more packages that already exist to help collect and wrangle data.
-The keyword-based searching function that most these packages equip also ensure researchers to conduct data harmonization analysis with most updated data pools the sources have.
+Readers are welcome to modify the arguments of the codes (such as the keywords used to select packages) in this article's replication file that we use to create the list, they will discover many times more packages that already exist to help collect and wrangle data.
 
 Returning to the case of the SWIID: when no API is available, the automation script downloads and reads any available spreadsheets.
 In the absence of a spreadsheet, the process of scraping the data either directly from the web or, preferably, from a pdf file [see @Sepulveda2024] is automated.
 Together the collection of `r automated_percent`% of the source data is scripted.
-This means not only that the possibility of errors introduced by hand entry for a vast majority of observations is eliminated but also that the updates and revisions that are frequent in these data are automatically incorporated as they become available.
+This means not only that errors associated with manual data entry for the majority of observations are eliminated but also that ongoing updates and revisions can be easily integrated when they become avaliable and the data collecion program is reran.
 
 Even for data sources that have to be entered in hand, such as those from academic articles or books, there is still opportunity for partial automation.
 For the remaining `r 100 - automated_percent`% of the SWIID observations, for instance, many were collected using Sepulveda's `tabulapdf` R package to avoid data-entry errors.
