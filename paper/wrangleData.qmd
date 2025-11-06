@@ -14,8 +14,8 @@ crossref:
   sec-labels: alpha A
     
 author:
-   - name: ""
-     affiliations: ""
+    - name: ""
+      affiliations: ""
 #  - name: Yue Hu
 #    affiliations:
 #      - ref: tsu
@@ -120,7 +120,7 @@ p_load(
   modelsummary,
   dotwhisker,
   latex2exp,
-  kable,
+  knitr,
   kableExtra,
 
   # data wrangling
@@ -278,16 +278,15 @@ A growing volume of social science research aims to take the benefit to extend g
 However, significant challenges in ensuring the quality of harmonized datasets remain in handling fitness for use and monitoring raw data quality [@Slomczynsi2025].
 
 The wrangling step determines the quality of data in the harmonization process, and the challenge is how to properly and transparently clean the increasing amount and diversity of data.
-
 The conventional approach usually and notoriously involves a great deal of manual work on indicator identification, data merging, data scaling, and so on [see, e.g., @Lohr2014].
 Manual wrangling undermines transparency and makes full reproducibility of the research pipeline more difficult to achieve [@Liu2019].
 Worse, this tiresome task makes it easy to introduce errors in the data.
 Finally, even meticulous documentation cannot eliminate the influence of human discretion embedded in manual processing.
 Such discretion often leaves behind few traces, making it challenging for collaborators or reviewers to verify the wrangling process or diagnose sources of error.
 
-In short, poor source data quality, the absence of reproducibility, and untrackable human discretion in manual janitor work have collectively become the largest obstacle on the way to data harmonization, yet thus far this obstacle has gained little attention.
+In short, incomplete/inaccurate data entry, the absence of reproducibility, and untrackable human discretion in manual janitor work have collectively become the largest obstacle on the way to data harmonization, yet thus far this obstacle has gained little attention.
 In this article, we provide a practical routine (a "TAO") that takes advantage of automatic programming and teamwork to reduce data-entry errors and improve the reproducibility and transparency of the wrangling process for researchers and reviewers.
-This TAO covers the three phases of data wrangling: data selection and collection, data entry, and opening.
+This TAO covers the three phases of data wrangling: data selection and collection, data entry, and data-generation-process(DGP) opening.
 We illustrate how researchers can use this routine on statistics and survey data with examples of two ongoing harmonization efforts, the Standardized World Income Inequality Database (SWIID) and the Dynamic Comparative Public Opinion (DCPO) project.
 
 
@@ -582,9 +581,9 @@ The dual-entry process allows for automated cross-checks of the newly entered da
 ## Step 3: "Second-Order" Opening
 
 Since the replication crisis, replication files for analytical results in academic articles has become a standard requirement for top-tier journals in political science [@ChangLi2015; @OpenScienceCollaboration2015]. 
-Nevertheless, issue of researcher degrees of freedom indicates that current degree of openness is frequently still inadequate [see @HuTaiSolt2025.]
+Nevertheless, issue of researcher degrees of freedom indicates that current degree of openness is frequently still inadequate [see @HuTaiSolt2025].
 Especially in relation with data harmonization, we encourage researchers to conduct what we will call a "second-order" opening of their research process. 
-This involves not only opening one's analytical steps (the first-order opening common today) but also one's data generation process (the second-order opening), including data collection, cleaning, and wrangling.
+This involves not only opening one's analytical steps (the first-order opening common today) but also one's DGP (the second-order opening), including data collection, cleaning, and wrangling.
 
 Empirical evidence has indicated the severe consequences of neglecting second-order opening.
 Recent research has found that the variation in the estimated effects caused by researchers may outweigh the population's variation [@Holzmeister2024].
@@ -779,7 +778,7 @@ ls_packages <- map(kw_short, \(keyword){
 ```
 
 ```{r}
-#| label: download
+#| label: software-download
 
 tt(ls_packages$download, 
   width = c(0.2, 0.5, 0.3),
@@ -793,6 +792,7 @@ tt(ls_packages$download,
 ```
 
 ```{r}
+#| label: software-clean
 
 tt(ls_packages$clean, 
   width = c(0.2, 0.5, 0.3),
@@ -806,6 +806,7 @@ tt(ls_packages$clean,
 ```
 
 ```{r}
+#| label: software-transform
 
 tt(ls_packages$transform, 
   width = c(0.2, 0.5, 0.3),
