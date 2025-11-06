@@ -295,7 +295,11 @@ We illustrate how researchers can use this routine on statistics and survey data
 Our routine aims to helping researchers reach three goals for scientific study: 
 
 1. To reduce the manual entry errors to improve the accuracy of the harmonized data and analytic data; 
-1. To incorporate as much available data as possible to provide a base for comparable data and increase generality of the inferences;
+1. To incorporate as much available data as possible to provide a solid base for comparable data and increase generality of the inferences;^[
+  Here, “available data” refers to existing data sources that contain information relevant to the variable of interest.
+  Although some comparisons can proceed without complete data coverage, analyses based on incomplete information risk producing misleading conclusions [see, e.g., @SoltEtAl2016; @SoltEtAl2017].
+  Therefore, the sufficiency of data is often closely tied to the (external) validity of comparisons.
+]
 and
 1. To improve the reproducibility of data wrangling process for the sake of transparency.
 
