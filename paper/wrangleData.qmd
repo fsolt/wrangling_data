@@ -591,8 +591,8 @@ This involves not only opening one's analytical steps (the first-order opening c
 Empirical evidence has indicated the severe consequences of neglecting second-order opening.
 Recent research has found that the variation in the estimated effects caused by researchers may outweigh the population's variation [@Holzmeister2024].
 Within this researcher-choice variation, a substantial portion comes from the data-wrangling process [@Huntington-Klein2025, 33].
-In a "many-analyst" analysis, @Huntington-Klein2025 requested 146 research teams to complete the same research task.
-The study found that the teams who were given the same research design but no pre-cleaned data set generated the highest outcome variation---even higher than those teams who were only given the research task.
+In a "many-analyst" analysis, @Huntington-Klein2025 requested 146 research teams to complete the same research task, in which group A decided how to accomplish the task all by themselves, group B was given a specified research design, and group C was given the same research design and a pre-cleaned data set.
+The study found that actually it is group B that generated the highest outcome variation---even higher than group A.
 The teams who were given the pre-cleaned data set generated the lowest outcome variation.
 These findings indicate that the research replicability cannot be secured by first-order opening without second-order opening.
 
