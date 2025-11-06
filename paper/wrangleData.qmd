@@ -783,11 +783,9 @@ ls_packages <- map(kw_short, \(keyword){
 tt(ls_packages$download, 
   width = c(0.2, 0.5, 0.3),
   caption = "Example packages for downloading data with API\\label{tbl-download}") |> 
-  style_tt(
-    tabularray_inner = "stretch=0",
-    fontsize = 0.7
-  ) |> 
-    theme_tt(c("multipage"))
+    theme_latex(tabularray_inner = "stretch=0",
+      multipage = TRUE) |> 
+  style_tt(fontsize = 0.7)
 
 ```
 
@@ -797,11 +795,9 @@ tt(ls_packages$download,
 tt(ls_packages$clean, 
   width = c(0.2, 0.5, 0.3),
   caption = "Example packages for cleaning data with API\\label{tbl-clean}") |> 
-  style_tt(
-    tabularray_inner = "stretch=0",
-    fontsize = 0.7
-  ) |>
-  theme_tt("multipage")
+    theme_latex(tabularray_inner = "stretch=0",
+      multipage = TRUE) |> 
+  style_tt(fontsize = 0.7)
 
 ```
 
@@ -811,10 +807,8 @@ tt(ls_packages$clean,
 tt(ls_packages$transform, 
   width = c(0.2, 0.5, 0.3),
   caption = "Example packages for transforming data with API\\label{tbl-transform}") |> 
-  style_tt(
-    tabularray_inner = "stretch=0",
-    fontsize = 0.7
-  ) |>
-  theme_tt("multipage")
+    theme_latex(tabularray_inner = "stretch=0",
+      multipage = TRUE) |> 
+  style_tt(fontsize = 0.7)
 
 ```
