@@ -316,7 +316,11 @@ As of its most recent update at the time of this writing, its source data consis
 DCPO is both a method and a database.
 Scholarship on comparative public opinion only rarely benefits from relevant items asked annually by the same survey in many countries [see, e.g., @HagemannEtAl2017].
 To address the lack of cross-national and longitudinal data on many topics, a number of works have presented latent variable models that harmonize survey items that intend to capture the identical concepts but with different question wordings or option scales [see e.g., @CaugheyEtAl2019; @Claassen2019].
-Advancing this line of work, DCPO not only provides latent variable measurements but also automated and reproducible data collection [@Solt2020], which has been applied in a complete pipeline for a variety of topics such as gender egalitarianism [@Woo2023], political interest [@Hu2025a], and support for gay rights [@Woo2025], among other aspects of public opinion and open it freely for global researchers (see the data available at <https://dcpo.org/>).
+Advancing this line of work, DCPO not only provides latent variable measurements but also automated and reproducible data collection [@Solt2020], which has been applied in a complete pipeline for a variety of topics such as gender egalitarianism [@Woo2023], political interest [@Hu2025a], and support for gay rights [@Woo2025], among other aspects of public opinion and open it freely for global researchers (see the data available at <https://dcpo.org/>).^[
+  Note that harmonizing aggregate data, as in SWIID, and survey data, as in DCPO, involves different specific challenges. 
+  Aggregate data require consistent measurement and scaling across sources, whereas survey data require conceptual and semantic alignment of questions and response options.
+  We use the two cases to illustrate how our TAO routine can benefit diverse data harmonization missions.
+]
 
 
 ## Step 1: Team-Based Construct Building and Data Selection
