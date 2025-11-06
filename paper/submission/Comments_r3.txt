@@ -1,0 +1,80 @@
+Dear Dr. Tai,
+
+We have now received two reviews of your submission to the Symposium “Data Harmonization in Political Science and Related Fields: Innovations, Challenges, and Visions for the Future”. The feedback is quite positive, though the reviewers recommend some relatively minor changes that could strengthen your work. We invite you to revise your paper by addressing the reviewers’ comments.
+
+We would like to emphasize one comment in particular, that the paper needs thorough proofreading to improve the text’s clarity and precision. Here are a few examples:
+
+Section 1:
+
+“In short, poor source data quality … have collectively become the largest obstacle on the way to data harmonization, yet thus far this obstacle has gained little attention.” – do you mean poor quality of data entry?
+
+Please explain what “opening” means in the last paragraph of Section 1.
+
+Section 2:
+
+“To incorporate as much available data as possible to provide a base for comparable data” – please explain why more data means more comparable data?
+
+“a number of works have presented latent variable models that harmonize available but incomparable survey items” – please explain what “incomparable” means in this context.
+
+Section 2.1:
+
+“To some extent, data from different sources help correct the biases caused by the designers’ cultural backgrounds.” – what designers are meant here? Designers of the surveys or designers of the research questions for which data are cleaned and harmonized?
+
+Section 2.2:
+
+“Formatting data is arguably the step most prone to manual errors and controversies.” - what does “formatting” mean here exactly?
+
+“This software processes raw survey files directly, ensuring reproducible data entry.” – perhaps it would be worth mentioning somewhere the potential reproducibility problems caused by software changes; you could link to the Symposium’s contribution by Oser & Zur, “Guide for the (Soon-to-be) Perplexed: Considerations for Scholars Launching and Leading Survey Data Harmonization Journeys”.
+
+“The keyword-based searching function that most these packages equip also ensure researchers to conduct data harmonization analysis with most updated data pools the sources have.” – I don’t understand this sentence.
+
+“This means not only that the possibility of errors introduced by hand entry for a vast majority of observations is eliminated” – not really eliminated, but perhaps reduced. Scraping from pdf files can also introduce errors.
+
+Section 2.3:
+
+“The study found that the teams who were given the same research design but no pre-cleaned data set generated the highest outcome variation—even higher than those teams who were only given the research task.” – would it be worth clarifying how many groups there were and what each of them received? “no pre-cleaned data” and “only research tasks” sounds like the same thing (without reading the cited article).
+
+The feedback from reviewers is attached. We recommend including a detailed revision memo with responses to all reviewers’ comments.
+
+Your revision is due by Nov 19, 2025.
+
+To submit a revision, go to https://nam10.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.editorialmanager.com%2Fps%2F&data=05%7C02%7Cyhcasstai%40psu.edu%7C2ea0290e3c964d980f2108de10bfb83d%7C7cf48d453ddb4389a9c1c115526eb52e%7C0%7C0%7C638966612768896592%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=88mkAAofKxlnO5P%2BTSRs6MROE7NtEMNuzxIjeYJ7QBY%3D&reserved=0 and log in as an Author. You will see a menu item call Submission Needing Revision. You will find your submission record there.
+
+Thank you for your submission to the symposium, and we look forward to continuing to work with you on next steps as we advance toward publication.
+
+Marta Kołczyńska, Jennifer Oser, and Sylvia Kritzinger
+Guest Editors
+PS: Political Science & Politics
+
+---
+Reviewer's Comments
+
+Reviewer #1: This manuscript presents a useful, practical overview of recommendation for the harmonization of survey data and other aggregate types of data relevant to social science. In particular, the detailed walk-through of the data selection process and the various specific recommendations for automation procedures and sources are a useful contribution to the literature. I do not really have any points of critique, this seems to be a good fit to the theme of the symposium, and although I might do some things a bit differently myself, it's useful for myself and other academics and practitioners to hear how the authors have approached these tasks in their projects, and what they suggest is novel (to me and others) in many respects and also all seems reasonable.
+
+My only notes might be that it would be interesting to hear a bit more about the practicalities of the R package DCPOtools, e.g., how it handles raw survey data in the automated way described, since dates and other variables are coded in various ways between datasets, but perhaps that is a matter for a separate publication. It might also be clarified at some points throughout that survey data and aggregate data on constructs such as economic inequality are qualitatively different when it comes to the harmonization process. This doesn't require a major rewrite, just some caveats here and there; e.g., I doubt many researchers are going to manually input data from (secondary) surveys or scrape them from pdf files on the internet. As a very minor note, the manuscript would also benefit from a proof-read. For example, the following sentence on p. 5 is not really legible: "The keyword-based searching function that most these packages equip also ensure researchers to conduct data
+harmonization analysis with most updated data pools the sources have."
+
+
+
+Reviewer #2: This manuscript addresses an important and timely issue in contemporary social science: the challenges of pre-harmonization data wrangling. This step is particularly critical in the current era of big data, where large-scale projects are developed by multiple teams often working on overlapping goals. The manuscript is clearly written, the argument is well organized, and the examples drawn from SWIID and DCPO are helpful. I believe the manuscript could be published after the authors address the following minor issues.
+
+1. Terminology. The manuscript mentions "ex-post data harmonization" and, while accurate, another widely used term in the literature is "retrospective data harmonization." Looking through Google Scholar, it seems that both are used almost exchangeably. I recommend that the authors acknowledge both terms to ensure clarity for readers, perhaps in a footnote, or perhaps by referring to it as "retrospective (ex-post) data harmonization" or similar.
+
+2. Engagement with Prior Literature
+The paper would benefit from a better engagement with existing scholarship on harmonization in the social sciences, so that readers can quickly have other references that may complement the information in the piece. While the political science-specific focus is valuable, there is a broader methodological literature that may be relevant for readers. Let me give you some relevant examples:
+General purpose harmonization:
+*       Cheng, C., et al. (2024). A general primer for data harmonization. Scientific Data, 11(1), 152.
+
+Surveys harmonization:
+*       Dubrow, J. K., & Tomescu-Dubrow, I. (2016). The rise of cross-national survey data harmonization in the social sciences: emergence of an interdisciplinary methodological field. Quality & Quantity, 50(4), 1449-1467.
+*       Kizilova, K., Diez‐Medrano, J., Welzel, C., & Haerpfer, C. (2024). Harmonization in the world values survey. In Survey Data Harmonization in the Social Sciences, 39-56.
+*       Kołczyńska, M. (2022). Combining multiple survey sources: A reproducible workflow and toolbox for survey data harmonization. Methodological Innovations, 15(1), 62-72.
+*       Wysmułek, I., Tomescu-Dubrow, I., & Kwak, J. (2022). Ex-post harmonization of cross-national survey data: advances in methodological and substantive inquiries. Quality & Quantity, 56(3), 1701-1708.
+Census harmonization:
+*       Ruggles, S., Cleveland, L., & Sobek, M. (2024). Harmonization of census data: IPUMS-International. In Survey Data Harmonization in the Social Sciences, 207-226.
+
+3. Process Validation
+On page 5, the authors highlight that automated scraping and scripting reduce errors introduced by manual entry. While this is a strong point, I encourage the authors to consider and briefly discuss validation measures. Even with automation, errors may arise if scripts misinterpret formats or if source data contain inconsistencies. Who makes sure that the automation workflow works? My view is that a lightweight process of human validation or spot-checking would increase confidence in the robustness of the approach. Can the authors discuss why this is not done or how we can guarantee a no-error workflow?
+
+__________________________________________________
+In compliance with data protection regulations, you may request that we remove your personal registration details at any time.  (Use the following URL: https://nam10.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.editorialmanager.com%2Fps%2Flogin.asp%3Fa%3Dr&data=05%7C02%7Cyhcasstai%40psu.edu%7C2ea0290e3c964d980f2108de10bfb83d%7C7cf48d453ddb4389a9c1c115526eb52e%7C0%7C0%7C638966612768926234%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=zDlCHL5gGlH8i56wQn1LwLPfqOdCd0KNL%2BY7q4UstSE%3D&reserved=0). Please contact the publication office if you have any questions.
