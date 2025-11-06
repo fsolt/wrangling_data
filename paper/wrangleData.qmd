@@ -370,7 +370,9 @@ The best solution is to automate the entry process, taking advantage of scriptin
 
 In the DCPO case, data entry is fully automated through the R-based software, `DCPOtools` [@SoltEtAl2018a]. 
 This software processes raw survey files directly, ensuring reproducible data entry. 
-It converts various file formats to R-readable objects, extracts variables of interest, reorders response values, applies survey weights, and aggregates weighted respondents by country and year based on actual fieldwork dates.
+It converts various file formats to R-readable objects, extracts variables of interest, reorders response values, applies survey weights, and aggregates weighted respondents by country and year based on actual fieldwork dates.^[
+  See more details how `DCPOtools` helps process the public surveys into the consistent format for harmonization in the upcoming vignette associated with the package and the software repo (https://github.com/fsolt/DCPOtools).
+]
 
 To address theoretical comparability concerns, DCPO employs conservative filtering, removing items appearing in fewer than five country-years in countries surveyed at least three times, minimizing the risk of sacrificing comparability for coverage [@Koc2025].
 `DCPOtools` standardizes country names using @Arel-BundockEtAl2018's `countrycode` and ensures years reflect actual fieldwork dates, creating aggregated respondent data for the latent variable model.
