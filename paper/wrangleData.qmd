@@ -74,7 +74,7 @@ title: |
   | Past the 'Janitor Work'
 #subtitle: "Preliminary version. Do not circulate without permission."
 #abstract: |
-#    This article focuses on a preliminary step in any ex-post data harmonization project---wrangling the pre-harmonized data---and suggests a practical routine for helping researchers reduce human errors in this often-tedious work. 
+#    This article focuses on a preliminary step in any retrospective (or "ex-post")  data harmonization project---wrangling the pre-harmonized data---and suggests a practical routine for helping researchers reduce human errors in this often-tedious work. 
 #    The routine includes three steps: (1) *T*eam-based concept construct and data selection; (2) Data entry *a*utomation; and (3) "Second-order" *o*pening---a "Tao" of data wrangling. 
 #    We illustrate the routine with the examples of pre-harmonizing procedures used to produce the Standardized World Income Inequality Database (SWIID), a widely used database that uses Gini indices from multiple sources to create comparable estimates, and the Dynamic Comparative Public Opinion (DCPO) project, which creates a workflow for harmonizing aggregate public opinion data.
 #keywords: 
@@ -630,7 +630,7 @@ Early and critical steps, such as construct development and codebook refinement,
 Even with automated data entry, human validation remains essential for verifying variable formats and value ranges. 
 Computing environments should be documented to minimize system-related discrepancies [@Liu2019].
 
-For ex-post harmonization projects, careful attention to pre-harmonization stages substantially contributes to overall data quality. 
+For retrospective (or called "ex-post") harmonization projects, careful attention to pre-harmonization stages substantially contributes to overall data quality. 
 While some error is inevitable, with responsible researcher oversight, data-entry errors can be minimized while transparency, openness, and research credibility continue to grow.
 
 
