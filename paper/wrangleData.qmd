@@ -589,7 +589,7 @@ The dual-entry process allows for automated cross-checks of the newly entered da
 
 As the final point of Step 2, the "data entry automation" step indeed minimizes the errors by manual entry but *not* all mistakes or biases. 
 Its effectiveness depends on the proper implementation of programming and software, both of which have inherent limitations. 
-For example, OCR may misread characters or digits, and software bugs can affect quality and reproducibility of the process [see e.g., @OserZur2025 in this Symposium].
+For example, OCR may misread characters or digits, and software bugs can affect quality and reproducibility of the process.
 Human supervision and validation therefore remain crucial. 
 Researchers are encouraged to pilot the automation on a small, diverse sample or conduct spot checks to verify the quality of automated data entry.
 
@@ -609,7 +609,9 @@ The teams who were given the pre-cleaned data set generated the lowest outcome v
 These findings indicate that the research replicability cannot be secured by first-order opening without second-order opening.
 
 If researchers apply our suggestions of team-based construct building, systematic data selection, and automated data entry, the second-order opening will be both feasible and efficient.
-Along with a clearly conceptualized theoretical framework, researchers can simply share their programming scripts for data downloading, formatting, and wrangling, and thereby ensure that the full pipeline is documented and reproducible.
+Along with a clearly conceptualized theoretical framework, researchers can simply share their programming scripts for data downloading, formatting, and wrangling, and thereby ensure that the full pipeline is documented and reproducible.^[
+  @OserZur2025 also pointed out that the expertise of programming can also affect the reproducibility of the data wrangling process.
+]
 
 With developed scientific and technical publishing system, such as Quarto or R Markdown, version control platforms like Github, and open collaboration platforms including the Open Science Framework, researchers can integrate the entire workflow—--from raw data collection to final analysis--—within a single, publicly trackable archive.
 We reached at this step for all the DCPO projects so far. 
