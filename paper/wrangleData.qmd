@@ -575,17 +575,23 @@ The list is long but far from complete.
 Readers are welcome to modify the arguments of the codes (such as the keywords used to select packages) in this article's replication file that we use to create the list, they will discover many times more packages that already exist to help collect and wrangle data.
 
 Returning to the case of the SWIID: when no API is available, the automation script downloads and reads any available spreadsheets.
-In the absence of a spreadsheet, the process of scraping the data either directly from the web or, preferably, from a pdf file [see @Sepulveda2024] is automated.
+In the absence of a spreadsheet, the process of scraping the data either directly from the web or, preferably, from a pdf file is automated [see @Sepulveda2024].
 Together the collection of `r automated_percent`% of the source data is scripted.
 This means not only that errors associated with manual data entry for the majority of observations are eliminated but also that ongoing updates and revisions can be easily integrated when they become avaliable and the data collecion program is reran.
 
 Even for data sources that have to be entered in hand, such as those from academic articles or books, there is still opportunity for partial automation.
 For the remaining `r 100 - automated_percent`% of the SWIID observations, for instance, many were collected using Sepulveda's `tabulapdf` R package to avoid data-entry errors.
 Optical Character Recognition (OCR) can be used to extend this method to even hard-copy data sources.
-Finally, for data that one has to enter manually, the teamwork is crucial.
+
+For data that one has to enter manually, the teamwork is crucial.
 Mirroring the approach for data selection described above, each hand-entered observation was independently entered twice into two separate spreadsheets.
 The dual-entry process allows for automated cross-checks of the newly entered data that increase the chances that errors are identified and corrected [see @BarchardPace2011].
 
+As the final point of Step 2, the "data entry automation" step indeed minimizes the errors by manual entry but *not* all mistakes or biases. 
+Its effectiveness depends on the proper implementation of programming and software, both of which have inherent limitations. 
+For example, OCR may misread characters or digits, and software bugs can affect quality and reproducibility of the process [see e.g., @OserZur2025 in this Symposium].
+Human supervision and validation therefore remain crucial. 
+Researchers are encouraged to pilot the automation on a small, diverse sample or conduct spot checks to verify the quality of automated data entry.
 
 ## Step 3: "Second-Order" Opening
 
