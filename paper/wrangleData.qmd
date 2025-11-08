@@ -374,7 +374,7 @@ The best solution is to automate the entry process, taking advantage of scriptin
 
 In the DCPO case, nce the research team manually codes the question numbers of relevant items, response scales, survey weights, project names, fieldwork waves, and dates from the raw survey files and accompanying documentation, data entry can be automated through the R-based software, `DCPOtools` [@SoltEtAl2018a]. 
 This software processes raw survey files directly, ensuring reproducible data entry. 
-It converts various file formats to R-readable objects, extracts variables of interest, applies consistent recoding and weighting procedures, and outputs structured country-year aggregates based on actual fieldwork dates. 
+It converts various file formats to R-readable objects, extracts variables of interest, applies consistent recoding and weighting procedures, and outputs structured country-year aggregates. 
 To enable automation, raw data should be pre-processed to conform to `DCPOtools`' input format, despite inconsistencies in the original sources.^[
   See more details how `DCPOtools` helps process the public surveys into the consistent format for harmonization in the upcoming vignette associated with the package and the software repo (https://github.com/fsolt/DCPOtools).
 ]
@@ -576,9 +576,11 @@ The list is long but far from complete.
 Readers are welcome to modify the arguments of the codes (such as the keywords used to select packages) in this article's replication file that we use to create the list, they will discover many times more packages that already exist to help collect and wrangle data.
 
 Returning to the case of the SWIID: when no API is available, the automation script downloads and reads any available spreadsheets.
-In the absence of a spreadsheet, the process of scraping the data either directly from the web or, preferably, from a pdf file is automated [see @Sepulveda2024].
+In the absence of a spreadsheet, the process of scraping the data, either directly from the web or, preferably, from a pdf file, is automated [see @Sepulveda2024].
 Together the collection of `r automated_percent`% of the source data is scripted.
-This means not only that errors associated with manual data entry for the majority of observations are eliminated but also that ongoing updates and revisions can be easily integrated when they become avaliable and the data collecion program is reran.
+
+This process substantially reduces manual entry errors, though some risks may remain, particularly when scraping from unstructured PDFs.
+Nevertheless, it enables efficient integration of updates and revisions whenever data collection program is reran.
 
 Even for data sources that have to be entered in hand, such as those from academic articles or books, there is still opportunity for partial automation.
 For the remaining `r 100 - automated_percent`% of the SWIID observations, for instance, many were collected using Sepulveda's `tabulapdf` R package to avoid data-entry errors.
