@@ -364,7 +364,7 @@ The process concludes with a final cross-check of the selected items by all memb
 In addition to reducing manual biases, teamwork also helps expand the data pool.
 Both SWIID and DCPO projects enrolled team members from outside the United States.
 These members draw on their linguistic and cultural expertise to detect extra sources in non-English languages and improve the precision of the data selection.
-To some extent, data from different sources help correct the biases caused by the survey designers' cultural backgrounds. 
+To some extent, data from different sources helps mitigate the cultural biases embedded in survey instruments developed within particular national or linguistic contexts.
 
 
 ## Step 2: Data Entry Automation {#sec-automate}
