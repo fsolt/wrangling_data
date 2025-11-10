@@ -16,19 +16,36 @@ execute:
     warning: false
     dpi: 300
     
-title:  A TAO for Data Wrangling:  A Practical Routine for Getting Past the 'Janitor Work'
+title:  "A TAO for Data Wrangling:  A Practical Routine for Getting Past the 'Janitor Work'"
 subtitle: Memo to Editor and Reviewers
 ---
 
-Thank you for the opportunity to revise and resubmit this manuscript. 
-We detail our responses to each of the reviewers' helpful comments below.
 
+Thank you for the opportunity to revise our manuscript. 
+We appreciate the insightful and constructive feedback from both reviewers and the editors. 
+Below, we summarize how we have addressed each of the key suggestions.
 
-*Adding more Clarifications*.
+**Clarifications and Terminology**
+Both reviewers and the editors commented on terms and phrases that could benefit from clearer definitions. 
+In this revised version, we have refined the framing and added explanations where needed.
 
-*Enriching the Literature Review*
+In particulary, following Reviewer 1's (R1) suggestion, we now clarify the distinction between survey and aggregate data and explain their harmonization process in greater detail (see p. XXXX). 
+We also added the term *“retrospective data harmonization”* alongside *“ex-post data harmonization”* to ensure that readers familiar with either expression can follow our discussion (see p. XXXX).
 
-*Validation*
+**Expanded Literature Review**
+We thank Reviewer 2 (R2) for highlighting additional relevant scholarship on data harmonization. 
+We have now incorporated these works to engage with the broader literature in this new version (see p. XXXX).
 
-*Polishing the manuscript*.
+**Further Validation of Step 2**
+We appreciate R2's observation that while automation in Step 2 of our routine helps reduce errors associated with manual data entry, it cannot fully eliminate all possible mistakes. 
+The revised version now explicitly acknowledges this limitation (see p. XXXX).
 
+We also thank the editor for noting the connection between our discussion and other contributions in this symposium regarding software usage. 
+We have incorporated this work into the manuscript (see p. XXXX).
+
+Finally, **Polishing and Readability**
+We are grateful for the editors' and reviewers' suggestions to further improve the manuscript's clarity and framing. 
+The revised version has been thoroughly edited and proofread. 
+If any parts remain unclear, we will gladly make further revisions.
+
+Thank you again for your careful reading and valuable feedback.
