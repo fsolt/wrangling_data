@@ -277,8 +277,8 @@ Empowered by the spreading internet and advancing computational power, researche
 A growing volume of social science research aims to take the benefit to extend generality: they employ large quantities of data drawn from different sources [@ChengEtAl2024; @KizilovaEtAl2024; @RugglesEtAl2024; @WysmulekEtAl2022].
 However, significant challenges remain in ensuring the quality of harmonized datasets, especially when it comes to evaluating whether the data are fit for their intended use and systematically monitoring the quality of the raw inputs [@Slomczynsi2025; @DubrowTomescu-Dubrow2016].
 
-The wrangling step plays a critical role in determining data quality for harmonization, especially given the growing volume and diversity of available sources and the need for transparent, well-documented cleaning [@Kolczynska2022].
-The conventional approach usually and notoriously involves a great deal of manual work on indicator identification, data merging, data scaling, and so on [see, e.g., @Lohr2014].
+The wrangling step is critical for data quality in harmonization, especially given the growing volume and diversity of sources and the need for transparent, well-documented cleaning [@Kolczynska2022].
+The conventional approach notoriously relies on extensive manual work on indicator identification, data merging, and scaling [see, e.g., @Lohr2014].
 Manual wrangling undermines transparency and makes full reproducibility of the research pipeline more difficult to achieve [@Liu2019].
 Worse, this tiresome task makes it easy to introduce errors in the data.
 Finally, even meticulous documentation cannot eliminate the influence of human discretion embedded in manual processing.
@@ -286,40 +286,39 @@ These discretionary decisions often leave little trace, making it challenging fo
 
 In short, incomplete or inaccurate data entry, the absence of reproducibility, and trackless human discretion in manual janitor work have collectively become major obstacles on the way to data harmonization, yet these challenge has received surprisingly little attention.
 In this article, we provide a practical routine (a "TAO") that takes advantage of automatic programming and teamwork to reduce data-entry errors and improve the reproducibility and transparency of the wrangling process for researchers and reviewers.
-This TAO covers the three phases of data wrangling: data selection and collection, data entry, and what we term second-order opening—the transparent documentation of the data generation process (DGP).
+This TAO covers the three phases: data selection and collection, data entry, and what we term second-order opening—the transparent documentation of the data generation process (DGP).
 We illustrate how researchers can use this routine on administrative statistics and survey data with examples of two ongoing harmonization efforts, the Standardized World Income Inequality Database (SWIID) and the Dynamic Comparative Public Opinion (DCPO) project.
 
 
 # A 3-Step "TAO" for Data Wrangling
 
-Our routine aims to helping researchers reach three goals for scientific study: 
+Our routine helps researchers achieve three goals: 
 
-1. To reduce the manual entry errors in order to improve the accuracy of both harmonized and analytic datasets; 
-1. To incorporate as much available data as possible to provide a solid foundation for constructing comparable data and increasing the generalizability of inferences;^[
+1. Reduce manual entry errors to improve the accuracy of both harmonized and analytic datasets. 
+1. Incorporate as much available data as possible to provide a solid foundation for constructing comparable data and increasing the generalizability of inferences.^[
   Here, “available data” refers to existing data sources that contain information relevant to the variable of interest.
-  Although some comparisons can proceed without complete data coverage, analyses based on incomplete information risk producing misleading conclusions [see, e.g., @SoltEtAl2016; @SoltEtAl2017].
-  Therefore, the sufficiency of data is often closely tied to the (external) validity of comparisons.
+  Although some comparisons can proceed without complete coverage, analyses based on incomplete information risk producing misleading conclusions [see, e.g., @SoltEtAl2016; @SoltEtAl2017].
+  Therefore, data sufficiency is closely tied to the (external) validity of comparisons.
 ]
-and
-1. To improve the reproducibility of data wrangling process for the sake of transparency.
+1. Improve the reproducibility of data wrangling process to enhance transparency.
 
-The routine decomposes a data-wrangling process into three steps: 
+The routine consists of three steps: 
 
 1. **T**eam-based concept construct and data selection;
 1. Data entry **a**utomation; and 
 1. "Second-order" **o**pening.
 
 We use two data harmonization projects, SWIID and DCPO, to illustrate this routine.
-SWIID is a long-running project that seeks to provide harmonized income inequality statistics for the broadest possible coverage of countries and years [@Solt2020].
-As of its most recent update at the time of this writing, its source data consists of more than 27,000 observations of the Gini coefficient of income distribution in nearly 200 countries over as many as 65 years, collected from over 400 separate sources including international organizations, national statistics bureaus, and academic studies.
+SWIID is a long-running effort to provide harmonized income inequality statistics with the broadest possible country and year coverage [@Solt2020].
+In its most recent update, the source data include more than 27,000 observations of the Gini coefficient for nearly 200 countries over as many as 65 years, collected from over 400 sources such as international organizations, national statistics bureaus, and academic studies.
 
 DCPO is both a method and a database.
 Scholarship on comparative public opinion only rarely benefits from relevant items asked annually by the same survey in many countries [see, e.g., @HagemannEtAl2017].
 To address the lack of cross-national and longitudinal data on many topics, a number of works have presented latent variable models that harmonize survey items that intend to capture the identical concepts but with different question wordings or option scales [see e.g., @CaugheyEtAl2019; @Claassen2019].
 Advancing this line of work, DCPO not only provides latent variable measurements but also automated and reproducible data collection [@Solt2020], which has been applied in a complete pipeline for a variety of topics including gender egalitarianism [@WooEtAl2023], political interest [@HuSolt2025], and support for gay rights [@WooEtAl2025] among other aspects of public opinion and open it freely for global researchers (see the data available at <https://dcpo.org/>).^[
-  Note that harmonizing aggregate data, as in the SWIID, and survey data, as in DCPO, involves different specific challenges. 
+  Harmonizing aggregate data (as in SWIID) and survey data (as in DCPO), involves different challenges. 
   Aggregate data require consistent measurement and scaling across sources, whereas survey data require conceptual and semantic alignment of questions and response options.
-  We use the two cases to illustrate how our TAO routine can benefit diverse data harmonization missions.
+  We use the two cases to illustrate how the TAO routine can benefit diverse harmonization tasks.
 ]
 
 
@@ -329,39 +328,39 @@ Large-scale data selection and cleaning is often viewed as tiresome, as somethin
 Performing these tasks manually makes it easy to make mistakes and errors.
 @HaegemansEtAl2019 [p. 1] lists examples of misrouted financial transactions and airline flights.
 In a more systematic examination, @BarchardPace2011 found that RAs assigned in an experiment to carefully enter data manually and instructed to prioritize accuracy over speed still had error rates approaching 1% in just a single roughly half-hour session.
-The consequences of such errors are pernicious, undermining our results and more broadly our confidence in the scientific enterprise.
+The consequences of such errors are pernicious, undermining both empirical results and confidence in the broader scientific enterprise.
 
 Our antidote for this issue is a combination of teamwork and automation. 
-We will focus first on teamwork and discuss the latter in @sec-automate.
-The goals here are to have consistent understanding on the conceptualized construct, to select valid data for later measurement and/or analyses, and to reduce biases caused by inconsistent human judgment.
-A teamwork process to these ends requires using a deliberative set and a dual-entry process.
+We begin with teamwork and discuss the latter in @sec-automate.
+The goals are to establish a shared understanding on the conceptualized construct, select valid data for later measurement and/or analyses, and reduce biases arising from inconsistent human judgment.
+Achieving these requires a deliberative process and a dual-entry procedure.
 
-A deliberative set requires the members in a research team---whether several coauthors or a primary author with one or more RAs---to have a clear and coherent understanding of the research questions and associated data goals.
-These understandings will help the team members identify the right data to collect and discover extra useful data sources that are not in the initial plan.
+A deliberative set requires all team members---whether several coauthors or a primary author with one or more RAs---to have a clear understanding of the research questions and associated data goals.
+This shared foundation help members identify relevant data sources and discover additional materials that are not in the initial plan.
 
-In the early years of the SWIID program, for example, RAs were told that the goal of the project is to generate comparable statistics of country-level economic inequality.
+In the early years of the SWIID program, for example, RAs were instructed that the goal of the project is to generate comparable statistics of country-level economic inequality.
 They were provided a list of sources to start with, mainly from national statistic bureaus, but also told that updated statistics for some countries may come from academic papers, published documents, and other sources, and encouraged to add each of these new sources by recording a valid link.
 
-In the DCPO project, clearly defining and agreeing upon the latent construct among team members is a critical first step for ensuring theoretical comparability across countries and over time [@Koc2025]. 
-This process begins with a shared conceptual foundation established through literature review and the corresponding pre-defined potential dimensions of latent opinion.
-Each team member is then assigned survey datasets from specific geographic regions and tasked with identifying potentially relevant items and potential dimensions based on both general theoretical guidance and region-specific knowledge. 
+In the DCPO project, defining and agreeing upon the latent construct is a critical first step for ensuring theoretical comparability across countries and over time [@Koc2025]. 
+This begins with a shared conceptual foundation established through literature review and a set of pre-defined potential dimensions.
+Team members are assigned survey datasets from specific geographic regions and tasked with identifying potentially relevant items and dimensions based on both general theoretical guidance and region-specific knowledge. 
 This structure ensures that the construct is informed by both global theory and local context.
-(For a more detailed checklist, see @sec-checklist.)
+(A detailed checklist is in @sec-checklist.)
 
-Before data selection begins, team members undergo hands-on training on how the method works and what types of data and metadata they need to collect, such as data format and weighting types, that are essential for enabling the automated data preparation process. 
+Before data selection begins, team members undergo hands-on training on how the method works and what types of data and metadata, such as data format and weighting variables, should be collected to support the automated data preparation process. 
 
 Following the initial round of item selection and collection, the dual-entry section begins. 
 In this stage, each team member reviews and re-codes the survey data originally handled by another member.
-The independently coded versions are then compared to detect discrepancies, which may arise from misinterpretations of the construct, ambiguous item wording, or data-entry errors.
+The independently coded versions are compared to detect discrepancies, which may arise from misinterpretations of the construct, ambiguous item wording, or data-entry errors.
 
 Disputed cases are flagged for group discussion.
 Some mismatches may indicate items that may not be conceptually equivalent across cultures or regions, and others may suggest multidimensionality that requires theoretical disaggregation.
 For the latter, we either categorize such items into pre-defined dimensions and/or revise the codebook accordingly to add new dimensions---an iterative process aimed at improving construct validity, intercoder reliability, and reducing oversimplification of the target variable [@Slomczynsi2025].
 
-Therefore, multiple lab meetings are held throughout the data selection phase to share insights from each member's coding work and ensure conceptual alignment across the team.
-The process concludes with a final cross-check of the selected items by all members.
+Therefore, multiple lab meetings are held throughout the data selection phase to share insights from each member's coding work and ensure conceptual alignment.
+The process concludes with a final cross-check of the selected items.
 
-In addition to reducing manual biases, teamwork also helps expand the data pool.
+In addition to reducing manual biases, teamwork helps expand the data pool.
 Both SWIID and DCPO projects enrolled team members from outside the United States.
 These members draw on their linguistic and cultural expertise to detect extra sources in non-English languages and improve the precision of the data selection.
 To some extent, data from different sources helps mitigate the cultural biases embedded in survey instruments developed within particular national or linguistic contexts.
