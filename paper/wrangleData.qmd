@@ -373,13 +373,13 @@ The best solution is to automate the entry process, taking advantage of scriptin
 
 In the DCPO case, once the research team manually codes the question numbers of relevant items, response scales, survey weights, project names, fieldwork waves, and dates from the raw survey files and accompanying documentation, data entry can be automated through the R-based software, `DCPOtools` [@SoltEtAl2018a]. 
 This software processes raw survey files directly, ensuring reproducible data entry. 
-It converts various file formats to R-readable objects, extracts variables of interest, applies consistent recoding and weighting procedures, and outputs structured country-year aggregates. 
-To enable automation, raw data should be pre-processed to conform to `DCPOtools`' input format, despite inconsistencies in the original sources.^[
-  See more details how `DCPOtools` helps process the public surveys into the consistent format for harmonization in the upcoming vignette associated with the package and the software repo (https://github.com/fsolt/DCPOtools).
+It converts various file formats to R-readable objects, extracts variables of interest, applies consistent recoding and weighting, and outputs structured country-year aggregates. 
+To enable automation, raw data should be pre-processed to conform to `DCPOtools`' input format, despite inconsistencies across original sources.^[
+  See more details on how `DCPOtools` standardizes public surveys for harmonization in the upcoming vignette associated with the package and the software repo (https://github.com/fsolt/DCPOtools).
 ]
 
 To address theoretical comparability concerns, DCPO employs conservative filtering, removing items appearing in fewer than five country-years in countries surveyed at least three times, minimizing the risk of sacrificing comparability for coverage [@Koc2025].
-`DCPOtools` standardizes country names using @Arel-BundockEtAl2018's `countrycode` and ensures years reflect actual fieldwork dates, creating aggregated respondent data for the latent variable model.
+`DCPOtools` standardizes country names and ensures years reflect actual fieldwork dates, creating aggregated respondent data for the latent variable model.
 
 ```{r}
 #| label: swiidData
@@ -571,8 +571,8 @@ swiid_source %>%
 While coding datasets and items into structured spreadsheets facilitates automation, an even better approach starts the automation from the data selection step via scripting and APIs.
 As shown in @fig-dataMethod, the current version of SWIID collects `r api_percent`% of the observations through APIs.
 In @sec-packages, we provide an illustrative list of R packages that can assist with tasks such as collecting data via APIs and cleaning and transforming data.
-The list is long but far from complete.
-Readers are welcome to modify the arguments of the codes (such as the keywords used to select packages) in this article's replication file that we use to create the list, they will discover many times more packages that already exist to help collect and wrangle data.
+The list is extensive but not exhaustive.
+By modifying the arguments of the codes (such as the keywords used to select packages) in this article's replication file, readers can discover more tools that are available for data collection and wrangling.
 
 Returning to the case of the SWIID: when no API is available, the automation script downloads and reads any available spreadsheets.
 In the absence of a spreadsheet, the process of scraping the data, either directly from the web or, preferably, from a pdf file, is automated [see @Sepulveda2024].
@@ -582,14 +582,14 @@ This process substantially reduces manual entry errors, though some risks may re
 Nevertheless, it enables efficient integration of updates and revisions whenever data collection program is rerun.
 
 Even for data sources that have to be entered by hand, such as those from academic articles or books, there is still opportunity for partial automation.
-For the remaining `r 100 - automated_percent`% of the SWIID observations, for instance, many were collected using Sepulveda's [-@Sepulveda2024] `tabulapdf` R package to avoid data-entry errors.
-Optical Character Recognition (OCR) can be used to extend this method to even hard-copy data sources.
+For the remaining `r 100 - automated_percent`% of the SWIID observations, many were collected using Sepulveda's [-@Sepulveda2024] `tabulapdf` R package to avoid data-entry errors.
+Optical Character Recognition (OCR) can extend this method to hard-copy sources.
 
 For data that one must enter manually, teamwork is crucial.
-Mirroring the approach for data selection described above, each hand-entered observation was independently entered twice into two separate spreadsheets.
-The dual-entry process allows for automated cross-checks of the newly entered data that increase the chances that errors are identified and corrected [see @BarchardPace2011].
+Each observation is independently entered twice into separate spreadsheets.
+The dual-entry process allows for automated cross-checks of the newly entered data that increase the chances of identifing and correcting errors [see @BarchardPace2011].
 
-As the final point of Step 2, the "data entry automation" step indeed minimizes the errors by manual entry but *not* all mistakes or biases. 
+As the final point of Step 2, the "data entry automation" step indeed minimizes but does not eliminate errors. 
 Its effectiveness depends on the proper implementation of programming and software, both of which have inherent limitations. 
 For example, OCR may misread characters or digits, and software bugs can affect quality and reproducibility of the process.
 Human supervision and validation therefore remain crucial. 
@@ -604,15 +604,13 @@ In the context of data harmonization, we advocate for what we call a "second-ord
 "First-order" openness refers to sharing code and outputs from the analysis stage, and second-order openness involves making transparent the data generation process (DGP)—including data collection, cleaning, wrangling, and harmonization decisions.
 
 Empirical evidence has indicated the severe consequences of neglecting second-order opening.
-Recent research has found that the variation in the estimated effects caused by researchers may outweigh the population's variation [@HolzmeisterEtAl2024].
-Within this researcher-choice variation, a substantial portion comes from the data-wrangling process [@Huntington-KleinEtAl2025, 33].
-In a "many-analyst" analysis, @Huntington-KleinEtAl2025 requested 146 research teams to complete the same research task, in which Group A decided how to accomplish the task on their own, Group B was given a specified research design, and Group C was given the same research design and a pre-cleaned data set.
-Group B, which used the same design but processed the data themselves, produced the _highest_ variation in results.
-In contrast, Group C produced the most consistent results.
+Recent research has found that researcher-induced variation in estimated effects may exceed the population  variation [@HolzmeisterEtAl2024] and a substantial share of this variation stems from the data-wrangling decisions [@Huntington-KleinEtAl2025, 33].
+In the "many-analyst" analysis [@Huntington-KleinEtAl2025], 146 research teams to complete the same research task, in which Group A decided how to accomplish the task on their own, Group B was given a specified research design but processed the data themselves, and Group C was given the same research design and a pre-cleaned data set.
+Group B produced the _highest_ variation in results, while Group C generated the most consistent estimates.
 These findings underscore the importance of openness about data preparation and processing decisions ("second-order" openness).
 
-For researchers applying our suggestions of team-based construct building, systematic data selection, and automated data entry, the second-order opening will be both feasible and efficient.
-Along with a clearly conceptualized theoretical framework, researchers can simply share their programming scripts for data downloading, formatting, and wrangling, and thereby ensure that the full pipeline is documented and reproducible.^[
+For researchers following our recommendations on team-based construct building, systematic data selection, and automated data entry, second-order opening becomes both feasible and efficient.
+Along with a clearly conceptualized theoretical framework, researchers can share their scripts for data downloading, formatting, and wrangling to ensure that the full pipeline is documented and reproducible.^[
   @OserZur2025 also points out that programming expertise can also affect the reproducibility of the data wrangling process.
 ]
 
@@ -635,11 +633,11 @@ Researchers can reuse high-quality harmonized datasets, enhancing efficiency and
 Open-source software packages like those used by the SWIID and `DCPOtools` have already automated many data preparation tasks. 
 With large language models emerging, intelligent agents may soon handle parts of these routines, potentially advancing automation to new levels [@Kritzinger2025].
 
-A final point we would like to emphasize is that, in our three-step routine, researchers remain central to data harmonization. 
-As illustrated in the SWIID and DCPO examples, researchers are responsible for all critical decisions from clarifying research questions and building theoretical constructs to conducting version control and developing replication materials.
-Early and critical steps, such as construct development and codebook refinement, must be conducted iteratively to achieve high intercoder reliability. 
-Even with automated data entry, human validation remains essential for verifying variable formats and value ranges. 
-Computing environments should be documented to minimize system-related discrepancies [@Liu2019].
+A final point we would like to emphasize is that researchers remain central to data harmonization. 
+As illustrated by the SWIID and DCPO examples, researchers must steer all key decisions from clarifying research questions and building theoretical constructs to managing version control and developing replication materials.
+Early steps such as construct development and codebook refinement require iterative deliberation to achieve high intercoder reliability. 
+Even with automated data entry, human validation is essential for verifying variable formats and value ranges. 
+Computing environments should also be documented to minimize system-related discrepancies [@Liu2019].
 
 For retrospective, "ex-post" harmonization projects, careful attention to pre-harmonization stages substantially contributes to overall data quality. 
 While some error is inevitable, with responsible researcher oversight, data-entry errors can be minimized while transparency, openness, and research credibility continue to grow.
