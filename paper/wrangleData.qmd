@@ -1,6 +1,6 @@
 ---
 format:
-  pdf:
+  docx:
     number-sections: true
     papersize: a4
     keep-tex: false
@@ -284,7 +284,7 @@ Worse, this tiresome task makes it easy to introduce errors in the data.
 Finally, even meticulous documentation cannot eliminate the influence of human discretion embedded in manual processing.
 These discretionary decisions often leave little trace, making it challenging for collaborators or reviewers to verify the wrangling process or diagnose sources of error.
 
-In short, incomplete or inaccurate data entry, the absence of reproducibility, and trackless human discretion in manual janitor work have collectively become major obstacles on the way to data harmonization, yet these challenge has received surprisingly little attention.
+In short, incomplete or inaccurate data entry, the absence of reproducibility, and trackless human discretion in manual janitor work have collectively become major obstacles on the way to data harmonization, yet these challenges have received surprisingly little attention.
 In this article, we provide a practical routine (a "TAO") that takes advantage of automatic programming and teamwork to reduce data-entry errors and improve the reproducibility and transparency of the wrangling process for researchers and reviewers.
 This TAO covers the three phases: data selection and collection, data entry, and what we term second-order opening—the transparent documentation of the data generation process (DGP).
 We illustrate how researchers can use this routine on administrative statistics and survey data with examples of two ongoing harmonization efforts, the Standardized World Income Inequality Database (SWIID) and the Dynamic Comparative Public Opinion (DCPO) project.
@@ -587,7 +587,7 @@ Optical Character Recognition (OCR) can extend this method to hard-copy sources.
 
 For data that one must enter manually, teamwork is crucial.
 Each observation is independently entered twice into separate spreadsheets.
-The dual-entry process allows for automated cross-checks of the newly entered data that increase the chances of identifing and correcting errors [see @BarchardPace2011].
+The dual-entry process allows for automated cross-checks of the newly entered data that increase the chances of identifying and correcting errors [see @BarchardPace2011].
 
 As the final point of Step 2, the "data entry automation" step indeed minimizes but does not eliminate errors. 
 Its effectiveness depends on the proper implementation of programming and software, both of which have inherent limitations. 
@@ -639,7 +639,7 @@ Early steps such as construct development and codebook refinement require iterat
 Even with automated data entry, human validation is essential for verifying variable formats and value ranges. 
 Computing environments should also be documented to minimize system-related discrepancies [@Liu2019].
 
-For retrospective, "ex-post" harmonization projects, careful attention to pre-harmonization stages substantially contributes to overall data quality. 
+For retrospective (or called "ex-post") harmonization projects, careful attention to pre-harmonization stages substantially contributes to overall data quality. 
 While some error is inevitable, with responsible researcher oversight, data-entry errors can be minimized while transparency, openness, and research credibility continue to grow.
 
 
