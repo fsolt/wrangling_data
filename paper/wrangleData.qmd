@@ -605,7 +605,7 @@ In the context of data harmonization, we advocate for what we call a "second-ord
 
 Empirical evidence has indicated the severe consequences of neglecting second-order opening.
 Recent research has found that researcher-induced variation in estimated effects may exceed the population  variation [@HolzmeisterEtAl2024] and a substantial share of this variation stems from the data-wrangling decisions [@Huntington-KleinEtAl2025, 33].
-In the "many-analyst" analysis [@Huntington-KleinEtAl2025], 146 research teams to complete the same research task, in which Group A decided how to accomplish the task on their own, Group B was given a specified research design but processed the data themselves, and Group C was given the same research design and a pre-cleaned data set.
+In a "many-analyst" analysis [@Huntington-KleinEtAl2025], 146 research teams completed the same research task: Group A decided how to accomplish the task on their own, Group B was given a specified research design but processed the data themselves, and Group C was given the same research design and a pre-cleaned data set.
 Group B produced the _highest_ variation in results, while Group C generated the most consistent estimates.
 These findings underscore the importance of openness about data preparation and processing decisions ("second-order" openness).
 
@@ -614,9 +614,9 @@ Along with a clearly conceptualized theoretical framework, researchers can share
   @OserZur2025 also points out that programming expertise can also affect the reproducibility of the data wrangling process.
 ]
 
-With developed scientific and technical publishing systems such as Quarto or R Markdown, version control platforms like Github, and open collaboration platforms including the Open Science Framework, researchers can integrate the entire workflow—--from raw data collection to final analysis--—in a single, publicly trackable archive.
+With developed scientific and technical publishing systems such as Quarto or R Markdown, version control platforms like GitHub, and open collaboration platforms including the Open Science Framework, researchers can integrate the entire workflow—--from raw data collection to final analysis--—in a single, publicly trackable archive.
 We reached at this step for all the DCPO projects so far. 
-Readers can trace a research project from the start in a Github repo and every wave of data update in the corresponding OSF project [see, for example, @TaiEtAl2024].
+Readers can trace a research project from the start in a GitHub repo and every wave of data update in the corresponding OSF project [see, for example, @TaiEtAl2024].
 
 
 # Discussion
@@ -679,6 +679,7 @@ p_load("pkgsearch")
 The focus on each step may vary depending on the research purpose.
 For example, in public opinion harmonization projects like DCPO, more time is typically devoted to conceptualization and construct development compared to administrative data projects such as SWIID.
 However, this general checklist can serve as a useful guide across a range of harmonization efforts.
+
 
 ```{r}
 #| label: tbl-checklist
@@ -807,6 +808,7 @@ tt(ls_packages$download,
 
 ```
 
+\pagebreak
 ```{r}
 #| label: software-clean
 
