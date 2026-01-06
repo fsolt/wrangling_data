@@ -622,7 +622,7 @@ Readers can trace a research project from the start in a GitHub repo and every w
 
 # Discussion
 
-![The TAO of Data Wrangling Before Data Harmonization. Source: Self generated.](images/data_diagram.png){#fig-diagram fig-align="center" height=600}
+![The TAO of Data Wrangling Before Data Harmonization. Source: Authors' original figure.](images/data_diagram.png){#fig-diagram fig-align="center" height=600}
 
 @fig-diagram presents the whole process of the 3-step routine of data wrangling for later harmonization phase.
 Implementing these practices requires effort, just as in many open-science endeavors [see @EngzellRohrer2021]. 
