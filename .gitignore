@@ -15,3 +15,5 @@ dev/*
 framed.sty
 paper/*cache/*
 data/
+
+/.luarc.json

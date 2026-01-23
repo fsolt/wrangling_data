@@ -1,19 +1,15 @@
 ---
 format:
-  docx:
+  pdf:
     number-sections: true
     papersize: a4
-    keep-tex: false
     include-in-header: 
       text: |
         \usepackage{typearea}
         \usepackage{endnotes}
         \let\footnote=\endnote
-        
-crossref:
-  sec-prefix: OSM
-  sec-labels: alpha A
-    
+
+
 author:
     - name: ""
       affiliations: ""
@@ -46,6 +42,7 @@ citeproc: false # to make multibib and wordcount work
 filters:
 #  - authors-block
   - multibib # separate bib for main and appendix
+  - section-prefix.lua # different sec-prefix for main and appendix
   - at: pre-render
     path: "_extensions/andrewheiss/wordcount/wordcount.lua"
 validate-yaml: false # for multibib to work
